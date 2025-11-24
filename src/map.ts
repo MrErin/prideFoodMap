@@ -13,15 +13,17 @@ interface MarkerData {
     icon: string
 }
 
+const baseURL = import.meta.env.BASE_URL;
+
 const fridgeIcon: L.Icon = L.icon({
-    iconUrl: '/icons/fridge.png',
+    iconUrl: `${baseURL}icons/fridge.png`,
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
 });
 
 const donationIcon: L.Icon = L.icon({
-    iconUrl: '/icons/donation.png',
+    iconUrl: `${baseURL}icons/donation.png`,
     iconSize: [32, 28],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -88,8 +90,8 @@ export async function initializeMap(): Promise<void> {
 
     try {
         const [fridgeData, donationData] = await Promise.all([
-            loadCSV('/data/fridgePins.csv'),
-            loadCSV('/data/donationPins.csv')
+            loadCSV(`${baseURL}data/fridgePins.csv`),
+            loadCSV(`${baseURL}data/donationPins.csv`)
         ]);
 
         addMarkersFromCSV(fridgeData, fridgeLayer, fridgeIcon);
