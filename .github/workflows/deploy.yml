@@ -33,15 +33,6 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Verify build
-        run: |
-          echo "Checking if dist folder exists..."
-          ls -la
-          echo "Contents of dist folder:"
-          ls -la dist/
-          echo "Disk usage:"
-          du -sh dist/
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
@@ -54,9 +45,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    permissions:
-      pages: write
-      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
