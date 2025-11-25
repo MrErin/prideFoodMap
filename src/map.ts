@@ -29,7 +29,7 @@ const donationIcon: L.Icon = L.icon({
     popupAnchor: [1, -34],
 });
 
-async function loadCSV(url: string): Promise<MarkerData[]> {
+const loadCSV = async (url: string): Promise<MarkerData[]> => {
     const response: Response = await fetch(url);
     if (!response.ok) {
         throw new Error(`Failed to load ${url}: ${response.statusText}`);
@@ -48,7 +48,18 @@ async function loadCSV(url: string): Promise<MarkerData[]> {
     return result.data;
 }
 
-function addMarkersFromCSV(data: MarkerData[], layerGroup: L.LayerGroup, icon: L.Icon): void {
+const announce = (message: string): void => {
+    const announcer = document.getElementById('announcements');
+    if (announcer) {
+        announcer.textContent = '';
+
+        setTimeout(() => {
+        announcer.textContent = message;
+        }, 100)
+    }
+}
+
+const addMarkersFromCSV = (data: MarkerData[], layerGroup: L.LayerGroup, icon: L.Icon, layerName: string): void => {
     let markersAdded = 0;
 
     data.forEach((row: MarkerData, index: number) => {
@@ -59,7 +70,7 @@ function addMarkersFromCSV(data: MarkerData[], layerGroup: L.LayerGroup, icon: L
         const address: string = `${row.street}, ${row.city}, ${row.state} ${row.zip}`
 
         if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
-            const marker: L.Marker = L.marker([lat, lng], { icon: icon });
+            const marker: L.Marker = L.marker([lat, lng], { icon: icon, alt: `${name} ${layerName} location marker` });
 
             let popupContent: string = '';
             if (name) popupContent += `<strong>${name}</strong><br>`;
@@ -69,15 +80,34 @@ function addMarkersFromCSV(data: MarkerData[], layerGroup: L.LayerGroup, icon: L
                 marker.bindPopup(popupContent);
             }
 
+            marker.on('add', () => {
+                const element = marker.getElement();
+                if(element) {
+                    element.setAttribute('role', 'button');
+                    element.setAttribute('aria-label', `${name} - Click for details`);
+                    element.setAttribute('tabindex', '0');
+
+                    element.addEventListener('keydown', (e: KeyboardEvent) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            marker.openPopup();
+                        }
+                        })
+                }
+            })
+            marker.on('popupopen', () => {
+                announce(`Showing details for ${name}`)
+            });
             marker.addTo(layerGroup);
             markersAdded++;
         } else {
             console.warn(`Invalid coordinates at row ${index + 1}:`, { lat, lng, row });
         }
+        announce(`${markersAdded} ${layerName} locations loaded`);
     });
 }
 
-export async function initializeMap(): Promise<void> {
+export const initializeMap= async (): Promise<void> => {
     const map: L.Map = L.map('map').setView([37.8, -96], 4); // Default center USA
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -94,8 +124,8 @@ export async function initializeMap(): Promise<void> {
             loadCSV(`${baseURL}data/donationPins.csv`)
         ]);
 
-        addMarkersFromCSV(fridgeData, fridgeLayer, fridgeIcon);
-        addMarkersFromCSV(donationData, donationLayer, donationIcon);
+        addMarkersFromCSV(fridgeData, fridgeLayer, fridgeIcon, 'Community Fridge');
+        addMarkersFromCSV(donationData, donationLayer, donationIcon, 'Food Donation');
 
         const allMarkers: L.Layer[] = [...fridgeLayer.getLayers(), ...donationLayer.getLayers()];
         if (allMarkers.length > 0) {
@@ -106,13 +136,31 @@ export async function initializeMap(): Promise<void> {
         }
 
         const overlays: { [key: string]: L.LayerGroup } = {
-            "Fridge Locations": fridgeLayer,
-            "Donation Locations": donationLayer
+            "Community Fridge and Pantry Locations": fridgeLayer,
+            "Food Donation Sites": donationLayer
         };
 
         L.control.layers(undefined, overlays, { collapsed: false }).addTo(map);
+
+        setTimeout(() => {
+            const controlElement = document.querySelector('.leaflet-control-layers')
+            if (controlElement){
+                controlElement.setAttribute('role', 'group');
+                controlElement.setAttribute('aria-label', 'Map Layer Controls');
+
+                const inputs = controlElement.querySelectorAll('input[type="checkbox"]');
+                inputs.forEach((input, idx) => {
+                    input.setAttribute('aria-label', idx === 0 ? 'Show Community Fridge and Pantry Locations' : 'Show Food Donation Sites');
+                    }
+                )
+            }
+        }, 100)
+
+        announce('Map loaded. Use Tab to navigate between markers, Enter to open details, arrow keys to pan, plus and minus to zoom.')
+
     } catch (error) {
         console.error('Error loading CSV files:', error);
+        announce('Error loading map data. Please try again later.')
         throw error;
     }
 }
