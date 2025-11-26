@@ -20,6 +20,8 @@ coverage
 # Editor directories
 .vscode
 .idea
+.git
+.github
 
 # OS files
 .DS_Store

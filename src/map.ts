@@ -1,16 +1,15 @@
 import * as L from 'leaflet';
 import Papa from 'papaparse';
 
-interface MarkerData {
-  latitude: number;
-  longitude: number;
+export interface MarkerData {
   locationName: string;
   description?: string;
   street: string;
   city: string;
   state: string;
   zip: string;
-  icon: string;
+  latitude: number;
+  longitude: number;
 }
 
 const baseURL = import.meta.env.BASE_URL;
@@ -29,7 +28,7 @@ const donationIcon: L.Icon = L.icon({
   popupAnchor: [1, -34],
 });
 
-const loadCSV = async (url: string): Promise<MarkerData[]> => {
+export const loadCSV = async (url: string): Promise<MarkerData[]> => {
   const response: Response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to load ${url}: ${response.statusText}`);
@@ -48,7 +47,7 @@ const loadCSV = async (url: string): Promise<MarkerData[]> => {
   return result.data;
 };
 
-const announce = (message: string): void => {
+export const announce = (message: string): void => {
   const announcer = document.getElementById('announcements');
   if (announcer) {
     announcer.textContent = '';
@@ -72,7 +71,7 @@ const addMarkersFromCSV = (
     const lng: number = row.longitude;
     const name: string = row.locationName;
     const description: string = row.description || '';
-    const address: string = `${row.street}, ${row.city}, ${row.state} ${row.zip}`;
+    const address: string = `${row.street || ''}, ${row.city || ''}, ${row.state || ''} ${row.zip || ''}`;
 
     if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
       const marker: L.Marker = L.marker([lat, lng], {
@@ -81,8 +80,8 @@ const addMarkersFromCSV = (
       });
 
       let popupContent: string = '';
-      if (name) popupContent += `<strong>${name}</strong><br>`;
-      if (description) popupContent += description;
+      if (name) popupContent += `<strong>${name}</strong>`;
+      if (description) popupContent += `<br>${description}`;
       if (address) popupContent += `<br><small>${address}</small>`;
       if (popupContent) {
         marker.bindPopup(popupContent);
@@ -111,8 +110,8 @@ const addMarkersFromCSV = (
     } else {
       console.warn(`Invalid coordinates at row ${index + 1}:`, { lat, lng, row });
     }
-    announce(`${markersAdded} ${layerName} locations loaded`);
   });
+  announce(`${markersAdded} ${layerName} locations loaded`);
 };
 
 export const initializeMap = async (): Promise<void> => {
