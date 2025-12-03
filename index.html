@@ -60,6 +60,10 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       }
 
+      .loading.hidden {
+          display: none;
+      }
+
       .sr-only {
         position: absolute;
         width: 1px;
@@ -83,7 +87,7 @@
       aria-live="polite"
       aria-atomic="true"
     ></div>
-<!--    <div id="loading" class="loading" role="status" aria-live="polite">Loading map data...</div>-->
+    <div id="loading" class="loading" role="status" aria-live="polite">Loading map data...</div>
     <main>
       <h1 class="sr-only">Chattanooga Food Resource Location Map</h1>
       <div id="map" role="application" aria-label="Interactive food resource map"></div>

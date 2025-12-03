@@ -1,7 +1,7 @@
-locationName,description,street,city,state,zip,latitude,longitude,icon
-Chattanooga Free Store,Chattanooga Community Fridge,1701 Dodson Ave,Chattanooga,TN,37406,35.0558162633354,-85.2593163156054,ccf
-St. Andrews Center,Chattanooga Community Fridge,1918 Union Ave,Chattanooga,TN,37404,35.0319935750832,-85.2754452174544,ccf
-Ascension Lutheran,Hope Community Fridge,720 S. Germantown,Chattanooga,TN,37412,35.0102166465562,-85.2532472493404,hcf
-Carving Rock Kitchen (indoor),Hope Community Fridge,301 E. MLK Blvd,Chattanooga,TN,37403,35.0451558561874,-85.3051062953654,hcf
-Seed @ Alton Park,Hope Community Fridge,701 Hooker Road,Chattanooga,TN,37410,34.9937289218946,-85.3046834021134,hcf
-Clear Story Arts,Hope Community Fridge,1673 S Holtzclaw Ave,Chattanooga,TN,37404,35.0271813828178,-85.2899776774783,hcf
+locationName,description,street,city,state,zip,latitude,longitude
+Chattanooga Free Store,Outdoor,1701 Dodson Ave,Chattanooga,TN,37406,35.0558162633354,-85.2593163156054
+St. Andrews Center,Outdoor,1918 Union Ave,Chattanooga,TN,37404,35.0319935750832,-85.2754452174544
+Ascension Lutheran,Outdoor,720 S. Germantown,Chattanooga,TN,37412,35.0102166465562,-85.2532472493404
+Carving Rock Kitchen (indoor),Indoor,301 E. MLK Blvd,Chattanooga,TN,37403,35.0451558561874,-85.3051062953654
+Seed @ Alton Park,Indoor,701 Hooker Road,Chattanooga,TN,37410,34.9937289218946,-85.3046834021134
+Clear Story Arts,Outdoor,1673 S Holtzclaw Ave,Chattanooga,TN,37404,35.0271813828178,-85.2899776774783
