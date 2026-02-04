@@ -20,6 +20,7 @@ export interface SelectionState {
  */
 export interface FilterState extends SelectionState {
   searchQuery: string;
+  visibleLayers: Set<string>;
 }
 
 /**
@@ -43,7 +44,8 @@ export type StateListener = (state: FilterState) => void;
 export class StateManager {
   private state: FilterState = {
     selectedId: null,
-    searchQuery: ''
+    searchQuery: '',
+    visibleLayers: new Set(['Community Fridge', 'Food Donation'])
   };
   private listeners: StateListener[] = [];
 
@@ -90,6 +92,30 @@ export class StateManager {
   setSearchQuery(query: string): void {
     if (this.state.searchQuery !== query) {
       this.state.searchQuery = query;
+      this.notify();
+    }
+  }
+
+  /**
+   * Toggles a layer's visibility and notifies listeners if changed.
+   *
+   * Uses immutable pattern - creates new Set before mutating to prevent
+   * external reference issues. Only notifies when the Set actually changes.
+   *
+   * @param layerName - The layer name to toggle
+   * @param isVisible - Whether the layer should be visible
+   */
+  toggleLayer(layerName: string, isVisible: boolean): void {
+    const layers = new Set(this.state.visibleLayers);
+    if (isVisible) {
+      layers.add(layerName);
+    } else {
+      layers.delete(layerName);
+    }
+    // Only notify if Set actually changed
+    if (layers.size !== this.state.visibleLayers.size ||
+        ![...layers].every(l => this.state.visibleLayers.has(l))) {
+      this.state.visibleLayers = layers;
       this.notify();
     }
   }
