@@ -10,30 +10,30 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 2 of 4 (Card List & Bi-directional Sync)
-Plan: 2 of 3 in current phase
+Plan: 1 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-04T02:08:56Z - Completed 02-02-PLAN.md
+Last activity: 2026-02-04T02:11:24Z - Completed 02-01-EXECUTE (Card List UI)
 
-Progress: [██████████████░░] 66%
+Progress: [███████████░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
 - Total plans completed: 4
 - Average duration: 2 min
-- Total execution time: 0.09 hours
+- Total execution time: 0.11 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 | 3 | 3 | 2 min |
-| 2 | 1 | 3 | 1 min |
+| 2 | 1 | 3 | 4 min |
 | 3 | 0 | 2 | - |
 | 4 | 0 | 2 | - |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (1 min), 01-02 (1 min), 01-03 (3 min), 02-02 (1 min)
+- Last 5 plans: 01-01 (1 min), 01-02 (1 min), 01-03 (3 min), 02-01 (4 min)
 - Trend: Consistent fast execution
 
 *Updated after each plan completion*
@@ -61,12 +61,12 @@ Recent decisions affecting current work:
 - Test ARIA attributes via event listener verification (listens('add')) rather than DOM element inspection in unit tests
 - Unit tests should use real Leaflet instances, not mocks of Leaflet itself
 
-**02-02 (StateManager with Observer pattern):**
-- Observer pattern for state management - decouples markers from cards
-- Immutable state via spread operator prevents external mutation
-- No-op on same-value changes prevents unnecessary notifications
-- StateListener callback signature: (state: SelectionState) => void
-- subscribe() returns () => void unsubscribe function
+**02-01 (Card List UI with CSS Grid):**
+- CSS Grid with auto-fit columns (minmax 300px, 1fr) for responsive card layout
+- Map height reduced from 100vh to 50vh to make room for card list
+- initializeMap returns CSV data to avoid loading files twice
+- markerId uses empty string placeholder (will be populated in plan 02-03 with L.Util.stamp())
+- TypeScript type-only imports required when verbatimModuleSyntax is enabled
 
 ### Pending Todos
 
@@ -79,7 +79,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 02-02-PLAN.md - StateManager with Observer pattern
+Stopped at: Completed 02-01-EXECUTE (Card List UI)
 Resume file: None
 
 Config:
