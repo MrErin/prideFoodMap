@@ -92,12 +92,30 @@
     <main>
       <h1 class="sr-only">Chattanooga Food Resource Location Map</h1>
       <div id="map" role="application" aria-label="Interactive food resource map"></div>
+      <div class="search-container">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search locations..."
+          aria-label="Search locations"
+        />
+        <button
+          id="search-reset"
+          type="button"
+          class="hidden"
+          aria-label="Clear search"
+        >
+          Clear
+        </button>
+      </div>
       <div
         id="card-list"
         class="card-list"
         role="list"
         aria-label="Food locations list"
       ></div>
+      <div id="empty-state" class="hidden" role="status"></div>
+    </main>
     </main>
 
     <script src="/src/main.ts" type="module"></script>
