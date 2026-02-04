@@ -108,6 +108,7 @@ export function renderCards(
 /**
  * Updates card selection styling based on the selected marker ID.
  * Uses aria-selected attribute for accessibility and CSS class for visual styling.
+ * Auto-scrolls the selected card into view with motion preference detection.
  * @param selectedId - The ID of the selected marker, or null to clear all selections
  */
 export function updateCardSelection(selectedId: SelectionState['selectedId']): void {
@@ -121,6 +122,8 @@ export function updateCardSelection(selectedId: SelectionState['selectedId']): v
       if (markerId === selectedId) {
         card.setAttribute('aria-selected', 'true');
         card.classList.add('selected');
+        // Scroll the selected card into view
+        scrollToCard(card);
       } else {
         card.setAttribute('aria-selected', 'false');
         card.classList.remove('selected');
