@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 4 of 4 (Polish & Accessibility Enhancement)
-Plan: 0 of 2 in current phase
-Status: Ready to plan
-Last activity: 2026-02-04 — Phase 3 complete, verified, ready to begin Phase 4 planning
+Plan: 1 of 2 in current phase
+Status: In progress - Plan 04-01 complete
+Last activity: 2026-02-04 — Completed Auto-Scroll to Card on Marker Click
 
-Progress: [████████████████] 90%
+Progress: [████████████████] 95%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: 2 min
-- Total execution time: 0.32 hours
+- Total execution time: 0.37 hours
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [████████████████] 90%
 | 1 | 3 | 3 | 2 min |
 | 2 | 3 | 3 | 2 min |
 | 3 | 3 | 3 | 3 min |
-| 4 | 0 | 2 | - |
+| 4 | 1 | 2 | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (4 min), 02-02 (1 min), 02-03 (4 min), 03-01 (2 min), 03-02 (4 min), 03-03 (3 min)
+- Last 5 plans: 02-03 (4 min), 03-01 (2 min), 03-02 (4 min), 03-03 (3 min), 04-01 (3 min)
 - Trend: Consistent execution
 
 *Updated after each plan completion*
@@ -102,6 +102,12 @@ Recent decisions affecting current work:
 - AND logic for filter composition (both search AND layer must match for visibility)
 - Event listener cleanup pattern returning unregister function
 
+**04-01 (Auto-Scroll to Card on Marker Click):**
+- Use window.matchMedia('(prefers-reduced-motion: reduce)') to detect motion preference for accessibility
+- Use scrollIntoView with block: 'nearest' for minimal viewport disruption
+- Move keyboard focus to card after scroll for continued keyboard navigation
+- Focus styling (.card:focus) distinct from selection styling ([aria-selected='true'])
+
 ### Pending Todos
 
 None yet.
@@ -113,7 +119,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed Phase 3 (Search & Filter Integration) - all 3 plans complete, verified
+Stopped at: Completed Plan 04-01 (Auto-Scroll to Card on Marker Click)
 Resume file: None
 
 Config:
