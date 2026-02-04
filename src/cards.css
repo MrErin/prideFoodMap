@@ -79,3 +79,16 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Marker highlight styles (for plan 02-03) */
+.leaflet-marker-icon {
+  transition: filter 0.2s ease, transform 0.2s ease, outline 0.2s ease;
+}
+
+.leaflet-marker-icon.marker-selected {
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8));
+  transform: scale(1.1);
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
