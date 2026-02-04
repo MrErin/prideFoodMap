@@ -185,6 +185,8 @@ export function setupMarkerClickHandlers(stateManager: StateManager): () => void
 export interface InitializeMapResult {
   fridgeData: MarkerData[];
   donationData: MarkerData[];
+  fridgeMarkerIds: string[];
+  donationMarkerIds: string[];
 }
 
 export const initializeMap = async (): Promise<InitializeMapResult> => {
@@ -205,8 +207,8 @@ export const initializeMap = async (): Promise<InitializeMapResult> => {
       loadCSV(`${baseURL}data/donationPins.csv`),
     ]);
 
-    addMarkersFromCSV(fridgeData, fridgeLayer, fridgeIcon, 'Community Fridge');
-    addMarkersFromCSV(donationData, donationLayer, donationIcon, 'Food Donation');
+    const fridgeMarkerIds = addMarkersFromCSV(fridgeData, fridgeLayer, fridgeIcon, 'Community Fridge');
+    const donationMarkerIds = addMarkersFromCSV(donationData, donationLayer, donationIcon, 'Food Donation');
 
     const allMarkers: L.Layer[] = [...fridgeLayer.getLayers(), ...donationLayer.getLayers()];
     if (allMarkers.length > 0) {
@@ -246,7 +248,7 @@ export const initializeMap = async (): Promise<InitializeMapResult> => {
       'Map loaded. Use Tab to navigate between markers, Enter to open details, arrow keys to pan, plus and minus to zoom.'
     );
 
-    return { fridgeData, donationData };
+    return { fridgeData, donationData, fridgeMarkerIds, donationMarkerIds };
   } catch (error) {
     console.error('Error loading CSV files:', error);
     announce('Error loading map data. Please try again later.');
