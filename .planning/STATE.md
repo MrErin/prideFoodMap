@@ -10,30 +10,30 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 1 of 4 (Type Safety & Test Infrastructure)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-04 — Completed Plan 01-02: Event-driven DOM timing with Leaflet events
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-02-04 — Completed Plan 01-03: Unit tests for core map functions
 
-Progress: [███░░░░░░░░] 67%
+Progress: [██████████░░░░] 30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 1 min
-- Total execution time: 0.03 hours
+- Total plans completed: 3
+- Average duration: 2 min
+- Total execution time: 0.08 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 | 2 | 3 | 1 min |
-| 2 | 0 | 0 | - |
-| 3 | 0 | 0 | - |
-| 4 | 0 | 0 | - |
+| 1 | 3 | 3 | 2 min |
+| 2 | 0 | 3 | - |
+| 3 | 0 | 2 | - |
+| 4 | 0 | 2 | - |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (1 min), 01-02 (1 min)
+- Last 5 plans: 01-01 (1 min), 01-02 (1 min), 01-03 (3 min)
 - Trend: Consistent fast execution
 
 *Updated after each plan completion*
@@ -55,6 +55,12 @@ Recent decisions affecting current work:
 - Use requestAnimationFrame instead of setTimeout for ARIA announcement timing
 - Use vi.waitFor() instead of vi.advanceTimersByTime() for testing async DOM updates
 
+**01-03 (Unit tests for core functions):**
+- Export addMarkersFromCSV function for direct unit testing
+- Use requestAnimationFrame for layer control ARIA enhancement (L.Control doesn't extend Evented, so .on() is not available)
+- Test ARIA attributes via event listener verification (listens('add')) rather than DOM element inspection in unit tests
+- Unit tests should use real Leaflet instances, not mocks of Leaflet itself
+
 ### Pending Todos
 
 None yet.
@@ -66,5 +72,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 01-02 (Event-driven DOM timing), ready for Plan 01-03 (Unit tests for core functions)
+Stopped at: Completed Phase 1 (Type Safety & Test Infrastructure) - all 3 plans complete
 Resume file: None
