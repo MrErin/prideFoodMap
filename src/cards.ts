@@ -29,7 +29,13 @@ export function scrollToCard(card: HTMLElement): void {
 }
 
 /**
- * Creates a card element for a location.
+ * Creates a card element for a location with full ARIA attribute coverage.
+ *
+ * ARIA attributes set on the card element:
+ * - role="listitem" - Identifies the card as a list item
+ * - aria-selected="false" - Indicates selection state (updated via updateCardSelection)
+ * - tabindex="0" - Makes the card focusable via keyboard
+ *
  * @param cardData - The location data including marker ID and category
  * @returns HTMLElement representing the location card
  */
@@ -68,7 +74,11 @@ export function createCardElement(cardData: LocationCard): HTMLElement {
 }
 
 /**
- * Renders location cards to a container.
+ * Renders location cards to a container with ARIA labeling.
+ *
+ * Container ARIA attributes:
+ * - aria-label="Food locations list" - Set when container has role="list"
+ *
  * @param cards - Array of location cards to render
  * @param containerSelector - CSS selector for the container (default: '#card-list')
  */
@@ -107,8 +117,13 @@ export function renderCards(
 
 /**
  * Updates card selection styling based on the selected marker ID.
- * Uses aria-selected attribute for accessibility and CSS class for visual styling.
- * Auto-scrolls the selected card into view with motion preference detection.
+ *
+ * ARIA attributes updated:
+ * - aria-selected="true" - Set on the selected card
+ * - aria-selected="false" - Set on all non-selected cards
+ *
+ * Also updates CSS class for visual styling and scrolls the selected card into view.
+ *
  * @param selectedId - The ID of the selected marker, or null to clear all selections
  */
 export function updateCardSelection(selectedId: SelectionState['selectedId']): void {
@@ -140,6 +155,10 @@ export function updateCardSelection(selectedId: SelectionState['selectedId']): v
  * Combines search filtering with layer visibility filtering using AND logic:
  * a card is visible only if it matches BOTH the search query AND its category
  * is in the visibleLayers set.
+ *
+ * ARIA attributes updated:
+ * - aria-hidden="true" - Set on hidden cards
+ * - aria-hidden="false" - Set on visible cards
  *
  * @param cards - Array of card HTMLElements to filter
  * @param searchQuery - The search query string to match against
