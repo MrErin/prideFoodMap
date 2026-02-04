@@ -51,10 +51,9 @@ export const announce = (message: string): void => {
   const announcer = document.getElementById('announcements');
   if (announcer) {
     announcer.textContent = '';
-
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       announcer.textContent = message;
-    }, 100);
+    });
   }
 };
 
