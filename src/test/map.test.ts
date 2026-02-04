@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as L from 'leaflet';
-import { loadCSV, announce, addMarkersFromCSV, initializeMap, MarkerData } from '../map.ts';
+import { loadCSV, announce, addMarkersFromCSV, initializeMap } from '../map.ts';
+import type { MarkerData } from '../map.ts';
 
 // Type-safe Response mock helper
 const createMockResponse = (text: string, ok = true): Partial<Response> => ({
