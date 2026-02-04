@@ -5,7 +5,6 @@ import {
   highlightMarker,
   setupLayerEventListeners,
   announce,
-  closePopup,
 } from './map.ts';
 import { renderCards, updateCardSelection, filterCards } from './cards.ts';
 import { StateManager } from './stateManager.ts';
@@ -26,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     const { map, fridgeData, donationData, fridgeMarkerIds, donationMarkerIds } =
-      await initializeMap();
+      await initializeMap(stateManager);
 
     // Create location cards with category and markerId
     // markerId is now populated from addMarkersFromCSV return value using L.Util.stamp()
@@ -86,7 +85,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const escapeHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         stateManager.clearSelection();
-        closePopup();
       }
     };
     window.addEventListener('keydown', escapeHandler);
