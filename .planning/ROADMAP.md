@@ -12,7 +12,7 @@ The Pride Food Map enhancement journey progresses from technical foundation thro
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Type Safety & Test Infrastructure** - Establish properly typed testing patterns before complex feature work
+- [x] **Phase 1: Type Safety & Test Infrastructure** - Establish properly typed testing patterns before complex feature work
 - [ ] **Phase 2: Card List & Bi-directional Sync** - Build synchronized map-marker and card-list interface
 - [ ] **Phase 3: Search & Filter Integration** - Add real-time search and layer-based filtering
 - [ ] **Phase 4: Polish & Accessibility Enhancement** - Refine UX with auto-scroll, keyboard nav, and event-driven timing
@@ -22,6 +22,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 ### Phase 1: Type Safety & Test Infrastructure
 
 **Goal**: Tests use properly typed mocks without `any` types, and core functions have unit coverage.
+
+**Status**: ✓ Complete (2026-02-04)
 
 **Depends on**: Nothing (first phase)
 
@@ -37,9 +39,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Replace `as any` type assertions with properly typed Vitest mocks using `vi.spyOn()`
-- [ ] 01-02: Replace `setTimeout` DOM timing with event-driven patterns (MutationObserver, Leaflet `whenReady`)
-- [ ] 01-03: Add unit tests for `addMarkersFromCSV`, `initializeMap`, and `announce` functions
+- [x] 01-01: Replace `as any` type assertions with properly typed Vitest mocks using `vi.spyOn()`
+- [x] 01-02: Replace `setTimeout` DOM timing with event-driven patterns (MutationObserver, Leaflet `whenReady`)
+- [x] 01-03: Add unit tests for `addMarkersFromCSV`, `initializeMap`, and `announce` functions
 
 ### Phase 2: Card List & Bi-directional Sync
 
@@ -109,9 +111,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Type Safety & Test Infrastructure | 0/3 | Not started | - |
+| 1. Type Safety & Test Infrastructure | 3/3 | Complete | 2026-02-04 |
 | 2. Card List & Bi-directional Sync | 0/3 | Not started | - |
 | 3. Search & Filter Integration | 0/2 | Not started | - |
 | 4. Polish & Accessibility Enhancement | 0/2 | Not started | - |
 
-**Overall Progress:** 0/10 plans complete (0%)
+**Overall Progress:** 3/10 plans complete (30%)

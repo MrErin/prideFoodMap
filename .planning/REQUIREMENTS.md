@@ -9,11 +9,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Tech Debt & Testing
 
-- [ ] **DEBT-01**: Replace `as any` type assertions with properly typed Vitest mocks
-- [ ] **DEBT-02**: Replace `setTimeout` DOM timing with event-driven patterns (MutationObserver, Leaflet events)
-- [ ] **TEST-01**: Add unit tests for `addMarkersFromCSV` function (marker creation, coordinate validation)
-- [ ] **TEST-02**: Add unit tests for `initializeMap` function (map init, tile loading, layer controls)
-- [ ] **TEST-03**: Add unit tests for `announce` function (ARIA live region updates)
+- [x] **DEBT-01**: Replace `as any` type assertions with properly typed Vitest mocks
+- [x] **DEBT-02**: Replace `setTimeout` DOM timing with event-driven patterns (MutationObserver, Leaflet events)
+- [x] **TEST-01**: Add unit tests for `addMarkersFromCSV` function (marker creation, coordinate validation)
+- [x] **TEST-02**: Add unit tests for `initializeMap` function (map init, tile loading, layer controls)
+- [x] **TEST-03**: Add unit tests for `announce` function (ARIA live region updates)
 
 ### Card List UI
 
@@ -84,11 +84,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEBT-01 | Phase 1 | Pending |
-| DEBT-02 | Phase 1 | Pending |
-| TEST-01 | Phase 1 | Pending |
-| TEST-02 | Phase 1 | Pending |
-| TEST-03 | Phase 1 | Pending |
+| DEBT-01 | Phase 1 | Complete |
+| DEBT-02 | Phase 1 | Complete |
+| TEST-01 | Phase 1 | Complete |
+| TEST-02 | Phase 1 | Complete |
+| TEST-03 | Phase 1 | Complete |
 | CARD-01 | Phase 2 | Pending |
 | CARD-02 | Phase 2 | Pending |
 | CARD-03 | Phase 2 | Pending |
