@@ -5,14 +5,13 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** People can find food resources in Chattanooga TN quickly
-**Current focus:** Phase 4 - Polish & Accessibility Enhancement
+**Current focus:** Milestone v1.0 complete - ready for audit
 
 ## Current Position
 
-Phase: 4 of 4 (Polish & Accessibility Enhancement)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-02-04 — Completed Keyboard Navigation and Complete ARIA Coverage
+Phase: All 4 phases complete
+Status: Milestone complete, awaiting audit
+Last activity: 2026-02-04 — Phase 4 complete with manual verification
 
 Progress: [████████████████] 100%
 
@@ -115,6 +114,11 @@ Recent decisions affecting current work:
 - All ARIA attributes already present from prior phases, added JSDoc documentation
 - Search input and reset button have aria-label in index.html (from Phase 3)
 
+**04-01 FIX (Escape key focus management):**
+- When Escape clears selection, also blur the focused card to remove visible focus outline
+- scrollToCard(card) calls card.focus() for accessibility, but focus remains after clearSelection
+- Added explicit blur() call in updateCardSelection when selectedId is null
+
 ### Pending Todos
 
 None yet.
@@ -126,7 +130,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed Plan 04-02 (Keyboard Navigation and Complete ARIA Coverage) - Phase 4 complete
+Stopped at: All 4 phases complete, milestone v1.0 achieved
 Resume file: None
 
 Config:
