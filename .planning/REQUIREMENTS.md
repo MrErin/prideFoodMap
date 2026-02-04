@@ -17,18 +17,18 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Card List UI
 
-- [ ] **CARD-01**: Location cards displayed below map in scrollable list
-- [ ] **CARD-02**: Each card shows location name, full address, and category badge (fridge/donation, indoor/outdoor)
-- [ ] **CARD-03**: Cards sorted alphabetically by location name
-- [ ] **CARD-04**: All cards visible at once (no pagination)
-- [ ] **CARD-05**: Cards display on mobile-responsive layout (stacked below map on screens <768px)
+- [x] **CARD-01**: Location cards displayed below map in scrollable list
+- [x] **CARD-02**: Each card shows location name, full address, and category badge (fridge/donation, indoor/outdoor)
+- [x] **CARD-03**: Cards sorted alphabetically by location name
+- [x] **CARD-04**: All cards visible at once (no pagination)
+- [x] **CARD-05**: Cards display on mobile-responsive layout (stacked below map on screens <768px)
 
 ### Bi-directional Sync
 
-- [ ] **SYNC-01**: Clicking a card highlights corresponding map marker with border
-- [ ] **SYNC-02**: Clicking a map marker highlights corresponding card with border
-- [ ] **SYNC-03**: Only one item highlighted at a time (single selection)
-- [ ] **SYNC-04**: Highlight persists until another item is selected or user presses Escape
+- [x] **SYNC-01**: Clicking a card highlights corresponding map marker with border
+- [x] **SYNC-02**: Clicking a map marker highlights corresponding card with border
+- [x] **SYNC-03**: Only one item highlighted at a time (single selection)
+- [x] **SYNC-04**: Highlight persists until another item is selected or user presses Escape
 
 ### Search & Filter
 
@@ -89,15 +89,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TEST-01 | Phase 1 | Complete |
 | TEST-02 | Phase 1 | Complete |
 | TEST-03 | Phase 1 | Complete |
-| CARD-01 | Phase 2 | Pending |
-| CARD-02 | Phase 2 | Pending |
-| CARD-03 | Phase 2 | Pending |
-| CARD-04 | Phase 2 | Pending |
-| CARD-05 | Phase 2 | Pending |
-| SYNC-01 | Phase 2 | Pending |
-| SYNC-02 | Phase 2 | Pending |
-| SYNC-03 | Phase 2 | Pending |
-| SYNC-04 | Phase 2 | Pending |
+| CARD-01 | Phase 2 | Complete |
+| CARD-02 | Phase 2 | Complete |
+| CARD-03 | Phase 2 | Complete |
+| CARD-04 | Phase 2 | Complete |
+| CARD-05 | Phase 2 | Complete |
+| SYNC-01 | Phase 2 | Complete |
+| SYNC-02 | Phase 2 | Complete |
+| SYNC-03 | Phase 2 | Complete |
+| SYNC-04 | Phase 2 | Complete |
 | SRCH-01 | Phase 3 | Pending |
 | SRCH-02 | Phase 3 | Pending |
 | SRCH-03 | Phase 3 | Pending |
@@ -113,4 +113,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-03 after initial definition*
+*Last updated: 2026-02-03 after Phase 2 completion*
