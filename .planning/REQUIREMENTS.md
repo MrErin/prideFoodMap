@@ -32,10 +32,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Search & Filter
 
-- [ ] **SRCH-01**: Text search box filters cards by location name (real-time as user types)
-- [ ] **SRCH-02**: When map layer control toggles visibility, corresponding cards are hidden/shown
-- [ ] **SRCH-03**: Empty state message displays when search returns no results
-- [ ] **SRCH-04**: Clear/reset button appears when search is active
+- [x] **SRCH-01**: Text search box filters cards by location name (real-time as user types)
+- [x] **SRCH-02**: When map layer control toggles visibility, corresponding cards are hidden/shown
+- [x] **SRCH-03**: Empty state message displays when search returns no results
+- [x] **SRCH-04**: Clear/reset button appears when search is active
 
 ### Polish
 
@@ -98,10 +98,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SYNC-02 | Phase 2 | Complete |
 | SYNC-03 | Phase 2 | Complete |
 | SYNC-04 | Phase 2 | Complete |
-| SRCH-01 | Phase 3 | Pending |
-| SRCH-02 | Phase 3 | Pending |
-| SRCH-03 | Phase 3 | Pending |
-| SRCH-04 | Phase 3 | Pending |
+| SRCH-01 | Phase 3 | Complete |
+| SRCH-02 | Phase 3 | Complete |
+| SRCH-03 | Phase 3 | Complete |
+| SRCH-04 | Phase 3 | Complete |
 | POLI-01 | Phase 4 | Pending |
 | POLI-02 | Phase 4 | Pending |
 | POLI-03 | Phase 4 | Pending |
@@ -113,4 +113,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-03 after Phase 2 completion*
+*Last updated: 2026-02-04 after Phase 3 completion*
