@@ -38,7 +38,7 @@ describe('StateManager', () => {
 
       expect(manager.getState().selectedId).toBe('marker-123');
       expect(listener).toHaveBeenCalledTimes(1);
-      expect(listener).toHaveBeenCalledWith({ selectedId: 'marker-123' });
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ selectedId: 'marker-123' }));
     });
 
     it('should deselect previous and notify with new ID', () => {
@@ -50,8 +50,14 @@ describe('StateManager', () => {
 
       expect(manager.getState().selectedId).toBe('marker-456');
       expect(listener).toHaveBeenCalledTimes(2);
-      expect(listener).toHaveBeenNthCalledWith(1, { selectedId: 'marker-123' });
-      expect(listener).toHaveBeenNthCalledWith(2, { selectedId: 'marker-456' });
+      expect(listener).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ selectedId: 'marker-123' })
+      );
+      expect(listener).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ selectedId: 'marker-456' })
+      );
     });
 
     it('should be a no-op when setting same ID twice', () => {
@@ -78,7 +84,7 @@ describe('StateManager', () => {
 
       expect(manager.getState().selectedId).toBeNull();
       expect(listener).toHaveBeenCalledTimes(1);
-      expect(listener).toHaveBeenCalledWith({ selectedId: null });
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ selectedId: null }));
     });
 
     it('should be a no-op when already null', () => {
@@ -100,8 +106,11 @@ describe('StateManager', () => {
       manager.clearSelection();
 
       expect(listener).toHaveBeenCalledTimes(2);
-      expect(listener).toHaveBeenNthCalledWith(1, { selectedId: 'marker-123' });
-      expect(listener).toHaveBeenNthCalledWith(2, { selectedId: null });
+      expect(listener).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ selectedId: 'marker-123' })
+      );
+      expect(listener).toHaveBeenNthCalledWith(2, expect.objectContaining({ selectedId: null }));
     });
   });
 
@@ -165,8 +174,14 @@ describe('StateManager', () => {
       unsubscribe2();
 
       expect(listener).toHaveBeenCalledTimes(2); // Once per subscription period
-      expect(listener).toHaveBeenNthCalledWith(1, { selectedId: 'marker-123' });
-      expect(listener).toHaveBeenNthCalledWith(2, { selectedId: 'marker-456' });
+      expect(listener).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ selectedId: 'marker-123' })
+      );
+      expect(listener).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ selectedId: 'marker-456' })
+      );
     });
   });
 

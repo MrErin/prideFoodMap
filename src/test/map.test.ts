@@ -12,7 +12,7 @@ const createMockResponse = (text: string, ok = true): Partial<Response> => ({
   headers: new Headers(),
   redirected: false,
   url: '',
-  clone: () => ({} as Response),
+  clone: () => ({}) as Response,
   json: () => Promise.resolve({}),
   blob: () => Promise.resolve(new Blob()),
   formData: () => Promise.resolve(new FormData()),
@@ -25,11 +25,13 @@ describe('loadCSV', () => {
   let fetchSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(
-      async (_input: RequestInfo | URL, _init?: RequestInit): Promise<Response> => {
-        return createMockResponse('', true) as Response;
-      }
-    );
+    fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockImplementation(
+        async (_input: RequestInfo | URL, _init?: RequestInit): Promise<Response> => {
+          return createMockResponse('', true) as Response;
+        }
+      );
   });
 
   afterEach(() => {
@@ -369,7 +371,7 @@ describe('initializeMap', () => {
       headers: new Headers(),
       redirected: false,
       url: '',
-      clone: () => ({} as Response),
+      clone: () => ({}) as Response,
       json: () => Promise.resolve({}),
       blob: () => Promise.resolve(new Blob()),
       formData: () => Promise.resolve(new FormData()),
@@ -384,8 +386,9 @@ describe('initializeMap', () => {
     const mockDonationCSV = `latitude,longitude,locationName,description,street,city,state,zip
 35.0556,-85.2572,Donation Site,Food donation,456 Oak Ave,Chattanooga,TN,37403`;
 
-    fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(
-      async (input: RequestInfo | URL): Promise<Response> => {
+    fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockImplementation(async (input: RequestInfo | URL): Promise<Response> => {
         const url = typeof input === 'string' ? input : input.toString();
         if (url.includes('fridgePins.csv')) {
           return createMockResponse(mockFridgeCSV) as Response;
@@ -394,8 +397,7 @@ describe('initializeMap', () => {
           return createMockResponse(mockDonationCSV) as Response;
         }
         return createMockResponse('') as Response;
-      }
-    );
+      });
   });
 
   afterEach(() => {
@@ -465,7 +467,7 @@ describe('initializeMap', () => {
       headers: new Headers(),
       redirected: false,
       url: '',
-      clone: () => ({} as Response),
+      clone: () => ({}) as Response,
       json: () => Promise.resolve({}),
       blob: () => Promise.resolve(new Blob()),
       formData: () => Promise.resolve(new FormData()),
