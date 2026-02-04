@@ -144,6 +144,14 @@ export function updateCardSelection(selectedId: SelectionState['selectedId']): v
         card.classList.remove('selected');
       }
     });
+
+    // Clear focus from all cards when selection is cleared (Escape key)
+    if (selectedId === null) {
+      const focusedCard = document.activeElement as HTMLElement;
+      if (focusedCard?.classList.contains('card')) {
+        focusedCard.blur();
+      }
+    }
   });
 }
 
