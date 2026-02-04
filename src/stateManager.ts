@@ -25,7 +25,7 @@ export interface FilterState extends SelectionState {
 /**
  * Listener type for state changes
  */
-export type StateListener = (state: SelectionState) => void;
+export type StateListener = (state: FilterState) => void;
 
 /**
  * StateManager manages single-selection state with Observer pattern

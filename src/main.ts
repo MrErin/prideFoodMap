@@ -1,7 +1,9 @@
 import 'leaflet/dist/leaflet.css';
 import { initializeMap, setupMarkerClickHandlers, highlightMarker } from './map.ts';
-import { renderCards, updateCardSelection } from './cards.ts';
+import { renderCards, updateCardSelection, filterCards } from './cards.ts';
 import { StateManager } from './stateManager.ts';
+import { setupSearchInput } from './search.ts';
+import { createEmptyState } from './emptyState.ts';
 import type { MarkerData } from './map.ts';
 
 interface LocationCard extends MarkerData {
@@ -40,6 +42,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const allCards = [...fridgeCards, ...donationCards];
     renderCards(allCards);
 
+    // Create empty state element
+    createEmptyState('#card-list');
+
     // Setup card click handlers
     const cardContainer = document.querySelector<HTMLElement>('#card-list');
     if (cardContainer) {
@@ -65,10 +70,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     window.addEventListener('keydown', escapeHandler);
 
+    // Setup search input with debounced handler
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const searchReset = document.getElementById('search-reset') as HTMLElement;
+    if (searchInput && searchReset) {
+      setupSearchInput(searchInput, searchReset, stateManager);
+    }
+
     // Subscribe to state changes for bi-directional sync
     stateManager.subscribe((state) => {
       updateCardSelection(state.selectedId);
       highlightMarker(state.selectedId);
+    });
+
+    // Subscribe to search query changes for filtering
+    stateManager.subscribe((state) => {
+      const cards = document.querySelectorAll<HTMLElement>('.card');
+      filterCards(Array.from(cards), state.searchQuery);
     });
 
     if (loadingEl) {
