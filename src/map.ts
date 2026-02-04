@@ -18,21 +18,16 @@ const baseURL = import.meta.env.BASE_URL;
 // Module-level map for marker-card linking using L.Util.stamp() IDs
 const markerCardMap: Map<string, L.Marker> = new Map();
 
-// Module-level variable to store the map instance for popup control
-let mapInstance: L.Map | null = null;
-
 const fridgeIcon: L.Icon = L.icon({
   iconUrl: `${baseURL}icons/fridge.png`,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
 });
 
 const donationIcon: L.Icon = L.icon({
   iconUrl: `${baseURL}icons/donation.png`,
   iconSize: [32, 28],
   iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
 });
 
 export const loadCSV = async (url: string): Promise<MarkerData[]> => {
@@ -68,7 +63,8 @@ export const addMarkersFromCSV = (
   data: MarkerData[],
   layerGroup: L.LayerGroup,
   icon: L.Icon,
-  layerName: string
+  layerName: string,
+  stateManager: StateManager
 ): string[] => {
   let markersAdded = 0;
   const markerIds: string[] = [];
@@ -77,22 +73,12 @@ export const addMarkersFromCSV = (
     const lat: number = row.latitude;
     const lng: number = row.longitude;
     const name: string = row.locationName;
-    const description: string = row.description || '';
-    const address: string = `${row.street || ''}, ${row.city || ''}, ${row.state || ''} ${row.zip || ''}`;
 
     if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
       const marker: L.Marker = L.marker([lat, lng], {
         icon: icon,
         alt: `${name} ${layerName} location marker`,
       });
-
-      let popupContent: string = '';
-      if (name) popupContent += `<strong>${name}</strong>`;
-      if (description) popupContent += `<br>${description}`;
-      if (address) popupContent += `<br><small>${address}</small>`;
-      if (popupContent) {
-        marker.bindPopup(popupContent);
-      }
 
       marker.on('add', () => {
         const element = marker.getElement();
@@ -104,13 +90,11 @@ export const addMarkersFromCSV = (
           element.addEventListener('keydown', (e: KeyboardEvent) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              marker.openPopup();
+              const markerId = L.Util.stamp(marker).toString();
+              stateManager.setSelected(markerId);
             }
           });
         }
-      });
-      marker.on('popupopen', () => {
-        announce(`Showing details for ${name}`);
       });
 
       // Generate unique marker ID using L.Util.stamp() and store for linking
@@ -154,16 +138,6 @@ export function highlightMarker(markerId: string | null): void {
       }
     }
   });
-}
-
-/**
- * Closes all open popups on the map.
- * Used by Escape key handler to clear popup state when selection is cleared.
- */
-export function closePopup(): void {
-  if (mapInstance) {
-    mapInstance.closePopup();
-  }
 }
 
 /**
@@ -248,9 +222,10 @@ export interface InitializeMapResult {
   donationMarkerIds: string[];
 }
 
-export const initializeMap = async (): Promise<InitializeMapResult> => {
+export const initializeMap = async (
+  stateManager: StateManager
+): Promise<InitializeMapResult> => {
   const map: L.Map = L.map('map').setView([37.8, -96], 4); // Default center USA
-  mapInstance = map; // Store for later access
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution:
@@ -271,13 +246,15 @@ export const initializeMap = async (): Promise<InitializeMapResult> => {
       fridgeData,
       fridgeLayer,
       fridgeIcon,
-      'Community Fridge'
+      'Community Fridge',
+      stateManager
     );
     const donationMarkerIds = addMarkersFromCSV(
       donationData,
       donationLayer,
       donationIcon,
-      'Food Donation'
+      'Food Donation',
+      stateManager
     );
 
     const allMarkers: L.Layer[] = [...fridgeLayer.getLayers(), ...donationLayer.getLayers()];
