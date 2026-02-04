@@ -1,12 +1,37 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { loadCSV, announce } from '../map.ts';
 
+// Type-safe Response mock helper
+const createMockResponse = (text: string, ok = true): Partial<Response> => ({
+  ok,
+  status: ok ? 200 : 404,
+  statusText: ok ? 'OK' : 'Not Found',
+  text: () => Promise.resolve(text),
+  headers: new Headers(),
+  redirected: false,
+  url: '',
+  clone: () => ({} as Response),
+  json: () => Promise.resolve({}),
+  blob: () => Promise.resolve(new Blob()),
+  formData: () => Promise.resolve(new FormData()),
+  arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+  body: null,
+  bodyUsed: false,
+});
+
 describe('loadCSV', () => {
+  let fetchSpy: ReturnType<typeof vi.spyOn>;
+
   beforeEach(() => {
-    global.fetch = vi.fn();
+    fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(
+      async (_input: RequestInfo | URL, _init?: RequestInit): Promise<Response> => {
+        return createMockResponse('', true) as Response;
+      }
+    );
   });
 
   afterEach(() => {
+    fetchSpy.mockRestore();
     vi.restoreAllMocks();
   });
 
@@ -14,7 +39,7 @@ describe('loadCSV', () => {
     const mockCSV =
       'latitude,longitude,locationName,description\n40.7128,-74.0060,New York,Big Apple';
 
-    (global.fetch as any).mockResolvedValueOnce({ ok: true, text: () => Promise.resolve(mockCSV) });
+    fetchSpy.mockResolvedValueOnce(createMockResponse(mockCSV, true) as Response);
 
     const result = await loadCSV('/data/test.csv');
 
@@ -28,7 +53,7 @@ describe('loadCSV', () => {
   });
 
   it('should throw an error when the fetch fails', async () => {
-    (global.fetch as any).mockResolvedValueOnce({ ok: false, statusText: 'Not Found' });
+    fetchSpy.mockResolvedValueOnce(createMockResponse('', false) as Response);
 
     await expect(loadCSV('/data/missing.csv')).rejects.toThrow(
       'Failed to load /data/missing.csv: Not Found'
@@ -36,7 +61,7 @@ describe('loadCSV', () => {
   });
 
   it('should handle network errors', async () => {
-    (global.fetch as any).mockRejectedValueOnce(new Error('Network error'));
+    fetchSpy.mockRejectedValueOnce(new Error('Network error'));
 
     await expect(loadCSV('/data/test.csv')).rejects.toThrow('Network error');
   });
@@ -47,7 +72,7 @@ describe('loadCSV', () => {
     34.0522,-118.2437,Los Angeles,City of Angels
     41.8781,-87.6298,Chicago,Windy City`;
 
-    (global.fetch as any).mockResolvedValueOnce({ ok: true, text: () => mockCSV });
+    fetchSpy.mockResolvedValueOnce(createMockResponse(mockCSV, true) as Response);
 
     const result = await loadCSV('/data/test.csv');
 
@@ -59,7 +84,7 @@ describe('loadCSV', () => {
   it('should handle empty CSV', async () => {
     const mockCSV = 'latitude,longitude,locationName,description\\n';
 
-    (global.fetch as any).mockResolvedValueOnce({ ok: true, text: () => mockCSV });
+    fetchSpy.mockResolvedValueOnce(createMockResponse(mockCSV, true) as Response);
 
     const result = await loadCSV('/data/test.csv');
 
