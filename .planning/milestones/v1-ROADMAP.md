@@ -2,7 +2,7 @@
 
 **Status:** ✅ SHIPPED 2026-02-03
 **Phases:** 1-4
-**Total Plans:** 12
+**Total Plans:** 12 (100% complete)
 
 ## Overview
 
@@ -51,7 +51,7 @@ Plans:
 
 **Goal**: Users can view all locations in a card list below the map and click either cards or markers to highlight the corresponding item.
 
-**Status**: Complete (3/4 plans complete, 1 gap closure plan pending)
+**Status**: ✓ Complete (2026-02-04 - 4/4 plans including gap closure)
 
 **Depends on**: Phase 1 (test infrastructure ensures reliable development patterns)
 
@@ -65,14 +65,14 @@ Plans:
 4. Clicking a map marker highlights the corresponding card with a visible border
 5. Only one item is highlighted at a time; pressing Escape clears the selection
 
-**Plans**: 4 plans (3 completed + 1 gap closure)
+**Plans**: 4 plans (all complete including gap closure)
 
 Plans:
 
 - [x] 02-01: Create `cards.ts` module with card rendering, alphabetical sorting, and mobile-responsive layout
 - [x] 02-02: Implement `StateManager` class for bi-directional marker-card synchronization using `L.Util.stamp()` IDs (TDD)
 - [x] 02-03: Wire up click handlers for card-to-marker and marker-to-card highlighting with single-selection state
-- [ ] 02-04: Fix Escape key popup closing behavior (gap closure from UAT)
+- [x] 02-04: Fix Escape key popup closing behavior (gap closure from UAT)
 
 **Details**:
 
@@ -84,7 +84,7 @@ Plans:
 - Implemented L.Util.stamp() based marker-card linking for unique IDs
 - Added bi-directional click handlers for card-to-marker and marker-to-card sync
 - Implemented Escape key handler for clearing selections
-- Gap 02-04: Escape key does not close Leaflet popup when clearing selection
+- Gap 02-04: RESOLVED - Added closePopup() function and Escape key integration
 
 ### Phase 3: Search & Filter Integration
 
@@ -184,8 +184,7 @@ None
 - Incomplete keyboard navigation and ARIA coverage
 
 **Issues Pending:**
-
-- Escape key popup closing behavior (plan 02-04)
+None
 
 **Issues Deferred:**
 None
@@ -203,11 +202,11 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase                                 | Plans Complete | Status   | Completed  |
 | ------------------------------------- | -------------- | -------- | ---------- |
 | 1. Type Safety & Test Infrastructure  | 3/3            | Complete | 2026-02-04 |
-| 2. Card List & Bi-directional Sync    | 3/4            | Pending  | 2026-02-03 |
+| 2. Card List & Bi-directional Sync    | 4/4            | Complete | 2026-02-04 |
 | 3. Search & Filter Integration        | 3/3            | Complete | 2026-02-04 |
 | 4. Polish & Accessibility Enhancement | 2/2            | Complete | 2026-02-04 |
 
-**Overall Progress:** 11/12 plans complete (92%)
+**Overall Progress:** 12/12 plans complete (100%)
 
 ---
 
