@@ -1,4 +1,5 @@
 import type { MarkerData } from './map.ts';
+import type { SelectionState } from './stateManager.ts';
 
 interface LocationCard extends MarkerData {
   markerId: string;
@@ -80,4 +81,28 @@ export function renderCards(
   if (container.getAttribute('role') === 'list') {
     container.setAttribute('aria-label', 'Food locations list');
   }
+}
+
+/**
+ * Updates card selection styling based on the selected marker ID.
+ * Uses aria-selected attribute for accessibility and CSS class for visual styling.
+ * @param selectedId - The ID of the selected marker, or null to clear all selections
+ */
+export function updateCardSelection(selectedId: SelectionState['selectedId']): void {
+  requestAnimationFrame(() => {
+    const container = document.querySelector<HTMLElement>('#card-list');
+    if (!container) return;
+
+    const cards = container.querySelectorAll<HTMLElement>('.card');
+    cards.forEach((card) => {
+      const markerId = card.dataset.markerId;
+      if (markerId === selectedId) {
+        card.setAttribute('aria-selected', 'true');
+        card.classList.add('selected');
+      } else {
+        card.setAttribute('aria-selected', 'false');
+        card.classList.remove('selected');
+      }
+    });
+  });
 }
