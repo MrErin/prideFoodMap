@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as L from 'leaflet';
-import { loadCSV, announce, addMarkersFromCSV, MarkerData } from '../map.ts';
+import { loadCSV, announce, addMarkersFromCSV, initializeMap, MarkerData } from '../map.ts';
 
 // Type-safe Response mock helper
 const createMockResponse = (text: string, ok = true): Partial<Response> => ({
@@ -346,5 +346,138 @@ describe('addMarkersFromCSV', () => {
     addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
 
     expect(layerGroup.getLayers()).toHaveLength(2);
+  });
+});
+
+describe('initializeMap', () => {
+  let mapContainer: HTMLElement;
+  let fetchSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    // Create map container
+    mapContainer = document.createElement('div');
+    mapContainer.setAttribute('id', 'map');
+    document.body.appendChild(mapContainer);
+
+    // Mock fetch to avoid network requests
+    const createMockResponse = (text: string): Partial<Response> => ({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      text: () => Promise.resolve(text),
+      headers: new Headers(),
+      redirected: false,
+      url: '',
+      clone: () => ({} as Response),
+      json: () => Promise.resolve({}),
+      blob: () => Promise.resolve(new Blob()),
+      formData: () => Promise.resolve(new FormData()),
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+      body: null,
+      bodyUsed: false,
+    });
+
+    const mockFridgeCSV = `latitude,longitude,locationName,description,street,city,state,zip
+35.0456,-85.2672,Chattanooga Fridge,Community fridge,123 Main St,Chattanooga,TN,37402`;
+
+    const mockDonationCSV = `latitude,longitude,locationName,description,street,city,state,zip
+35.0556,-85.2572,Donation Site,Food donation,456 Oak Ave,Chattanooga,TN,37403`;
+
+    fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(
+      async (input: RequestInfo | URL): Promise<Response> => {
+        const url = typeof input === 'string' ? input : input.toString();
+        if (url.includes('fridgePins.csv')) {
+          return createMockResponse(mockFridgeCSV) as Response;
+        }
+        if (url.includes('donationPins.csv')) {
+          return createMockResponse(mockDonationCSV) as Response;
+        }
+        return createMockResponse('') as Response;
+      }
+    );
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
+    vi.restoreAllMocks();
+    if (mapContainer.parentNode) {
+      document.body.removeChild(mapContainer);
+    }
+  });
+
+  it('should initialize map with tile layer', async () => {
+    await expect(initializeMap()).resolves.not.toThrow();
+
+    const mapContainer = document.getElementById('map');
+    expect(mapContainer?.querySelector('.leaflet-map-pane')).toBeTruthy();
+  });
+
+  it('should create layer groups for fridges and donations', async () => {
+    await initializeMap();
+
+    const mapContainer = document.getElementById('map');
+    const leafletContainer = mapContainer?.querySelector('.leaflet-map-pane');
+    expect(leafletContainer).toBeTruthy();
+  });
+
+  it('should fit map bounds to markers', async () => {
+    await initializeMap();
+
+    const mapContainer = document.getElementById('map');
+    expect(mapContainer?.querySelector('.leaflet-marker-icon')).toBeTruthy();
+  });
+
+  it('should add layer control to map', async () => {
+    await initializeMap();
+
+    const controlElement = document.querySelector('.leaflet-control-layers');
+    expect(controlElement).toBeTruthy();
+  });
+
+  it('should add ARIA attributes to layer control', async () => {
+    await initializeMap();
+
+    await vi.waitFor(
+      () => {
+        const controlElement = document.querySelector('.leaflet-control-layers');
+        expect(controlElement?.getAttribute('role')).toBe('group');
+        expect(controlElement?.getAttribute('aria-label')).toBe('Map Layer Controls');
+      },
+      { timeout: 1000 }
+    );
+  });
+
+  it('should handle CSV loading errors gracefully', async () => {
+    fetchSpy.mockRestore();
+    fetchSpy = vi.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('Network error'));
+
+    await expect(initializeMap()).rejects.toThrow();
+  });
+
+  it('should handle empty CSV data', async () => {
+    fetchSpy.mockRestore();
+    const createEmptyResponse = (): Partial<Response> => ({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      text: () => Promise.resolve('latitude,longitude,locationName\n'),
+      headers: new Headers(),
+      redirected: false,
+      url: '',
+      clone: () => ({} as Response),
+      json: () => Promise.resolve({}),
+      blob: () => Promise.resolve(new Blob()),
+      formData: () => Promise.resolve(new FormData()),
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+      body: null,
+      bodyUsed: false,
+    });
+
+    fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(createEmptyResponse() as Response)
+      .mockResolvedValueOnce(createEmptyResponse() as Response);
+
+    await expect(initializeMap()).resolves.not.toThrow();
   });
 });
