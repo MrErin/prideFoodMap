@@ -45,15 +45,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Create empty state element
     createEmptyState('#card-list');
 
-    // Setup card click handlers
+    // Setup card click and keyboard handlers
     const cardContainer = document.querySelector<HTMLElement>('#card-list');
     if (cardContainer) {
       const cards = cardContainer.querySelectorAll<HTMLElement>('.card');
       cards.forEach((card) => {
         const markerId = card.dataset.markerId;
         if (markerId) {
+          // Click handler
           card.addEventListener('click', () => {
             stateManager.setSelected(markerId);
+          });
+
+          // Keyboard handler for Enter and Space key activation
+          card.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault(); // Prevent Space from scrolling page
+              stateManager.setSelected(markerId);
+            }
           });
         }
       });
