@@ -52,12 +52,27 @@ skipped: 0
 
 ## Gaps
 
-- truth: "When clicking a different card/marker after a popup is open, the popup closes and highlights move to the new selection. Alternatively, remove popup logic entirely since cards contain all information."
+- truth: "Remove all Leaflet popup logic since cards contain all relevant information"
   status: failed
   reason: "User reported: To reproduce: click on marker (popup opens, marker is highlighted, card is highlighted), click on different card. Expected: popup closes, highlights for marker and card move to new selection. Actual: popup remains open, highlights move correctly. User requested: remove all popup logic as it's redundant - cards contain all relevant information."
   severity: major
   test: 6
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Popup functionality is redundant with card list. Popups add complexity without value since cards display all location info."
+  artifacts:
+    - path: "src/map.ts"
+      issue: "Lines 21-22, 89-95, 104-109, 112-114, 160-167: All popup-related code including bindPopup, openPopup, popupopen handler, and closePopup() function"
+    - path: "src/main.ts"
+      issue: "Lines 8, 86-91: closePopup import and Escape key handler call"
+    - path: "src/test/map.test.ts"
+      issue: "Lines 154, 179-200, 290, 314-315: Popup-related unit tests"
+    - path: "e2e/map.spec.ts"
+      issue: "Lines 91-100: E2E test for popup opening"
+  missing:
+    - "Remove popup anchor from icon definitions"
+    - "Remove popup content creation and bindPopup() calls"
+    - "Remove keyboard handler that opens popup on Enter/Space"
+    - "Remove popupopen event handler and ARIA announcement"
+    - "Remove closePopup() function and its usage"
+    - "Remove 2 popup tests (1 unit, 1 E2E)"
+    - "Update 2 unit tests to remove popup assertions"
+  debug_session: ".planning/debug/popup-removal-scope.md"
