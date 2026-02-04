@@ -1,9 +1,9 @@
 ---
-status: complete
+status: diagnosed
 phase: 02-card-list-bi-directional-sync
 source: 02-01-SUMMARY.md, 02-02-SUMMARY.md, 02-03-SUMMARY.md
 started: 2026-02-03T00:00:00Z
-updated: 2026-02-03T12:30:00Z
+updated: 2026-02-03T12:45:00Z
 ---
 
 ## Current Test
@@ -58,7 +58,13 @@ skipped: 0
   reason: "User reported: the escape key clears the selections sometimes. But if the user clicks on the map marker and the pop-up is open, then presses escape, the drop shadow remains on the marker and the pop up remains open. The highlight border disappears on both the marker and the card though."
   severity: major
   test: 6
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "The Escape key handler calls stateManager.clearSelection() which updates state and removes marker-selected CSS class, but does NOT close the Leaflet popup. highlightMarker() function only manipulates CSS classes, never calls map.closePopup() or marker.closePopup(). The popup drop shadow remains visible."
+  artifacts:
+    - path: "src/map.ts"
+      issue: "Lines 133-154: highlightMarker() function only manipulates CSS classes, missing popup closing"
+    - path: "src/main.ts"
+      issue: "Lines 99-114: State subscription listener doesn't close popups when selection is cleared"
+  missing:
+    - "Add map.closePopup() call when selection is cleared via Escape key"
+    - "Store map instance in scope accessible to Escape handler or create closeAllPopups() function in map.ts"
+  debug_session: ".planning/debug/escape-key-popup-issue.md"
