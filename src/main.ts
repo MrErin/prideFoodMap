@@ -1,5 +1,5 @@
 import 'leaflet/dist/leaflet.css';
-import { initializeMap, setupMarkerClickHandlers, highlightMarker, setupLayerEventListeners } from './map.ts';
+import { initializeMap, setupMarkerClickHandlers, highlightMarker, setupLayerEventListeners, announce } from './map.ts';
 import { renderCards, updateCardSelection, filterCards } from './cards.ts';
 import { StateManager } from './stateManager.ts';
 import { setupSearchInput } from './search.ts';
@@ -93,6 +93,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     stateManager.subscribe((state) => {
       updateCardSelection(state.selectedId);
       highlightMarker(state.selectedId);
+
+      // Announce selection to screen readers
+      if (state.selectedId) {
+        const selectedCard = document.querySelector<HTMLElement>(`[data-marker-id="${state.selectedId}"]`);
+        const cardName = selectedCard?.querySelector('.card-name')?.textContent ?? '';
+        if (cardName) {
+          announce(`Selected ${cardName}`);
+        }
+      }
     });
 
     // Subscribe to search query changes for filtering
