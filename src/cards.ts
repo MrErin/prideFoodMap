@@ -53,8 +53,7 @@ export function createCardElement(cardData: LocationCard): HTMLElement {
 
   const address = document.createElement('p');
   address.className = 'card-address';
-  const fullAddress = `${cardData.street}, ${cardData.city}, ${cardData.state} ${cardData.zip}`;
-  address.textContent = fullAddress;
+  address.textContent = `${cardData.street}, ${cardData.city}, ${cardData.state} ${cardData.zip}`;
 
   const badges = document.createElement('div');
   badges.className = 'card-badges';
