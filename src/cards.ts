@@ -8,6 +8,27 @@ interface LocationCard extends MarkerData {
 }
 
 /**
+ * Scrolls a card into view with accessibility considerations.
+ * Respects user's prefers-reduced-motion setting for smooth vs instant scroll.
+ * Moves keyboard focus to the card for continued keyboard navigation.
+ *
+ * @param card - The card HTMLElement to scroll into view
+ */
+export function scrollToCard(card: HTMLElement): void {
+  // Check user's motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Scroll with appropriate behavior (smooth unless reduced motion is preferred)
+  card.scrollIntoView({
+    behavior: prefersReducedMotion ? 'auto' : 'smooth',
+    block: 'nearest', // Minimal viewport disruption
+  });
+
+  // Move keyboard focus to the card (critical for accessibility)
+  card.focus();
+}
+
+/**
  * Creates a card element for a location.
  * @param cardData - The location data including marker ID and category
  * @returns HTMLElement representing the location card
