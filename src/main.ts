@@ -5,6 +5,7 @@ import {
   highlightMarker,
   setupLayerEventListeners,
   announce,
+  closePopup,
 } from './map.ts';
 import { renderCards, updateCardSelection, filterCards } from './cards.ts';
 import { StateManager } from './stateManager.ts';
@@ -85,6 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const escapeHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         stateManager.clearSelection();
+        closePopup();
       }
     };
     window.addEventListener('keydown', escapeHandler);
