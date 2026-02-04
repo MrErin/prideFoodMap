@@ -14,6 +14,9 @@ export interface SelectionState {
 
 /**
  * Filter state extending SelectionState with search query
+ *
+ * Extends the base SelectionState to include search functionality.
+ * Used for filtering markers and cards based on user search input.
  */
 export interface FilterState extends SelectionState {
   searchQuery: string;
@@ -77,8 +80,11 @@ export class StateManager {
   }
 
   /**
-   * Set the search query
-   * Notifies listeners only if query actually changes
+   * Sets the search query and notifies listeners if value changed.
+   *
+   * Follows the same change-detection pattern as setSelected -
+   * only triggers notification when the searchQuery value actually changes.
+   *
    * @param query - The new search query string
    */
   setSearchQuery(query: string): void {
