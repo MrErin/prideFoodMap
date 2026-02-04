@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { loadCSV, announce } from '../map.ts';
+import * as L from 'leaflet';
+import { loadCSV, announce, addMarkersFromCSV, MarkerData } from '../map.ts';
 
 // Type-safe Response mock helper
 const createMockResponse = (text: string, ok = true): Partial<Response> => ({
@@ -133,5 +134,217 @@ describe('announce', () => {
     expect(() => announce('Test')).not.toThrow();
 
     document.body.appendChild(announcerElement);
+  });
+});
+
+describe('addMarkersFromCSV', () => {
+  let layerGroup: L.LayerGroup;
+  let icon: L.Icon;
+
+  beforeEach(() => {
+    // Create real Leaflet instances - no mocking needed
+    layerGroup = L.layerGroup();
+    icon = L.icon({
+      iconUrl: 'test.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+    });
+  });
+
+  it('should create markers from valid CSV data', () => {
+    const data: MarkerData[] = [
+      {
+        latitude: 40.7128,
+        longitude: -74.006,
+        locationName: 'Test Location',
+        description: 'Test Description',
+        street: '123 Main St',
+        city: 'New York',
+        state: 'NY',
+        zip: '10001',
+      },
+    ];
+
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+
+    expect(layerGroup.getLayers()).toHaveLength(1);
+    const marker = layerGroup.getLayers()[0] as L.Marker;
+    expect(marker.getLatLng()).toEqual({ lat: 40.7128, lng: -74.006 });
+  });
+
+  it('should create markers with popup content', () => {
+    const data: MarkerData[] = [
+      {
+        latitude: 40.7128,
+        longitude: -74.006,
+        locationName: 'Test Location',
+        description: 'Test Description',
+        street: '123 Main St',
+        city: 'New York',
+        state: 'NY',
+        zip: '10001',
+      },
+    ];
+
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+
+    const marker = layerGroup.getLayers()[0] as L.Marker;
+    const popup = marker.getPopup();
+    expect(popup).toBeTruthy();
+    expect(popup?.getContent()).toContain('Test Location');
+    expect(popup?.getContent()).toContain('123 Main St');
+  });
+
+  it('should skip invalid coordinates (NaN)', () => {
+    const data: MarkerData[] = [
+      {
+        latitude: NaN,
+        longitude: -74.006,
+        locationName: 'Invalid Location',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
+    ];
+
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+
+    expect(layerGroup.getLayers()).toHaveLength(0);
+  });
+
+  it('should skip zero coordinates', () => {
+    const data: MarkerData[] = [
+      {
+        latitude: 0,
+        longitude: 0,
+        locationName: 'Zero Coordinates',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
+    ];
+
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+
+    expect(layerGroup.getLayers()).toHaveLength(0);
+  });
+
+  it('should handle multiple valid markers', () => {
+    const data: MarkerData[] = [
+      {
+        latitude: 40.7128,
+        longitude: -74.006,
+        locationName: 'New York',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
+      {
+        latitude: 34.0522,
+        longitude: -118.2437,
+        locationName: 'Los Angeles',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
+      {
+        latitude: 41.8781,
+        longitude: -87.6298,
+        locationName: 'Chicago',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
+    ];
+
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+
+    expect(layerGroup.getLayers()).toHaveLength(3);
+  });
+
+  it('should handle markers with missing optional description', () => {
+    const data: MarkerData[] = [
+      {
+        latitude: 40.7128,
+        longitude: -74.006,
+        locationName: 'Test Location',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
+    ];
+
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+
+    const marker = layerGroup.getLayers()[0] as L.Marker;
+    expect(marker.getPopup()).toBeTruthy();
+  });
+
+  it('should add ARIA attributes to marker elements', () => {
+    const data: MarkerData[] = [
+      {
+        latitude: 40.7128,
+        longitude: -74.006,
+        locationName: 'Test Location',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
+    ];
+
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+
+    const marker = layerGroup.getLayers()[0] as L.Marker;
+
+    // Verify the marker has the 'add' event listener registered
+    // The event listener adds ARIA attributes when the marker is added to DOM
+    expect(marker.listens('add')).toBe(true);
+
+    // Verify the marker has popupopen event listener for announcements
+    expect(marker.listens('popupopen')).toBe(true);
+  });
+
+  it('should filter out mix of valid and invalid coordinates', () => {
+    const data: MarkerData[] = [
+      {
+        latitude: 40.7128,
+        longitude: -74.006,
+        locationName: 'Valid',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
+      {
+        latitude: NaN,
+        longitude: -74.006,
+        locationName: 'Invalid',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
+      {
+        latitude: 34.0522,
+        longitude: -118.2437,
+        locationName: 'Also Valid',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
+    ];
+
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+
+    expect(layerGroup.getLayers()).toHaveLength(2);
   });
 });
