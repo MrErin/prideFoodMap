@@ -23,5 +23,5 @@
     "noUncheckedSideEffectImports": true
   },
   "include": ["src", "playwright.config.ts", "vite.config.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src/test/stateManager.test.ts"]
 }

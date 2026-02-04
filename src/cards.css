@@ -1,0 +1,159 @@
+/* Card list container with responsive CSS Grid layout */
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+/* Card base styles */
+.card {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  background: white;
+}
+
+/* Card hover state */
+.card:hover {
+  border-color: #9ca3af;
+}
+
+/* Card focus state (keyboard navigation) - distinct from selection */
+.card:focus {
+  outline: 3px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Selected card state (for plan 02-03) */
+.card[aria-selected='true'] {
+  border-color: #3b82f6;
+  border-width: 3px;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Card name */
+.card-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+/* Card address */
+.card-address {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+/* Card badges container */
+.card-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Badge base styles */
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Community Fridge badge */
+.badge-fridge {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* Food Donation badge */
+.badge-donation {
+  background: #fce7f3;
+  color: #9f1239;
+}
+
+/* Mobile breakpoint - stack cards vertically */
+@media (max-width: 768px) {
+  .card-list {
+    max-height: 40vh;
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Marker highlight styles (for plan 02-03) */
+.leaflet-marker-icon {
+  transition:
+    filter 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.leaflet-marker-icon.marker-selected {
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8));
+  transform: scale(1.1);
+  /* Use box-shadow instead of outline since overflow:clip on marker icon clips outline */
+  box-shadow: 0 0 0 3px #3b82f6, 0 0 0 5px rgba(59, 130, 246, 0.3);
+}
+
+/* Search container styles */
+.search-container {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  align-items: center;
+}
+
+/* Search input */
+#search-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+#search-input:focus {
+  outline: 3px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Search reset button */
+#search-reset {
+  padding: 0.5rem 1rem;
+  background: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+#search-reset:hover {
+  background: #4b5563;
+}
+
+#search-reset.hidden {
+  display: none;
+}
+
+/* Empty state */
+#empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+#empty-state.hidden {
+  display: none;
+}
+
+/* Hidden card (for search filtering) */
+.card.hidden {
+  display: none;
+}
