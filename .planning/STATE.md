@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 3 of 4 (Search & Filter Integration)
-Plan: 1 of 2 in current phase
+Plan: 2 of 2 in current phase
 Status: In progress
-Last activity: 2026-02-04 — Completed 03-01 (FilterState Foundation)
+Last activity: 2026-02-04 — Completed 03-02 (Text Search with Debounce)
 
-Progress: [███████████████░] 65%
+Progress: [████████████████] 70%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 2 min
-- Total execution time: 0.20 hours
+- Total execution time: 0.27 hours
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [███████████████░] 65%
 |-------|-------|-------|----------|
 | 1 | 3 | 3 | 2 min |
 | 2 | 3 | 3 | 2 min |
-| 3 | 1 | 2 | 2 min |
+| 3 | 2 | 2 | 3 min |
 | 4 | 0 | 2 | - |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (3 min), 02-01 (4 min), 02-02 (1 min), 02-03 (4 min), 03-01 (2 min)
+- Last 5 plans: 01-03 (3 min), 02-01 (4 min), 02-02 (1 min), 02-03 (4 min), 03-01 (2 min), 03-02 (4 min)
 - Trend: Consistent execution
 
 *Updated after each plan completion*
@@ -87,6 +87,14 @@ Recent decisions affecting current work:
 - setSearchQuery method follows change-detection notification pattern (same as setSelected)
 - StateManager uses FilterState as state type, exports FilterState for other modules
 
+**03-02 (Text Search with Debounce):**
+- Custom debounce implementation instead of external library (standard pattern, no dependencies)
+- Set aria-live="polite" instead of "assertive" to avoid interrupting screen readers
+- Only set aria-live when showing empty state (remove when hiding to prevent stale announcements)
+- Updated StateListener type from SelectionState to FilterState (enables searchQuery access in subscribers)
+- Use CSS .hidden class for filtering instead of DOM removal (maintains event listeners)
+- toLocaleLowerCase() for case-insensitive matching with international character support
+
 ### Pending Todos
 
 None yet.
@@ -98,7 +106,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 03-01 (FilterState Foundation)
+Stopped at: Completed 03-02 (Text Search with Debounce)
 Resume file: None
 
 Config:
