@@ -228,6 +228,7 @@ export function setupLayerEventListeners(map: L.Map, stateManager: StateManager)
 }
 
 export interface InitializeMapResult {
+  map: L.Map;
   fridgeData: MarkerData[];
   donationData: MarkerData[];
   fridgeMarkerIds: string[];
@@ -293,7 +294,7 @@ export const initializeMap = async (): Promise<InitializeMapResult> => {
       'Map loaded. Use Tab to navigate between markers, Enter to open details, arrow keys to pan, plus and minus to zoom.'
     );
 
-    return { fridgeData, donationData, fridgeMarkerIds, donationMarkerIds };
+    return { map, fridgeData, donationData, fridgeMarkerIds, donationMarkerIds };
   } catch (error) {
     console.error('Error loading CSV files:', error);
     announce('Error loading map data. Please try again later.');

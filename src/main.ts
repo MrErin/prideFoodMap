@@ -1,5 +1,5 @@
 import 'leaflet/dist/leaflet.css';
-import { initializeMap, setupMarkerClickHandlers, highlightMarker } from './map.ts';
+import { initializeMap, setupMarkerClickHandlers, highlightMarker, setupLayerEventListeners } from './map.ts';
 import { renderCards, updateCardSelection, filterCards } from './cards.ts';
 import { StateManager } from './stateManager.ts';
 import { setupSearchInput } from './search.ts';
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loadingEl = document.getElementById('loading');
 
   try {
-    const { fridgeData, donationData, fridgeMarkerIds, donationMarkerIds } = await initializeMap();
+    const { map, fridgeData, donationData, fridgeMarkerIds, donationMarkerIds } = await initializeMap();
 
     // Create location cards with category and markerId
     // markerId is now populated from addMarkersFromCSV return value using L.Util.stamp()
@@ -62,6 +62,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Setup marker click handlers
     setupMarkerClickHandlers(stateManager);
 
+    // Setup layer event listeners for visibility tracking
+    setupLayerEventListeners(map, stateManager);
+
     // Escape key listener to clear selection
     const escapeHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -86,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Subscribe to search query changes for filtering
     stateManager.subscribe((state) => {
       const cards = document.querySelectorAll<HTMLElement>('.card');
-      filterCards(Array.from(cards), state.searchQuery);
+      filterCards(Array.from(cards), state.searchQuery, state.visibleLayers);
     });
 
     if (loadingEl) {

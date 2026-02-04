@@ -109,27 +109,37 @@ export function updateCardSelection(selectedId: SelectionState['selectedId']): v
 }
 
 /**
- * Filters cards based on search query.
+ * Filters cards based on search query and visible layer set.
  * Uses CSS class toggling (.hidden) instead of DOM removal
  * to maintain event listeners and state.
  *
+ * Combines search filtering with layer visibility filtering using AND logic:
+ * a card is visible only if it matches BOTH the search query AND its category
+ * is in the visibleLayers set.
+ *
  * @param cards - Array of card HTMLElements to filter
  * @param searchQuery - The search query string to match against
+ * @param visibleLayers - Set of currently visible layer categories
  *
  * @example
  * ```typescript
  * const cards = document.querySelectorAll<HTMLElement>('.card');
- * filterCards(Array.from(cards), 'fridge');
+ * const visibleLayers = new Set(['Community Fridge', 'Food Donation']);
+ * filterCards(Array.from(cards), 'fridge', visibleLayers);
  * ```
  */
-export function filterCards(cards: HTMLElement[], searchQuery: string): void {
+export function filterCards(cards: HTMLElement[], searchQuery: string, visibleLayers: Set<string>): void {
   const query = searchQuery.toLocaleLowerCase().trim();
 
   cards.forEach((card) => {
     const name = card.querySelector('.card-name')?.textContent ?? '';
-    const matches = name.toLocaleLowerCase().includes(query);
+    const category = card.querySelector('.badge')?.textContent ?? '';
 
-    if (matches) {
+    const matchesSearch = name.toLocaleLowerCase().includes(query);
+    const matchesLayer = visibleLayers.has(category);
+
+    // Card is visible only if BOTH search AND layer filters pass (AND logic)
+    if (matchesSearch && matchesLayer) {
       card.classList.remove('hidden');
       card.setAttribute('aria-hidden', 'false');
     } else {
