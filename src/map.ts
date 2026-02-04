@@ -18,6 +18,9 @@ const baseURL = import.meta.env.BASE_URL;
 // Module-level map for marker-card linking using L.Util.stamp() IDs
 const markerCardMap: Map<string, L.Marker> = new Map();
 
+// Module-level variable to store the map instance for popup control
+let mapInstance: L.Map | null = null;
+
 const fridgeIcon: L.Icon = L.icon({
   iconUrl: `${baseURL}icons/fridge.png`,
   iconSize: [25, 41],
@@ -154,6 +157,16 @@ export function highlightMarker(markerId: string | null): void {
 }
 
 /**
+ * Closes all open popups on the map.
+ * Used by Escape key handler to clear popup state when selection is cleared.
+ */
+export function closePopup(): void {
+  if (mapInstance) {
+    mapInstance.closePopup();
+  }
+}
+
+/**
  * Sets up click handlers on all markers to update selection state via StateManager.
  * @param stateManager - The StateManager instance to notify of selection changes
  * @returns Cleanup function that removes all click handlers
@@ -237,6 +250,7 @@ export interface InitializeMapResult {
 
 export const initializeMap = async (): Promise<InitializeMapResult> => {
   const map: L.Map = L.map('map').setView([37.8, -96], 4); // Default center USA
+  mapInstance = map; // Store for later access
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution:
