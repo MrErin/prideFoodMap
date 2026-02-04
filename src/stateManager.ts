@@ -1,0 +1,92 @@
+/**
+ * StateManager - Observer pattern state management for single-selection state
+ *
+ * Provides a single source of truth for selection state between map markers
+ * and DOM cards. Decouples marker and card logic through subscribe/notify pattern.
+ */
+
+/**
+ * Selection state shape
+ */
+export interface SelectionState {
+  selectedId: string | null;
+}
+
+/**
+ * Listener type for state changes
+ */
+export type StateListener = (state: SelectionState) => void;
+
+/**
+ * StateManager manages single-selection state with Observer pattern
+ *
+ * @example
+ * ```typescript
+ * const manager = new StateManager();
+ * const unsubscribe = manager.subscribe((state) => {
+ *   console.log('Selected:', state.selectedId);
+ * });
+ * manager.setSelected('marker-123');
+ * unsubscribe();
+ * ```
+ */
+export class StateManager {
+  private state: SelectionState = { selectedId: null };
+  private listeners: StateListener[] = [];
+
+  /**
+   * Get current state as immutable snapshot
+   * @returns Copy of current state
+   */
+  getState(): SelectionState {
+    // Return new object to prevent external mutation
+    return { ...this.state };
+  }
+
+  /**
+   * Set the selected item ID
+   * Notifies listeners only if ID actually changes
+   * @param id - The ID to select
+   */
+  setSelected(id: string): void {
+    if (this.state.selectedId !== id) {
+      this.state.selectedId = id;
+      this.notify();
+    }
+  }
+
+  /**
+   * Clear the current selection
+   * Notifies listeners only if something was selected
+   */
+  clearSelection(): void {
+    if (this.state.selectedId !== null) {
+      this.state.selectedId = null;
+      this.notify();
+    }
+  }
+
+  /**
+   * Subscribe to state changes
+   * @param listener - Callback function to receive state updates
+   * @returns Unsubscribe function
+   */
+  subscribe(listener: StateListener): () => void {
+    this.listeners.push(listener);
+
+    // Return unsubscribe function
+    return () => {
+      this.listeners = this.listeners.filter((l) => l !== listener);
+    };
+  }
+
+  /**
+   * Notify all listeners of state change
+   */
+  private notify(): void {
+    const stateSnapshot = this.getState();
+    this.listeners.forEach((listener) => {
+      listener(stateSnapshot);
+    });
+  }
+}
