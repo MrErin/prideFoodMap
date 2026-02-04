@@ -9,11 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 
 ## Current Position
 
-Phase: Not started (v2 planning phase)
-Status: Ready to plan next milestone
-Last activity: 2026-02-04 — v1 milestone fully complete (all 12 plans including gap closure)
+Phase: Phase 2 - Card List Bi-directional Sync (Gap Closure)
+Plan: 05 of 05 (Popup Removal - UAT fix)
+Status: Phase complete - gap closure done
+Last activity: 2026-02-04 — Removed all popup logic, markers now only highlight cards
 
-Progress: [████████████████] 100% (v1 complete - all 12 plans)
+Progress: [████████████████] 100% (Phase 2 complete - all 5 plans including gap closure)
 
 ## v1 Milestone Summary
 
@@ -72,6 +73,7 @@ All decisions logged in PROJECT.md Key Decisions table with outcomes.
 - CSS Grid with auto-fit for responsive layouts
 - scrollIntoView with prefers-reduced-motion detection
 - FilterState extends SelectionState (backward compatibility)
+- StateManager.setSelected() for marker keyboard activation (replaces popup pattern)
 
 ### Pending Todos
 
@@ -89,7 +91,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: v1 milestone 100% complete (Phase 2 gap closure 02-04 done)
+Stopped at: Completed 02-05-PLAN.md (Popup Removal - UAT gap closure)
 Resume file: None
 
 Config:
