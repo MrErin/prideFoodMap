@@ -23,6 +23,12 @@
   border-color: #9ca3af;
 }
 
+/* Card focus state (keyboard navigation) - distinct from selection */
+.card:focus {
+  outline: 3px solid #007bff;
+  outline-offset: 2px;
+}
+
 /* Selected card state (for plan 02-03) */
 .card[aria-selected='true'] {
   border-color: #3b82f6;
