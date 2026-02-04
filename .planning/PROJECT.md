@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Interactive map showing food resources (community fridges and donation sites) in Chattanooga, TN, maintained by the Chattanooga Pride Food Coalition. Users can view locations on a map, filter by type, and access location details.
+Interactive map showing food resources (community fridges and donation sites) in Chattanooga, TN, maintained by the Chattanooga Pride Food Coalition. Users can view locations on a map, see a synchronized card list below, filter by type and name, and access location details through both map markers and cards.
 
 ## Core Value
 
@@ -19,21 +19,26 @@ People can find food resources in Chattanooga TN quickly.
 - ✓ Popups show location details on click — existing
 - ✓ Accessibility features (ARIA announcements, skip link, keyboard navigation) — existing
 - ✓ Custom marker icons (fridge, donation) — existing
+- ✓ Type-safe test mocks (vi.spyOn) with no `as any` patterns — v1
+- ✓ Event-driven DOM timing (requestAnimationFrame, Leaflet events) — v1
+- ✓ Unit tests for addMarkersFromCSV, initializeMap, and announce functions — v1
+- ✓ Location card list below map with scrollable list — v1
+- ✓ Cards show name, address, and category badges (fridge/donation) — v1
+- ✓ Cards sorted alphabetically by location name — v1
+- ✓ Mobile-responsive layout (cards stacked on <768px) — v1
+- ✓ Bi-directional sync: click card highlights marker, click marker highlights card — v1
+- ✓ Single selection state with Escape key to deselect — v1
+- ✓ Real-time search filters cards by location name (300ms debounce) — v1
+- ✓ Layer control toggles card visibility (AND logic with search) — v1
+- ✓ Empty state message with aria-live announcements — v1
+- ✓ Clear/reset button for search — v1
+- ✓ Auto-scroll to card on marker click with prefers-reduced-motion support — v1
+- ✓ Keyboard navigation (Tab/Enter/Escape) on cards — v1
+- ✓ Complete ARIA coverage on all interactive elements — v1
 
 ### Active
 
-- [ ] Fix TypeScript `any` type usage in test mocks
-- [ ] Fix DOM timing race conditions (setTimeout → event-driven)
-- [ ] Add unit tests for addMarkersFromCSV function
-- [ ] Add unit tests for initializeMap function
-- [ ] Add unit tests for accessibility announcements
-- [ ] Add location card list below map (all locations, scrollable)
-- [ ] Cards show location name, address, type/category badges
-- [ ] Cards sorted alphabetically by location name
-- [ ] Click card → border highlight on corresponding marker
-- [ ] Click marker → border highlight on corresponding card
-- [ ] Cards filter when map layer control changes
-- [ ] Search box to filter cards by location name
+(No active requirements — all v1 requirements shipped)
 
 ### Out of Scope
 
@@ -46,23 +51,28 @@ People can find food resources in Chattanooga TN quickly.
 
 ## Context
 
-**Existing codebase state:**
+**Current codebase state:**
 - Working map application deployed to GitHub Pages (https://mrerin.github.io/prideFoodMap/)
 - ~32 total markers across 2 CSV files
+- ~1,793 LOC TypeScript/JS/CSS
 - Vanilla TypeScript with Leaflet.js, no framework
-- Vitest for unit tests, Playwright for E2E tests
+- Vitest for unit tests (23/23 passing), Playwright for E2E tests
 - Prettier for code formatting
 
-**Outstanding concerns to address:**
-- TypeScript `any` types in test mocks reduce type safety (src/test/map.test.ts)
-- DOM timing uses setTimeout which creates race conditions (src/map.ts lines 153-167)
-- Missing test coverage for marker creation, map initialization, accessibility
+**v1 milestone shipped:**
+- Type-safe test infrastructure with vi.spyOn() patterns
+- Card list UI with CSS Grid responsive layout
+- StateManager with Observer pattern for bi-directional sync
+- Real-time search with debounce and empty state
+- Layer-based filtering with AND logic
+- Auto-scroll with prefers-reduced-motion detection
+- Complete keyboard navigation and ARIA coverage
 
-**New feature context:**
-- Cards will be added below existing map (new DOM element)
-- Search input will filter card list independently
-- Bi-directional linking requires tracking marker-card relationships
-- Layer control already exists; need to hook into its events
+**Next milestone goals:**
+- Gather user feedback on v1 features
+- Consider distance-based sorting
+- Consider "search this area" viewport filtering
+- Consider status badges (Open/Closed) with hours data
 
 ## Constraints
 
@@ -71,16 +81,22 @@ People can find food resources in Chattanooga TN quickly.
 - **No framework**: Vanilla TypeScript only — no React, Vue, etc.
 - **Testing**: Vitest for unit tests, Playwright for E2E — existing patterns
 - **Accessibility**: Must maintain ARIA live regions and keyboard navigation
-- **Deployment`: Existing CI/CD via GitHub Actions — must not break
+- **Deployment**: Existing CI/CD via GitHub Actions — must not break
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Border highlight for emphasis | Cleaner than background color, works with existing design | — Pending |
-| Alphabetical card ordering | Predictable for users, easy to implement | — Pending |
-| All cards visible at once | Current dataset is small (~32 items), scrolling is sufficient | — Pending |
-| Search filters cards only | Simpler UX than filtering both cards and map simultaneously | — Pending |
+| Border highlight for emphasis | Cleaner than background color, works with existing design | ✓ Good |
+| Alphabetical card ordering | Predictable for users, easy to implement | ✓ Good |
+| All cards visible at once | Current dataset is small (~32 items), scrolling is sufficient | ✓ Good |
+| Search filters cards only | Simpler UX than filtering both cards and map simultaneously | ✓ Good |
+| Reduce map height to 50vh | Make room for card list display below map | ✓ Good |
+| Extend SelectionState via FilterState | Backward compatibility for existing code | ✓ Good |
+| Use scrollIntoView with block: 'nearest' | Minimal viewport disruption when scrolling | ✓ Good |
+| 300ms debounce for search | Prevents excessive DOM updates while feeling responsive | ✓ Good |
+| StateManager Observer pattern | Single source of truth for selection state | ✓ Good |
+| L.Util.stamp() for marker IDs | Unique ID generation without additional libraries | ✓ Good |
 
 ---
-*Last updated: 2026-02-03 after initialization*
+*Last updated: 2026-02-03 after v1 milestone completion*

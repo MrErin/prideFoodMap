@@ -5,22 +5,43 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** People can find food resources in Chattanooga TN quickly
-**Current focus:** Milestone v1.0 complete - ready for audit
+**Current focus:** Planning next milestone (v2)
 
 ## Current Position
 
-Phase: All 4 phases complete
-Status: Milestone complete, awaiting audit
-Last activity: 2026-02-04 — Phase 4 complete with manual verification
+Phase: Not started (v2 planning phase)
+Status: Ready to plan next milestone
+Last activity: 2026-02-03 — v1 milestone complete
 
-Progress: [████████████████] 100%
+Progress: [████████████████] 100% (v1)
+
+## v1 Milestone Summary
+
+**Shipped:** 2026-02-03
+**Phases:** 4 phases, 11 plans
+**Duration:** ~71 days (2025-11-24 to 2026-02-03)
+
+**Delivered:**
+- Type-safe test infrastructure (vi.spyOn, no `as any`)
+- Card list UI with CSS Grid responsive layout
+- StateManager with Observer pattern for bi-directional sync
+- Real-time search with 300ms debounce
+- Layer-based filtering with AND logic
+- Auto-scroll to card with prefers-reduced-motion support
+- Complete keyboard navigation and ARIA coverage
+
+**Stats:**
+- 33 files changed, 4,655 insertions, 69 deletions
+- ~1,793 LOC TypeScript/JS/CSS
+- 23/23 unit tests passing
+- All 20 v1 requirements satisfied
 
 ## Performance Metrics
 
 **Velocity:**
 - Total plans completed: 11
-- Average duration: 2 min
-- Total execution time: 0.40 hours
+- Average duration: 2.5 min
+- Total execution time: ~0.4 hours
 
 **By Phase:**
 
@@ -31,106 +52,39 @@ Progress: [████████████████] 100%
 | 3 | 3 | 3 | 3 min |
 | 4 | 2 | 2 | 3 min |
 
-**Recent Trend:**
-- Last 5 plans: 02-03 (4 min), 03-01 (2 min), 03-02 (4 min), 03-03 (3 min), 04-01 (3 min), 04-02 (5 min)
-- Trend: Consistent execution
-
-*Updated after each plan completion*
+*Updated after v1 milestone completion*
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+All decisions logged in PROJECT.md Key Decisions table with outcomes.
 
-**01-01 (Type-safe fetch mocks):**
-- Use createMockResponse helper function to encapsulate Response mock typing
-- Store fetchSpy in variable for explicit mockRestore() in afterEach
-- Prefix unused callback parameters with underscore to satisfy TypeScript
-
-**01-02 (Event-driven DOM timing):**
-- Use Leaflet's built-in 'add' event instead of setTimeout for layer control DOM detection
-- Use requestAnimationFrame instead of setTimeout for ARIA announcement timing
-- Use vi.waitFor() instead of vi.advanceTimersByTime() for testing async DOM updates
-
-**01-03 (Unit tests for core functions):**
-- Export addMarkersFromCSV function for direct unit testing
-- Use requestAnimationFrame for layer control ARIA enhancement (L.Control doesn't extend Evented, so .on() is not available)
-- Test ARIA attributes via event listener verification (listens('add')) rather than DOM element inspection in unit tests
-- Unit tests should use real Leaflet instances, not mocks of Leaflet itself
-
-**02-01 (Card List UI with CSS Grid):**
-- CSS Grid with auto-fit columns (minmax 300px, 1fr)) for responsive card layout
-- Map height reduced from 100vh to 50vh to make room for card list
-- initializeMap returns CSV data to avoid loading files twice
-- markerId uses empty string placeholder (will be populated in plan 02-03 with L.Util.stamp())
-- TypeScript type-only imports required when verbatimModuleSyntax is enabled
-
-**02-02 (StateManager for single-selection state):**
-- Observer pattern with subscribe/notify for decoupled state management
-- StateManager class with getState, setSelected, clearSelection, subscribe methods
-- Immutable state snapshots returned via {...this.state} spread
-- Only notifies listeners when selectedId actually changes
-
-**02-03 (Bi-directional Marker-Card Sync):**
-- Use array index mapping to link marker IDs from addMarkersFromCSV to cards
-- CSS class 'marker-selected' for markers, aria-selected attribute for cards
-- StateManager.subscribe() for bi-directional state synchronization
-- requestAnimationFrame for smooth visual updates and DOM timing
-- L.Util.stamp() for unique marker IDs linking markers to cards
-
-**03-01 (FilterState Foundation):**
-- Extend SelectionState via FilterState interface rather than modifying existing (backward compatibility)
-- FilterState adds searchQuery field to SelectionState
-- setSearchQuery method follows change-detection notification pattern (same as setSelected)
-- StateManager uses FilterState as state type, exports FilterState for other modules
-
-**03-02 (Text Search with Debounce):**
-- Custom debounce implementation instead of external library (standard pattern, no dependencies)
-- Set aria-live="polite" instead of "assertive" to avoid interrupting screen readers
-- Only set aria-live when showing empty state (remove when hiding to prevent stale announcements)
-- Updated StateListener type from SelectionState to FilterState (enables searchQuery access in subscribers)
-- Use CSS .hidden class for filtering instead of DOM removal (maintains event listeners)
-- toLocaleLowerCase() for case-insensitive matching with international character support
-
-**03-03 (Layer Filtering Integration):**
-- Use Set<string> for visibleLayers (O(1) lookup performance vs array.includes O(n))
-- Create new Set before mutation (immutable pattern prevents external reference issues)
-- Layer name mapping in map.ts (separates Leaflet overlay names from card categories)
-- AND logic for filter composition (both search AND layer must match for visibility)
-- Event listener cleanup pattern returning unregister function
-
-**04-01 (Auto-Scroll to Card on Marker Click):**
-- Use window.matchMedia('(prefers-reduced-motion: reduce)') to detect motion preference for accessibility
-- Use scrollIntoView with block: 'nearest' for minimal viewport disruption
-- Move keyboard focus to card after scroll for continued keyboard navigation
-- Focus styling (.card:focus) distinct from selection styling ([aria-selected='true'])
-
-**04-02 (Keyboard Navigation and Complete ARIA Coverage):**
-- Add keydown event listeners to cards for Enter/Space key activation (same callback as click)
-- Prevent default on Space key to avoid page scroll while allowing card activation
-- Use announce() function from map.ts in state manager subscribe for screen reader announcements
-- All ARIA attributes already present from prior phases, added JSDoc documentation
-- Search input and reset button have aria-label in index.html (from Phase 3)
-
-**04-01 FIX (Escape key focus management):**
-- When Escape clears selection, also blur the focused card to remove visible focus outline
-- scrollToCard(card) calls card.focus() for accessibility, but focus remains after clearSelection
-- Added explicit blur() call in updateCardSelection when selectedId is null
+**Key patterns established:**
+- vi.spyOn() for type-safe test mocking
+- requestAnimationFrame for DOM timing
+- Observer pattern (StateManager) for single-source-of-truth state
+- L.Util.stamp() for unique ID generation
+- CSS Grid with auto-fit for responsive layouts
+- scrollIntoView with prefers-reduced-motion detection
+- FilterState extends SelectionState (backward compatibility)
 
 ### Pending Todos
 
-None yet.
+**Next milestone goals:**
+- Gather user feedback on v1 features
+- Consider distance-based sorting
+- Consider "search this area" viewport filtering
+- Consider status badges (Open/Closed) with hours data
 
 ### Blockers/Concerns
 
-None yet.
+None.
 
 ## Session Continuity
 
-Last session: 2026-02-04
-Stopped at: All 4 phases complete, milestone v1.0 achieved
+Last session: 2026-02-03
+Stopped at: v1 milestone complete, archived
 Resume file: None
 
 Config:

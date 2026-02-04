@@ -1,3 +1,13 @@
+# Requirements Archive: v1 Pride Food Map MVP
+
+**Archived:** 2026-02-03
+**Status:** ✅ SHIPPED
+
+This is the archived requirements specification for v1.
+For current requirements, see `.planning/REQUIREMENTS.md` (created for next milestone).
+
+---
+
 # Requirements: Pride Food Map
 
 **Defined:** 2026-02-03
@@ -39,9 +49,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Polish
 
-- [ ] **POLI-01**: When marker clicked, card list auto-scrolls to corresponding card
-- [ ] **POLI-02**: Keyboard navigation works on cards (Tab to navigate, Enter to select, Escape to deselect)
-- [ ] **POLI-03**: All interactive elements have proper ARIA attributes (aria-selected, aria-live for announcements)
+- [x] **POLI-01**: When marker clicked, card list auto-scrolls to corresponding card
+- [x] **POLI-02**: Keyboard navigation works on cards (Tab to navigate, Enter to select, Escape to deselect)
+- [x] **POLI-03**: All interactive elements have proper ARIA attributes (aria-selected, aria-live for announcements)
 
 ## v2 Requirements
 
@@ -102,9 +112,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SRCH-02 | Phase 3 | Complete |
 | SRCH-03 | Phase 3 | Complete |
 | SRCH-04 | Phase 3 | Complete |
-| POLI-01 | Phase 4 | Pending |
-| POLI-02 | Phase 4 | Pending |
-| POLI-03 | Phase 4 | Pending |
+| POLI-01 | Phase 4 | Complete |
+| POLI-02 | Phase 4 | Complete |
+| POLI-03 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 20 total
@@ -112,5 +122,24 @@ Which phases cover which requirements. Updated during roadmap creation.
 - Unmapped: 0 ✓
 
 ---
+
+## Milestone Summary
+
+**Shipped:** 20 of 20 v1 requirements (100%)
+**Adjusted:** 0 requirements (all implemented as specified)
+**Dropped:** 0 requirements
+
+**Outcomes:**
+- Type-safe test infrastructure established with vi.spyOn() patterns
+- Card list UI with CSS Grid responsive layout and alphabetical sorting
+- Bi-directional marker-card synchronization via StateManager Observer pattern
+- Real-time search with 300ms debounce and empty state announcements
+- Layer-based filtering with AND logic for combined search + layer filters
+- Auto-scroll to card with prefers-reduced-motion accessibility support
+- Complete keyboard navigation (Tab/Enter/Escape) and ARIA attribute coverage
+
+---
+
 *Requirements defined: 2026-02-03*
 *Last updated: 2026-02-04 after Phase 3 completion*
+*Archived: 2026-02-03 as part of v1 milestone completion*
