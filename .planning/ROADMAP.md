@@ -81,11 +81,12 @@ Plans:
 3. Empty state message displays when search or layer filtering returns no results
 4. Clear/reset button appears when search is active to restore full card list
 
-**Plans**: 2 plans
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 03-01: Implement real-time text search with empty state messaging and clear/reset button
-- [ ] 03-02: Connect layer control changes to card visibility with proper event listener cleanup
+- [ ] 03-01: Extend StateManager with FilterState foundation (searchQuery field and setSearchQuery method)
+- [ ] 03-02: Implement real-time text search with empty state messaging and clear/reset button
+- [ ] 03-03: Connect layer control changes to card visibility with proper event listener cleanup
 
 ### Phase 4: Polish & Accessibility Enhancement
 
