@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as L from 'leaflet';
 import { loadCSV, announce, addMarkersFromCSV, initializeMap } from '../map.ts';
 import type { MarkerData } from '../map.ts';
+import { StateManager } from '../stateManager.ts';
 
 // Type-safe Response mock helper
 const createMockResponse = (text: string, ok = true): Partial<Response> => ({
@@ -143,6 +144,7 @@ describe('announce', () => {
 describe('addMarkersFromCSV', () => {
   let layerGroup: L.LayerGroup;
   let icon: L.Icon;
+  let stateManager: StateManager;
 
   beforeEach(() => {
     // Create real Leaflet instances - no mocking needed
@@ -151,8 +153,9 @@ describe('addMarkersFromCSV', () => {
       iconUrl: 'test.png',
       iconSize: [25, 41],
       iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
     });
+    // Create a real StateManager instance for testing
+    stateManager = new StateManager();
   });
 
   it('should create markers from valid CSV data', () => {
@@ -169,34 +172,11 @@ describe('addMarkersFromCSV', () => {
       },
     ];
 
-    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
 
     expect(layerGroup.getLayers()).toHaveLength(1);
     const marker = layerGroup.getLayers()[0] as L.Marker;
     expect(marker.getLatLng()).toEqual({ lat: 40.7128, lng: -74.006 });
-  });
-
-  it('should create markers with popup content', () => {
-    const data: MarkerData[] = [
-      {
-        latitude: 40.7128,
-        longitude: -74.006,
-        locationName: 'Test Location',
-        description: 'Test Description',
-        street: '123 Main St',
-        city: 'New York',
-        state: 'NY',
-        zip: '10001',
-      },
-    ];
-
-    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
-
-    const marker = layerGroup.getLayers()[0] as L.Marker;
-    const popup = marker.getPopup();
-    expect(popup).toBeTruthy();
-    expect(popup?.getContent()).toContain('Test Location');
-    expect(popup?.getContent()).toContain('123 Main St');
   });
 
   it('should skip invalid coordinates (NaN)', () => {
@@ -212,7 +192,7 @@ describe('addMarkersFromCSV', () => {
       },
     ];
 
-    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
 
     expect(layerGroup.getLayers()).toHaveLength(0);
   });
@@ -230,7 +210,7 @@ describe('addMarkersFromCSV', () => {
       },
     ];
 
-    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
 
     expect(layerGroup.getLayers()).toHaveLength(0);
   });
@@ -266,7 +246,7 @@ describe('addMarkersFromCSV', () => {
       },
     ];
 
-    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
 
     expect(layerGroup.getLayers()).toHaveLength(3);
   });
@@ -284,10 +264,9 @@ describe('addMarkersFromCSV', () => {
       },
     ];
 
-    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
 
-    const marker = layerGroup.getLayers()[0] as L.Marker;
-    expect(marker.getPopup()).toBeTruthy();
+    expect(layerGroup.getLayers()).toHaveLength(1);
   });
 
   it('should add ARIA attributes to marker elements', () => {
@@ -303,16 +282,13 @@ describe('addMarkersFromCSV', () => {
       },
     ];
 
-    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
 
     const marker = layerGroup.getLayers()[0] as L.Marker;
 
     // Verify the marker has the 'add' event listener registered
     // The event listener adds ARIA attributes when the marker is added to DOM
     expect(marker.listens('add')).toBe(true);
-
-    // Verify the marker has popupopen event listener for announcements
-    expect(marker.listens('popupopen')).toBe(true);
   });
 
   it('should filter out mix of valid and invalid coordinates', () => {
@@ -346,7 +322,7 @@ describe('addMarkersFromCSV', () => {
       },
     ];
 
-    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer');
+    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
 
     expect(layerGroup.getLayers()).toHaveLength(2);
   });
@@ -355,12 +331,16 @@ describe('addMarkersFromCSV', () => {
 describe('initializeMap', () => {
   let mapContainer: HTMLElement;
   let fetchSpy: ReturnType<typeof vi.spyOn>;
+  let stateManager: StateManager;
 
   beforeEach(() => {
     // Create map container
     mapContainer = document.createElement('div');
     mapContainer.setAttribute('id', 'map');
     document.body.appendChild(mapContainer);
+
+    // Create StateManager instance for testing
+    stateManager = new StateManager();
 
     // Mock fetch to avoid network requests
     const createMockResponse = (text: string): Partial<Response> => ({
@@ -409,14 +389,14 @@ describe('initializeMap', () => {
   });
 
   it('should initialize map with tile layer', async () => {
-    await expect(initializeMap()).resolves.not.toThrow();
+    await expect(initializeMap(stateManager)).resolves.not.toThrow();
 
     const mapContainer = document.getElementById('map');
     expect(mapContainer?.querySelector('.leaflet-map-pane')).toBeTruthy();
   });
 
   it('should create layer groups for fridges and donations', async () => {
-    await initializeMap();
+    await initializeMap(stateManager);
 
     const mapContainer = document.getElementById('map');
     const leafletContainer = mapContainer?.querySelector('.leaflet-map-pane');
@@ -424,21 +404,21 @@ describe('initializeMap', () => {
   });
 
   it('should fit map bounds to markers', async () => {
-    await initializeMap();
+    await initializeMap(stateManager);
 
     const mapContainer = document.getElementById('map');
     expect(mapContainer?.querySelector('.leaflet-marker-icon')).toBeTruthy();
   });
 
   it('should add layer control to map', async () => {
-    await initializeMap();
+    await initializeMap(stateManager);
 
     const controlElement = document.querySelector('.leaflet-control-layers');
     expect(controlElement).toBeTruthy();
   });
 
   it('should add ARIA attributes to layer control', async () => {
-    await initializeMap();
+    await initializeMap(stateManager);
 
     await vi.waitFor(
       () => {
@@ -454,7 +434,7 @@ describe('initializeMap', () => {
     fetchSpy.mockRestore();
     fetchSpy = vi.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('Network error'));
 
-    await expect(initializeMap()).rejects.toThrow();
+    await expect(initializeMap(stateManager)).rejects.toThrow();
   });
 
   it('should handle empty CSV data', async () => {
@@ -481,6 +461,6 @@ describe('initializeMap', () => {
       .mockResolvedValueOnce(createEmptyResponse() as Response)
       .mockResolvedValueOnce(createEmptyResponse() as Response);
 
-    await expect(initializeMap()).resolves.not.toThrow();
+    await expect(initializeMap(stateManager)).resolves.not.toThrow();
   });
 });
