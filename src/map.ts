@@ -147,23 +147,23 @@ export const initializeMap = async (): Promise<void> => {
       'Food Donation Sites': donationLayer,
     };
 
-    L.control.layers(undefined, overlays, { collapsed: false }).addTo(map);
+    const layersControl = L.control.layers(undefined, overlays, { collapsed: false })
+      .addTo(map)
+      .on('add', () => {
+        const controlElement = document.querySelector('.leaflet-control-layers');
+        if (controlElement) {
+          controlElement.setAttribute('role', 'group');
+          controlElement.setAttribute('aria-label', 'Map Layer Controls');
 
-    setTimeout(() => {
-      const controlElement = document.querySelector('.leaflet-control-layers');
-      if (controlElement) {
-        controlElement.setAttribute('role', 'group');
-        controlElement.setAttribute('aria-label', 'Map Layer Controls');
-
-        const inputs = controlElement.querySelectorAll('input[type="checkbox"]');
-        inputs.forEach((input, idx) => {
-          input.setAttribute(
-            'aria-label',
-            idx === 0 ? 'Show Community Fridge and Pantry Locations' : 'Show Food Donation Sites'
-          );
-        });
-      }
-    }, 100);
+          const inputs = controlElement.querySelectorAll('input[type="checkbox"]');
+          inputs.forEach((input, idx) => {
+            input.setAttribute(
+              'aria-label',
+              idx === 0 ? 'Show Community Fridge and Pantry Locations' : 'Show Food Donation Sites'
+            );
+          });
+        }
+      });
 
     announce(
       'Map loaded. Use Tab to navigate between markers, Enter to open details, arrow keys to pan, plus and minus to zoom.'
