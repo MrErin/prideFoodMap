@@ -57,7 +57,7 @@ export const announce = (message: string): void => {
   }
 };
 
-const addMarkersFromCSV = (
+export const addMarkersFromCSV = (
   data: MarkerData[],
   layerGroup: L.LayerGroup,
   icon: L.Icon,
