@@ -94,6 +94,8 @@ Plans:
 
 **Goal**: Users experience smooth interactions with auto-scroll, keyboard navigation, and reliable DOM timing.
 
+**Status:** Ready to execute
+
 **Depends on**: Phase 3 (polish features depend on working search/filter)
 
 **Requirements**: POLI-01, POLI-02, POLI-03
@@ -106,8 +108,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: Implement auto-scroll to card on marker click with smooth scroll behavior
-- [ ] 04-02: Add keyboard navigation and complete ARIA attribute coverage for all interactive elements
+- [ ] 04-01-PLAN.md — Implement auto-scroll to card on marker click with smooth scroll behavior
+- [ ] 04-02-PLAN.md — Add keyboard navigation and complete ARIA attribute coverage for all interactive elements
 
 ## Progress
 
