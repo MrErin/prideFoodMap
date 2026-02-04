@@ -1,0 +1,81 @@
+/* Card list container with responsive CSS Grid layout */
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+/* Card base styles */
+.card {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  background: white;
+}
+
+/* Card hover state */
+.card:hover {
+  border-color: #9ca3af;
+}
+
+/* Selected card state (for plan 02-03) */
+.card[aria-selected='true'] {
+  border-color: #3b82f6;
+  border-width: 3px;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Card name */
+.card-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+/* Card address */
+.card-address {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+/* Card badges container */
+.card-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Badge base styles */
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Community Fridge badge */
+.badge-fridge {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* Food Donation badge */
+.badge-donation {
+  background: #fce7f3;
+  color: #9f1239;
+}
+
+/* Mobile breakpoint - stack cards vertically */
+@media (max-width: 768px) {
+  .card-list {
+    max-height: 40vh;
+    grid-template-columns: 1fr;
+  }
+}
