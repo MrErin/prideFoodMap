@@ -61,9 +61,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Create `cards.ts` module with card rendering, alphabetical sorting, and mobile-responsive layout
-- [ ] 02-02: Implement `StateManager` class for bi-directional marker-card synchronization using `L.Util.stamp()` IDs
-- [ ] 02-03: Wire up click handlers for card-to-marker and marker-to-card highlighting with single-selection state
+- [ ] 02-01-PLAN.md — Create `cards.ts` module with card rendering, alphabetical sorting, and mobile-responsive layout
+- [ ] 02-02-PLAN.md — Implement `StateManager` class for bi-directional marker-card synchronization using `L.Util.stamp()` IDs (TDD)
+- [ ] 02-03-PLAN.md — Wire up click handlers for card-to-marker and marker-to-card highlighting with single-selection state
 
 ### Phase 3: Search & Filter Integration
 
