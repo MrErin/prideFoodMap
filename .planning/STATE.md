@@ -9,17 +9,16 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 
 ## Current Position
 
-Phase: Phase 2 - Card List Bi-directional Sync (Gap Closure)
-Plan: 05 of 05 (Popup Removal - UAT fix)
-Status: Phase complete - gap closure done
-Last activity: 2026-02-04 — Removed all popup logic, markers now only highlight cards
+Phase: Not started (v2 planning phase)
+Status: All v1 phases complete (13/13 plans including gap closure)
+Last activity: 2026-02-04 — Phase 2 gap closure complete (popup removal)
 
-Progress: [████████████████] 100% (Phase 2 complete - all 5 plans including gap closure)
+Progress: [████████████████] 100% (v1 complete - all 13 plans including gap closure)
 
 ## v1 Milestone Summary
 
 **Shipped:** 2026-02-03
-**Phases:** 4 phases, 11 plans
+**Phases:** 4 phases, 13 plans
 **Duration:** ~71 days (2025-11-24 to 2026-02-03)
 
 **Delivered:**
@@ -31,32 +30,33 @@ Progress: [████████████████] 100% (Phase 2 compl
 - Layer-based filtering with AND logic
 - Auto-scroll to card with prefers-reduced-motion support
 - Complete keyboard navigation and ARIA coverage
+- Popup removal (cards display all info, popups were redundant)
 
 **Stats:**
 
-- 33 files changed, 4,655 insertions, 69 deletions
+- 33+ files changed, 4,655+ insertions, 69 deletions
 - ~1,793 LOC TypeScript/JS/CSS
-- 23/23 unit tests passing
+- 36/36 unit tests passing (22 map + 14 StateManager)
 - All 20 v1 requirements satisfied
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 11
+- Total plans completed: 13
 - Average duration: 2.5 min
-- Total execution time: ~0.4 hours
+- Total execution time: ~0.5 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 | ----- | ----- | ----- | -------- |
 | 1     | 3     | 3     | 2 min    |
-| 2     | 3     | 3     | 2 min    |
+| 2     | 5     | 5     | 3 min    |
 | 3     | 3     | 3     | 3 min    |
 | 4     | 2     | 2     | 3 min    |
 
-_Updated after v1 milestone completion_
+_Updated after Phase 2 gap closure (02-04, 02-05)_
 
 ## Accumulated Context
 
