@@ -1,5 +1,6 @@
 import * as L from 'leaflet';
 import Papa from 'papaparse';
+import type { StateManager } from './stateManager.js';
 
 export interface MarkerData {
   locationName: string;
@@ -13,6 +14,9 @@ export interface MarkerData {
 }
 
 const baseURL = import.meta.env.BASE_URL;
+
+// Module-level map for marker-card linking using L.Util.stamp() IDs
+const markerCardMap: Map<string, L.Marker> = new Map();
 
 const fridgeIcon: L.Icon = L.icon({
   iconUrl: `${baseURL}icons/fridge.png`,
@@ -62,8 +66,9 @@ export const addMarkersFromCSV = (
   layerGroup: L.LayerGroup,
   icon: L.Icon,
   layerName: string
-): void => {
+): string[] => {
   let markersAdded = 0;
+  const markerIds: string[] = [];
 
   data.forEach((row: MarkerData, index: number) => {
     const lat: number = row.latitude;
@@ -104,6 +109,12 @@ export const addMarkersFromCSV = (
       marker.on('popupopen', () => {
         announce(`Showing details for ${name}`);
       });
+
+      // Generate unique marker ID using L.Util.stamp() and store for linking
+      const markerId = L.Util.stamp(marker).toString();
+      markerCardMap.set(markerId, marker);
+      markerIds.push(markerId);
+
       marker.addTo(layerGroup);
       markersAdded++;
     } else {
@@ -111,7 +122,65 @@ export const addMarkersFromCSV = (
     }
   });
   announce(`${markersAdded} ${layerName} locations loaded`);
+  return markerIds;
 };
+
+/**
+ * Highlights a marker by adding the 'marker-selected' CSS class.
+ * Clears all other marker highlights when a new marker is selected.
+ * @param markerId - The ID of the marker to highlight, or null to clear all highlights
+ */
+export function highlightMarker(markerId: string | null): void {
+  requestAnimationFrame(() => {
+    // Clear all marker highlights first
+    markerCardMap.forEach((marker) => {
+      const element = marker.getElement();
+      if (element) {
+        element.classList.remove('marker-selected');
+      }
+    });
+
+    // Highlight the selected marker
+    if (markerId !== null) {
+      const marker = markerCardMap.get(markerId);
+      if (marker) {
+        const element = marker.getElement();
+        if (element) {
+          element.classList.add('marker-selected');
+        }
+      }
+    }
+  });
+}
+
+/**
+ * Sets up click handlers on all markers to update selection state via StateManager.
+ * @param stateManager - The StateManager instance to notify of selection changes
+ * @returns Cleanup function that removes all click handlers
+ */
+export function setupMarkerClickHandlers(stateManager: StateManager): () => void {
+  const cleanupFunctions: Array<() => void> = [];
+
+  markerCardMap.forEach((marker) => {
+    const markerId = L.Util.stamp(marker).toString();
+
+    const clickHandler = () => {
+      stateManager.setSelected(markerId);
+    };
+
+    marker.on('click', clickHandler);
+
+    // Store cleanup function for this marker
+    cleanupFunctions.push(() => {
+      marker.off('click', clickHandler);
+    });
+  });
+
+  // Return cleanup function that removes all handlers
+  return () => {
+    cleanupFunctions.forEach((cleanup) => cleanup());
+  };
+}
 
 export interface InitializeMapResult {
   fridgeData: MarkerData[];
