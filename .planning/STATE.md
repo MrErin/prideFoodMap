@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** People can find food resources in Chattanooga TN quickly
-**Current focus:** Phase 3 - Search & Filter Integration
+**Current focus:** Phase 4 - Performance & Production Readiness
 
 ## Current Position
 
-Phase: 3 of 4 (Search & Filter Integration)
-Plan: 2 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-04 — Completed 03-02 (Text Search with Debounce)
+Phase: 3 of 4 (Search & Filter Integration) - Phase complete
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-02-04 — Completed 03-03 (Layer Filtering Integration)
 
-Progress: [████████████████] 70%
+Progress: [████████████████] 75%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
+- Total plans completed: 9
 - Average duration: 2 min
-- Total execution time: 0.27 hours
+- Total execution time: 0.32 hours
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [████████████████] 70%
 |-------|-------|-------|----------|
 | 1 | 3 | 3 | 2 min |
 | 2 | 3 | 3 | 2 min |
-| 3 | 2 | 2 | 3 min |
+| 3 | 3 | 3 | 3 min |
 | 4 | 0 | 2 | - |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (3 min), 02-01 (4 min), 02-02 (1 min), 02-03 (4 min), 03-01 (2 min), 03-02 (4 min)
+- Last 5 plans: 02-01 (4 min), 02-02 (1 min), 02-03 (4 min), 03-01 (2 min), 03-02 (4 min), 03-03 (3 min)
 - Trend: Consistent execution
 
 *Updated after each plan completion*
@@ -62,7 +62,7 @@ Recent decisions affecting current work:
 - Unit tests should use real Leaflet instances, not mocks of Leaflet itself
 
 **02-01 (Card List UI with CSS Grid):**
-- CSS Grid with auto-fit columns (minmax 300px, 1fr) for responsive card layout
+- CSS Grid with auto-fit columns (minmax 300px, 1fr)) for responsive card layout
 - Map height reduced from 100vh to 50vh to make room for card list
 - initializeMap returns CSV data to avoid loading files twice
 - markerId uses empty string placeholder (will be populated in plan 02-03 with L.Util.stamp())
@@ -95,6 +95,13 @@ Recent decisions affecting current work:
 - Use CSS .hidden class for filtering instead of DOM removal (maintains event listeners)
 - toLocaleLowerCase() for case-insensitive matching with international character support
 
+**03-03 (Layer Filtering Integration):**
+- Use Set<string> for visibleLayers (O(1) lookup performance vs array.includes O(n))
+- Create new Set before mutation (immutable pattern prevents external reference issues)
+- Layer name mapping in map.ts (separates Leaflet overlay names from card categories)
+- AND logic for filter composition (both search AND layer must match for visibility)
+- Event listener cleanup pattern returning unregister function
+
 ### Pending Todos
 
 None yet.
@@ -106,7 +113,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 03-02 (Text Search with Debounce)
+Stopped at: Completed 03-03 (Layer Filtering Integration)
 Resume file: None
 
 Config:
