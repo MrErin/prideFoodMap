@@ -22,10 +22,10 @@ affects: []
 tech-stack:
   added: []
   patterns:
-    - "Immutable Set pattern for layer visibility tracking (new Set() before mutation)"
-    - "Event listener cleanup pattern returning unregister function"
-    - "AND logic composition for multiple filter criteria"
-    - "Layer name mapping overlay -> category translation"
+    - 'Immutable Set pattern for layer visibility tracking (new Set() before mutation)'
+    - 'Event listener cleanup pattern returning unregister function'
+    - 'AND logic composition for multiple filter criteria'
+    - 'Layer name mapping overlay -> category translation'
 
 key-files:
   created: []
@@ -36,15 +36,15 @@ key-files:
     - src/main.ts - setupLayerEventListeners call, extended subscription
 
 key-decisions:
-  - "Use Set<string> for visibleLayers (O(1) lookups instead of array.includes O(n))"
-  - "Create new Set before mutating (immutable pattern prevents external reference issues)"
-  - "Layer name mapping in map.ts (separates Leaflet overlay names from card categories)"
-  - "AND logic for filter composition (both search AND layer must match)"
+  - 'Use Set<string> for visibleLayers (O(1) lookups instead of array.includes O(n))'
+  - 'Create new Set before mutating (immutable pattern prevents external reference issues)'
+  - 'Layer name mapping in map.ts (separates Leaflet overlay names from card categories)'
+  - 'AND logic for filter composition (both search AND layer must match)'
 
 patterns-established:
-  - "Immutable Set mutation: create copy, modify, compare, notify if changed"
-  - "Event listener cleanup: return () => void function that removes all listeners"
-  - "Filter composition: multiple criteria checked independently with AND logic"
+  - 'Immutable Set mutation: create copy, modify, compare, notify if changed'
+  - 'Event listener cleanup: return () => void function that removes all listeners'
+  - 'Filter composition: multiple criteria checked independently with AND logic'
 
 # Metrics
 duration: 3min
@@ -118,5 +118,6 @@ None - no external service authentication required.
 - Ready for Phase 4: Performance optimization and production readiness
 
 ---
-*Phase: 03-search-filter-integration*
-*Completed: 2026-02-04*
+
+_Phase: 03-search-filter-integration_
+_Completed: 2026-02-04_

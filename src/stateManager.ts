@@ -45,7 +45,7 @@ export class StateManager {
   private state: FilterState = {
     selectedId: null,
     searchQuery: '',
-    visibleLayers: new Set(['Community Fridge', 'Food Donation'])
+    visibleLayers: new Set(['Community Fridge', 'Food Donation']),
   };
   private listeners: StateListener[] = [];
 
@@ -113,8 +113,10 @@ export class StateManager {
       layers.delete(layerName);
     }
     // Only notify if Set actually changed
-    if (layers.size !== this.state.visibleLayers.size ||
-        ![...layers].every(l => this.state.visibleLayers.has(l))) {
+    if (
+      layers.size !== this.state.visibleLayers.size ||
+      ![...layers].every((l) => this.state.visibleLayers.has(l))
+    ) {
       this.state.visibleLayers = layers;
       this.notify();
     }

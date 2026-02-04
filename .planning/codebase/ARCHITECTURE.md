@@ -7,6 +7,7 @@
 **Overall:** Client-side Single Page Application (SPA) with CDN-based map library
 
 **Key Characteristics:**
+
 - Vanilla TypeScript with module imports (no framework)
 - Leaflet.js for interactive mapping via CDN
 - Static data loading from CSV files
@@ -16,6 +17,7 @@
 ## Layers
 
 **Application Entry Layer:**
+
 - Purpose: Bootstraps the application and handles initialization
 - Location: `src/main.ts`
 - Contains: DOM ready event listener, error handling UI logic
@@ -23,6 +25,7 @@
 - Used by: `index.html` as module entry point
 
 **Core Logic Layer:**
+
 - Purpose: Map initialization, data loading, marker management, accessibility
 - Location: `src/map.ts`
 - Contains: CSV loading, marker creation, layer management, ARIA announcements
@@ -30,6 +33,7 @@
 - Used by: `src/main.ts`, `src/test/map.test.ts`
 
 **Data Layer:**
+
 - Purpose: Static geospatial data storage
 - Location: `public/data/`
 - Contains: `fridgePins.csv`, `donationPins.csv`
@@ -37,6 +41,7 @@
 - Used by: `src/map.ts` via fetch API
 
 **Presentation Layer:**
+
 - Purpose: HTML structure and inline styles
 - Location: `index.html`
 - Contains: DOM elements for map container, loading indicator, ARIA live regions
@@ -44,6 +49,7 @@
 - Used by: Browser as main document
 
 **Asset Layer:**
+
 - Purpose: Custom map marker icons
 - Location: `public/icons/`
 - Contains: `fridge.png`, `donation.png`
@@ -87,6 +93,7 @@
 5. Error thrown from `initializeMap()`
 
 **State Management:**
+
 - No centralized state management
 - State held in Leaflet map instance and layer groups
 - DOM elements store loading/error state
@@ -95,21 +102,25 @@
 ## Key Abstractions
 
 **MarkerData Interface:**
+
 - Purpose: Type-safe contract for CSV row data
 - Examples: `src/map.ts` (lines 4-13)
 - Pattern: TypeScript interface defining shape of parsed CSV data
 
 **Layer Groups:**
+
 - Purpose: Organize markers by category for toggleable display
 - Examples: `fridgeLayer`, `donationLayer` in `src/map.ts`
 - Pattern: Leaflet LayerGroup for managing collections of markers
 
 **Custom Icons:**
+
 - Purpose: Visual differentiation between resource types
 - Examples: `fridgeIcon`, `donationIcon` in `src/map.ts`
 - Pattern: L.icon() factory with URL, size, anchor configuration
 
 **ARIA Announcer:**
+
 - Purpose: Screen reader notifications for state changes
 - Examples: `announce()` function in `src/map.ts`
 - Pattern: Live region update with 100ms delay for AT processing
@@ -117,16 +128,19 @@
 ## Entry Points
 
 **Application Entry:**
+
 - Location: `index.html`
 - Triggers: Browser page load
 - Responsibilities: HTML structure, CSS reset, Leaflet CSS import, module script loading
 
 **Module Entry:**
+
 - Location: `src/main.ts`
 - Triggers: Module import by browser
 - Responsibilities: Import Leaflet CSS, initialize map on DOM ready, handle loading/error UI
 
 **Public API:**
+
 - Location: `src/map.ts` (exported functions)
 - Triggers: Called by `src/main.ts` and unit tests
 - Responsibilities: `initializeMap()` for full setup, `loadCSV()` for data loading, `announce()` for accessibility
@@ -136,6 +150,7 @@
 **Strategy:** Try-catch at initialization level with console logging and user-facing error messages
 
 **Patterns:**
+
 - CSV fetch failures throw Error with status text
 - Invalid coordinates logged as warnings, skipped
 - Parsing warnings logged but don't halt execution
@@ -156,4 +171,4 @@
 
 ---
 
-*Architecture analysis: 2025-02-03*
+_Architecture analysis: 2025-02-03_

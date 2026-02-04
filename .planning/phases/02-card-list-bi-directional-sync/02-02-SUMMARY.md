@@ -24,14 +24,14 @@ key-files:
   modified: []
 
 key-decisions:
-  - "Observer pattern for state management - decouples markers from cards"
-  - "Immutable state via spread operator prevents external mutation"
-  - "No-op on same-value changes prevents unnecessary notifications"
+  - 'Observer pattern for state management - decouples markers from cards'
+  - 'Immutable state via spread operator prevents external mutation'
+  - 'No-op on same-value changes prevents unnecessary notifications'
 
 patterns-established:
-  - "StateListener: (state: SelectionState) => void callback signature"
-  - "subscribe() returns () => void unsubscribe function"
-  - "State changes only notify when values actually change"
+  - 'StateListener: (state: SelectionState) => void callback signature'
+  - 'subscribe() returns () => void unsubscribe function'
+  - 'State changes only notify when values actually change'
 
 # Metrics
 duration: 1min
@@ -95,5 +95,6 @@ None - no external service configuration required.
 - Establishes single source of truth for bi-directional sync
 
 ---
-*Phase: 02-card-list-bi-directional-sync*
-*Completed: 2026-02-04*
+
+_Phase: 02-card-list-bi-directional-sync_
+_Completed: 2026-02-04_

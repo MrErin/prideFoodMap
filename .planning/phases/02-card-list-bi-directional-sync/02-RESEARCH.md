@@ -15,25 +15,29 @@ This phase requires building a synchronized card list interface with bi-directio
 The established libraries/tools for this domain:
 
 ### Core
-| Library | Version | Purpose | Why Standard |
-|---------|---------|---------|--------------|
-| (None needed) | - | State management | Vanilla TypeScript Observer pattern is sufficient for single-selection state |
-| CSS Grid | Native | Card layout | Browser-native, no library needed for responsive grid |
-| Leaflet L.Util.stamp() | 1.9.4 | Marker IDs | Built-in unique ID generation for all Leaflet layers |
+
+| Library                | Version | Purpose          | Why Standard                                                                 |
+| ---------------------- | ------- | ---------------- | ---------------------------------------------------------------------------- |
+| (None needed)          | -       | State management | Vanilla TypeScript Observer pattern is sufficient for single-selection state |
+| CSS Grid               | Native  | Card layout      | Browser-native, no library needed for responsive grid                        |
+| Leaflet L.Util.stamp() | 1.9.4   | Marker IDs       | Built-in unique ID generation for all Leaflet layers                         |
 
 ### Supporting
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| (None) | - | - | No additional libraries required |
+
+| Library | Version | Purpose | When to Use                      |
+| ------- | ------- | ------- | -------------------------------- |
+| (None)  | -       | -       | No additional libraries required |
 
 ### Alternatives Considered
-| Instead of | Could Use | Tradeoff |
-|------------|-----------|----------|
-| Vanilla Observer pattern | Redux-like store | Overkill for single-selection state, adds complexity |
-| CSS Grid | Flexbox | Grid is better for 2D card layouts with responsive wrapping |
-| L.Util.stamp() | Custom ID generation | Built-in is already tested and handles edge cases |
+
+| Instead of               | Could Use            | Tradeoff                                                    |
+| ------------------------ | -------------------- | ----------------------------------------------------------- |
+| Vanilla Observer pattern | Redux-like store     | Overkill for single-selection state, adds complexity        |
+| CSS Grid                 | Flexbox              | Grid is better for 2D card layouts with responsive wrapping |
+| L.Util.stamp()           | Custom ID generation | Built-in is already tested and handles edge cases           |
 
 **Installation:**
+
 ```bash
 # No new packages needed - using existing stack
 # TypeScript 5.9.3, Vite 7.2.4, Leaflet 1.9.4 already installed
@@ -42,6 +46,7 @@ The established libraries/tools for this domain:
 ## Architecture Patterns
 
 ### Recommended Project Structure
+
 ```
 src/
 ├── cards.ts          # Card rendering and DOM manipulation
@@ -60,6 +65,7 @@ src/
 **When to use:** Managing single-selection state between map markers and DOM cards.
 
 **Example:**
+
 ```typescript
 // Source: Research from 2026 vanilla JS state management trends
 interface StateListener {
@@ -93,16 +99,17 @@ class StateManager {
   }
 
   private notifyItemSelected(itemId: string): void {
-    this.listeners.forEach(listener => listener.onSelectedChange(itemId));
+    this.listeners.forEach((listener) => listener.onSelectedChange(itemId));
   }
 
   private notifyItemDeselected(itemId: string): void {
-    this.listeners.forEach(listener => listener.onSelectedChange(null));
+    this.listeners.forEach((listener) => listener.onSelectedChange(null));
   }
 }
 ```
 
 **Why this works:**
+
 - Simple enough for the single-selection use case
 - Easy to test with mock listeners
 - Follows 2026 trends toward lightweight vanilla state management
@@ -115,11 +122,15 @@ class StateManager {
 **When to use:** Creating bidirectional references between Leaflet markers and DOM elements.
 
 **Example:**
+
 ```typescript
 // Source: Leaflet 1.9.4 documentation
 import * as L from 'leaflet';
 
-function createMarkerWithCard(data: MarkerData, layerGroup: L.LayerGroup): { marker: L.Marker; cardId: string } {
+function createMarkerWithCard(
+  data: MarkerData,
+  layerGroup: L.LayerGroup
+): { marker: L.Marker; cardId: string } {
   const marker = L.marker([data.latitude, data.longitude]);
   marker.addTo(layerGroup);
 
@@ -142,6 +153,7 @@ function getMarkerById(id: string): L.Marker | undefined {
 ```
 
 **Why this works:**
+
 - `L.Util.stamp()` is built into Leaflet 1.9.4
 - Guarantees unique IDs across all markers
 - No custom ID generation logic needed
@@ -154,6 +166,7 @@ function getMarkerById(id: string): L.Marker | undefined {
 **When to use:** Creating mobile-first card layouts that adapt to screen size.
 
 **Example:**
+
 ```css
 /* Source: 2026 CSS Grid best practices */
 .card-list {
@@ -188,6 +201,7 @@ function getMarkerById(id: string): L.Marker | undefined {
 ```
 
 **Why this works:**
+
 - `auto-fit` automatically adjusts column count based on available space
 - `minmax(300px, 1fr)` ensures cards are at least 300px but can grow
 - Mobile-first approach starts with single column
@@ -205,12 +219,12 @@ function getMarkerById(id: string): L.Marker | undefined {
 
 Problems that look simple but have existing solutions:
 
-| Problem | Don't Build | Use Instead | Why |
-|---------|-------------|-------------|-----|
-| Unique IDs for markers | Custom UUID or counter | `L.Util.stamp(marker)` | Built-in, tested, handles edge cases |
-| Responsive grid layout | Complex media queries | CSS Grid `auto-fit` | Browser-native, fewer breakpoints |
-| State change notifications | Custom event system | Observer pattern | Simple, testable, industry standard |
-| CSS-in-JS for card styles | Inline styles or CSS modules | Plain CSS with BEM | Faster, smaller bundle, easier debugging |
+| Problem                    | Don't Build                  | Use Instead            | Why                                      |
+| -------------------------- | ---------------------------- | ---------------------- | ---------------------------------------- |
+| Unique IDs for markers     | Custom UUID or counter       | `L.Util.stamp(marker)` | Built-in, tested, handles edge cases     |
+| Responsive grid layout     | Complex media queries        | CSS Grid `auto-fit`    | Browser-native, fewer breakpoints        |
+| State change notifications | Custom event system          | Observer pattern       | Simple, testable, industry standard      |
+| CSS-in-JS for card styles  | Inline styles or CSS modules | Plain CSS with BEM     | Faster, smaller bundle, easier debugging |
 
 **Key insight:** The browser and Leaflet already provide most building blocks. Only the StateManager needs to be custom, and it's just ~50 lines of TypeScript.
 
@@ -309,7 +323,7 @@ function handleCardClick(card: HTMLElement): void {
   border-radius: 0.5rem;
 }
 
-.card[aria-selected="true"] {
+.card[aria-selected='true'] {
   border-color: #007bff;
   border-width: 3px;
 }
@@ -320,16 +334,8 @@ function handleCardClick(card: HTMLElement): void {
 ```html
 <!-- Source: MDN aria-selected documentation (2025) -->
 <div role="list" aria-label="Food locations">
-  <div role="listitem"
-       aria-selected="true"
-       data-marker-id="123"
-       tabindex="0">
-    Location Name
-  </div>
-  <div role="listitem"
-       aria-selected="false"
-       data-marker-id="124"
-       tabindex="0">
+  <div role="listitem" aria-selected="true" data-marker-id="123" tabindex="0">Location Name</div>
+  <div role="listitem" aria-selected="false" data-marker-id="124" tabindex="0">
     Another Location
   </div>
 </div>
@@ -371,27 +377,28 @@ class SelectionManager {
     this.listeners.push(listener);
     // Return unsubscribe function
     return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
+      this.listeners = this.listeners.filter((l) => l !== listener);
     };
   }
 
   private notify(): void {
     const state = this.getState();
-    this.listeners.forEach(listener => listener(state));
+    this.listeners.forEach((listener) => listener(state));
   }
 }
 ```
 
 ## State of the Art
 
-| Old Approach | Current Approach | When Changed | Impact |
-|--------------|------------------|--------------|--------|
-| Media query-heavy responsive design | CSS Grid with `auto-fit` | 2020+ | Fewer breakpoints, more fluid layouts |
-| Framework state management (Redux) | Vanilla Observer pattern | 2025+ | Lighter weight, simpler for small apps |
-| Custom unique ID generation | Browser/Leaflet built-in IDs | Always | Less code, more reliable |
-| CSS-in-JS solutions | Plain CSS with BEM | 2024+ | Faster, smaller bundles |
+| Old Approach                        | Current Approach             | When Changed | Impact                                 |
+| ----------------------------------- | ---------------------------- | ------------ | -------------------------------------- |
+| Media query-heavy responsive design | CSS Grid with `auto-fit`     | 2020+        | Fewer breakpoints, more fluid layouts  |
+| Framework state management (Redux)  | Vanilla Observer pattern     | 2025+        | Lighter weight, simpler for small apps |
+| Custom unique ID generation         | Browser/Leaflet built-in IDs | Always       | Less code, more reliable               |
+| CSS-in-JS solutions                 | Plain CSS with BEM           | 2024+        | Faster, smaller bundles                |
 
 **Deprecated/outdated:**
+
 - **Heavy frameworks for simple apps**: The 2026 trend is "vanilla first" - only use frameworks when truly needed
 - **Complex responsive breakpoints**: CSS Grid `auto-fit` handles most cases automatically
 - **Manual ID generation**: Use built-in ID generation from libraries or crypto API
@@ -416,23 +423,27 @@ class SelectionManager {
 ## Sources
 
 ### Primary (HIGH confidence)
+
 - [Leaflet API Reference 1.9.4](https://leafletjs.com/reference.html) - Complete Leaflet API documentation including Marker events, Layer methods, Util functions
 - [MDN: aria-selected attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-selected) - Official ARIA attribute documentation
 - [MDN: CSS Grid Layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout) - Official CSS Grid documentation
 
 ### Secondary (MEDIUM confidence)
+
 - [CSS Grid Responsive Design: Mobile-First Approach (Medium, 2026)](https://medium.com/codetodeploy/css-grid-responsive-design-the-mobile-first-approach-that-actually-works-194bdab9bc52) - Verified CSS Grid patterns for responsive card layouts
 - [State Management in Vanilla JS: 2026 Trends](https://www.vibidsoft.com/blog/state-management-in-vanilla-js-2026-trends/) - Verified Observer pattern usage for vanilla state management
 - [Modern State Management in Vanilla JavaScript 2026](https://medium.com/@orami98/modern-state-management-in-vanilla-javascript-2026-patterns-and-beyond-ce00425f7ac5) - Confirms trend toward lightweight vanilla solutions
 - [CSS-Tricks: CSS Grid Layout Guide](https://css-tricks.com/css-grid-layout-guide/) - Comprehensive Grid reference (updated 2025)
 
 ### Tertiary (LOW confidence)
+
 - [Frontend Design Patterns That Actually Work in 2026](https://www.netguru.com/blog/frontend-design-patterns) - Mentions Signals and Context API trends
 - [The Vanilla JavaScript Renaissance in 2026](https://jeffbruchado.com.br/en/blog/vanilla-javascript-renaissance-2026-developers-abandoning-frameworks) - Anecdotal trend reporting
 
 ## Metadata
 
 **Confidence breakdown:**
+
 - Standard stack: HIGH - No new libraries needed, using existing stack
 - Architecture: HIGH - Patterns verified with official documentation and 2026 best practices
 - Pitfalls: HIGH - Based on common issues documented in community resources

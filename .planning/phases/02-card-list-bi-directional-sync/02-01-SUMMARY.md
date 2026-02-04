@@ -36,13 +36,13 @@ key-files:
     - tsconfig.json (excluded stateManager.test.ts temporarily)
 
 key-decisions:
-  - "Reduced map height from 100vh to 50vh to make room for card list display"
-  - "InitializeMap returns CSV data for card rendering to avoid loading files twice"
-  - "markerId uses empty string placeholder - will be populated in plan 02-03 with L.Util.stamp()"
+  - 'Reduced map height from 100vh to 50vh to make room for card list display'
+  - 'InitializeMap returns CSV data for card rendering to avoid loading files twice'
+  - 'markerId uses empty string placeholder - will be populated in plan 02-03 with L.Util.stamp()'
 
 patterns-established:
-  - "Card rendering pattern: createCardElement builds individual cards, renderCards manages sorting and container"
-  - "CSS Grid responsive pattern: auto-fit with minmax(300px, 1fr) for fluid layout"
+  - 'Card rendering pattern: createCardElement builds individual cards, renderCards manages sorting and container'
+  - 'CSS Grid responsive pattern: auto-fit with minmax(300px, 1fr) for fluid layout'
   - "Accessibility pattern: role='list' on container, role='listitem' on items, aria-selected for state"
 
 # Metrics
@@ -102,6 +102,7 @@ Each task was committed atomically:
 ### Auto-fixed Issues
 
 **1. [Rule 3 - Blocking] Fixed TypeScript type-only import error**
+
 - **Found during:** Task 1 (cards.ts creation and build verification)
 - **Issue:** map.test.ts imported MarkerData as value import, but TypeScript verbatimModuleSyntax requires type-only imports for types
 - **Fix:** Changed import from `import { ..., MarkerData }` to separate imports: `import { ... }` and `import type { MarkerData }`
@@ -110,6 +111,7 @@ Each task was committed atomically:
 - **Committed in:** 51a2439 (Task 1 commit)
 
 **2. [Rule 3 - Blocking] Temporarily excluded stateManager.test.ts from compilation**
+
 - **Found during:** Task 1 (build verification after creating cards.ts)
 - **Issue:** stateManager.test.ts imports stateManager module that doesn't exist yet (created in plan 02-02), causing build failure
 - **Fix:** Added src/test/stateManager.test.ts to tsconfig exclude array temporarily
@@ -118,6 +120,7 @@ Each task was committed atomically:
 - **Committed in:** 51a2439 (Task 1 commit)
 
 **3. [Rule 3 - Blocking] Reduced map height to make cards visible**
+
 - **Found during:** Task 3 (after adding card-list container to HTML)
 - **Issue:** Map was set to 100vh height, which would push cards below the fold and make them invisible
 - **Fix:** Changed #map height from 100vh to 50vh to give equal space to map and card list
@@ -147,5 +150,6 @@ None - no external service configuration required.
 - Ready to proceed with StateManager implementation
 
 ---
-*Phase: 02-card-list-bi-directional-sync*
-*Completed: 2026-02-04*
+
+_Phase: 02-card-list-bi-directional-sync_
+_Completed: 2026-02-04_

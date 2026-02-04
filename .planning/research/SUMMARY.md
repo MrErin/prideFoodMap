@@ -20,18 +20,21 @@ Key risks center on **circular event loops** (hover-triggered highlight cycles),
 No new libraries required. The existing TypeScript + Vite + Leaflet + Vitest stack is optimal for this feature set.
 
 **Core technologies:**
+
 - **Leaflet (existing)**: Map rendering and marker management — Use built-in event system (`whenReady`, `add`, `click`) instead of generic DOM timing
 - **Vanilla TypeScript (existing)**: State management via custom `StateManager` class — Avoids framework complexity, uses event emitter pattern for cross-component communication
 - **Vitest (existing)**: Test runner with `vi.spyOn` for type-safe mocking — Prefer `vi.spyOn` over `vi.mock` to avoid hoisting issues and `any` types
 - **MutationObserver (native)**: Replace `setTimeout` for DOM detection — Event-driven timing is more reliable than arbitrary delays
 
 **Key version considerations:**
+
 - Vite 7.2.4: Confirm `vi.spyOn` compatibility during implementation
 - Leaflet: Use `L.Util.stamp()` for unique marker IDs
 
 ### Expected Features
 
 **Must have (table stakes):**
+
 - **Synchronized map+list view** — Users expect clicking either view updates the other (master-detail pattern)
 - **Search/filter by name** — Text input filters cards in real-time; overwhelming list without search feels broken
 - **Category badges** — Visual distinction between fridge/donation locations is critical for users
@@ -40,11 +43,13 @@ No new libraries required. The existing TypeScript + Vite + Leaflet + Vitest sta
 - **Mobile-responsive layout** — Stacked layout (map top, list below) on screens <768px
 
 **Should have (competitive):**
+
 - **Auto-scroll to active card** — When marker clicked, list smoothly scrolls to corresponding card
 - **"Search this area" button** — Shows only locations in current map viewport (reduces cognitive load)
 - **Empty state messaging** — "No locations found" with clear/reset option reduces user frustration
 
 **Defer (v2+):**
+
 - **Distance sorting** — "Nearest first" requires geolocation API and distance calculations
 - **Status badges (Open/Closed)** — Requires hours data in CSV and time-zone-aware parsing
 - **Favorite/bookmark locations** — Requires localStorage or user accounts for persistence
@@ -54,6 +59,7 @@ No new libraries required. The existing TypeScript + Vite + Leaflet + Vitest sta
 Create a dedicated `cards.ts` module alongside existing `map.ts` with a shared `StateManager` for bi-directional communication.
 
 **Major components:**
+
 1. **`StateManager` class** — Centralized state object with pub/sub pattern; tracks `activeId`, `hoveredId`, and `visibleLayer`; both `map.ts` and `cards.ts` subscribe to changes
 2. **`map.ts` (existing, enhanced)** — Leaflet map, markers, layer controls; exports `MarkerData` interface and marker registry for O(1) lookups
 3. **`cards.ts` (new)** — Card list rendering, highlighting, and DOM manipulation; imports `MarkerData` from `map.ts`, subscribes to `StateManager` for active state
@@ -74,6 +80,7 @@ Create a dedicated `cards.ts` module alongside existing `map.ts` with a shared `
 Based on research, suggested phase structure:
 
 ### Phase 1: Type Safety & Test Infrastructure
+
 **Rationale:** Quick win that improves developer confidence; must complete before complex mocking is needed for card list tests
 **Delivers:** Properly typed Vitest mocks, `vi.spyOn` pattern established, no `any` types in tests
 **Addresses:** STACK.md Vitest recommendations
@@ -81,6 +88,7 @@ Based on research, suggested phase structure:
 **Complexity:** LOW | Duration: Short
 
 ### Phase 2: Card List + Bi-directional Highlighting
+
 **Rationale:** Core feature that users expect; foundational for all other features; most complex interaction pattern
 **Delivers:** `cards.ts` module, `StateManager` class, marker-card sync via `L.Util.stamp()`, keyboard navigation, ARIA attributes
 **Uses:** Leaflet events system, MutationObserver for DOM detection
@@ -90,6 +98,7 @@ Based on research, suggested phase structure:
 **Complexity:** MEDIUM | Duration: Medium
 
 ### Phase 3: Search/Filter with Cleanup
+
 **Rationale:** Depends on Phase 2 (card list must exist to filter); proper cleanup patterns prevent memory leaks
 **Delivers:** Real-time search by name, layer filtering synced between map and cards, explicit event listener cleanup, empty state messaging
 **Uses:** `StateManager.setFilter()`, marker registry for O(1) lookups
@@ -98,6 +107,7 @@ Based on research, suggested phase structure:
 **Complexity:** MEDIUM | Duration: Medium
 
 ### Phase 4: Polish & Technical Debt
+
 **Rationale:** Defer timing fixes until core features work; less critical for user value
 **Delivers:** `setTimeout` → MutationObserver refactoring, auto-scroll to active card, "Search this area" button, improved accessibility announcements
 **Uses:** `map.whenReady()` events, `requestAnimationFrame` for visual updates
@@ -117,21 +127,23 @@ This order follows dependency chains from ARCHITECTURE.md: card list requires ma
 ### Research Flags
 
 Phases likely needing deeper research during planning:
+
 - **Phase 2:** Bi-directional sync implementation details; while patterns are documented, exact event handler attachment points may need exploration based on existing code structure
 - **Phase 3:** Filter performance with 32+ markers; may need debouncing or virtualization if current data set grows
 
 Phases with standard patterns (skip research-phase):
+
 - **Phase 1:** Vitest mocking patterns are well-documented; `vi.spyOn` usage is straightforward
 - **Phase 4:** MutationObserver and `requestAnimationFrame` are standard Web APIs with extensive documentation
 
 ## Confidence Assessment
 
-| Area | Confidence | Notes |
-|------|------------|-------|
-| Stack | HIGH | All recommendations from official docs (Leaflet, Vitest) or high-quality community sources |
-| Features | HIGH | Table stakes features verified against competitor analysis (Google Maps, Yelp, MapTiler) |
-| Architecture | HIGH | Event-driven state pattern is standard for vanilla TypeScript apps; component boundaries follow single responsibility principle |
-| Pitfalls | HIGH | All pitfalls documented with specific prevention strategies from multiple sources; recovery strategies included |
+| Area         | Confidence | Notes                                                                                                                           |
+| ------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Stack        | HIGH       | All recommendations from official docs (Leaflet, Vitest) or high-quality community sources                                      |
+| Features     | HIGH       | Table stakes features verified against competitor analysis (Google Maps, Yelp, MapTiler)                                        |
+| Architecture | HIGH       | Event-driven state pattern is standard for vanilla TypeScript apps; component boundaries follow single responsibility principle |
+| Pitfalls     | HIGH       | All pitfalls documented with specific prevention strategies from multiple sources; recovery strategies included                 |
 
 **Overall confidence:** HIGH
 
@@ -150,6 +162,7 @@ None of these gaps justify blocking roadmap creation. They can be addressed duri
 ## Sources
 
 ### Primary (HIGH confidence)
+
 - [Leaflet Official Reference](https://leafletjs.com/reference.html) — Built-in event system, marker API, `L.Util.stamp()`
 - [Vitest Mock Functions API](https://vitest.dev/api/mock) — Official mock documentation, `vi.spyOn` usage
 - [PatternFly Card Accessibility](https://www.patternfly.org/components/card/accessibility) — Card selection states, ARIA attributes
@@ -157,6 +170,7 @@ None of these gaps justify blocking roadmap creation. They can be addressed duri
 - [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/) — Official accessibility patterns
 
 ### Secondary (MEDIUM confidence)
+
 - [MapTiler SDK JS - List of Places](https://docs.maptiler.com/sdk-js/examples/list-of-places/) — Bi-directional sync pattern with "Search this area" button
 - [StackOverflow: Leaflet sidebar div active on marker click](https://stackoverflow.com/questions/22256520) — Marker-card association examples
 - [GIS StackExchange: Dynamic map sidebar](https://gis.stackexchange.com/questions/340698) — Working `L.Util.stamp()` example
@@ -164,9 +178,11 @@ None of these gaps justify blocking roadmap creation. They can be addressed duri
 - [Leaflet Working with Map Panes](https://leafletjs.com/examples/map-panes/) — Pane system for z-index management
 
 ### Tertiary (LOW confidence)
+
 - [UX StackExchange: Map UI patterns](https://ux.stackexchange.com/questions/17380) — Community discussion on map UX
 - [掘金: MutationObserver即时更新](https://juejin.cn/post/7368884169755918370) — Chinese article on MutationObserver optimization (translated)
 
 ---
-*Research completed: 2026-02-03*
-*Ready for roadmap: yes*
+
+_Research completed: 2026-02-03_
+_Ready for roadmap: yes_

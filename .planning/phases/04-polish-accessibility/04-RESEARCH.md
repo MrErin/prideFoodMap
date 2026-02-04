@@ -9,6 +9,7 @@
 This research covers implementing Phase 4 polish features for the Pride Food Map. The project uses vanilla TypeScript with Leaflet 1.9.4, with an existing Observer-based StateManager for bi-directional marker-card synchronization and search/filter functionality already complete.
 
 The core requirements are:
+
 1. Auto-scroll card list to show corresponding card when marker is clicked
 2. Keyboard navigation on cards (Tab, Enter, Escape)
 3. Complete ARIA attribute coverage for all interactive elements
@@ -18,27 +19,31 @@ The core requirements are:
 ## Standard Stack
 
 ### Core
-| Technology | Version | Purpose | Why Standard |
-|------------|---------|---------|--------------|
-| Element.scrollIntoView() | Native | Auto-scroll to element | Built-in API, smooth behavior option |
-| prefers-reduced-motion | CSS Media Query | Respect user motion preferences | Accessibility requirement, WCAG 2.2 |
-| Keyboard events | Native DOM API | Enter/Escape key handling | No dependencies, standard pattern |
-| ARIA attributes | WAI-ARIA 1.2 | Screen reader announcements | W3C standard, excellent support |
+
+| Technology               | Version         | Purpose                         | Why Standard                         |
+| ------------------------ | --------------- | ------------------------------- | ------------------------------------ |
+| Element.scrollIntoView() | Native          | Auto-scroll to element          | Built-in API, smooth behavior option |
+| prefers-reduced-motion   | CSS Media Query | Respect user motion preferences | Accessibility requirement, WCAG 2.2  |
+| Keyboard events          | Native DOM API  | Enter/Escape key handling       | No dependencies, standard pattern    |
+| ARIA attributes          | WAI-ARIA 1.2    | Screen reader announcements     | W3C standard, excellent support      |
 
 ### Supporting
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| requestAnimationFrame | Native | Smooth DOM updates | Already used in project for timing |
+
+| Library                | Version  | Purpose                      | When to Use                        |
+| ---------------------- | -------- | ---------------------------- | ---------------------------------- |
+| requestAnimationFrame  | Native   | Smooth DOM updates           | Already used in project for timing |
 | StateManager.subscribe | Existing | Event-driven scroll triggers | Leverage existing observer pattern |
 
 ### Alternatives Considered
-| Instead of | Could Use | Tradeoff |
-|------------|-----------|----------|
-| scrollIntoView | jQuery animate / manual scrollTo | Native is simpler, no dependency |
-| tabindex="0" | Arrow key grid navigation | Tab navigation is standard, arrow keys add complexity |
-| CSS scroll-behavior | JS-only smooth scroll | CSS is declarative, but JS gives more control for focus management |
+
+| Instead of          | Could Use                        | Tradeoff                                                           |
+| ------------------- | -------------------------------- | ------------------------------------------------------------------ |
+| scrollIntoView      | jQuery animate / manual scrollTo | Native is simpler, no dependency                                   |
+| tabindex="0"        | Arrow key grid navigation        | Tab navigation is standard, arrow keys add complexity              |
+| CSS scroll-behavior | JS-only smooth scroll            | CSS is declarative, but JS gives more control for focus management |
 
 **Installation:**
+
 ```bash
 # No new dependencies needed - all built-in APIs
 ```
@@ -46,6 +51,7 @@ The core requirements are:
 ## Architecture Patterns
 
 ### Recommended Project Structure
+
 ```
 src/
 ├── cards.ts           # Existing: add scrollIntoView to updateCardSelection
@@ -56,9 +62,11 @@ src/
 ```
 
 ### Pattern 1: Auto-Scroll with Accessibility
+
 **What:** Use `scrollIntoView()` with `behavior: 'smooth'` option, but respect `prefers-reduced-motion`
 **When to use:** User clicks marker and card list should scroll to corresponding card
 **Example:**
+
 ```typescript
 // Source: MDN + CSS-Tricks accessibility patterns
 function scrollToCard(cardElement: HTMLElement): void {
@@ -67,7 +75,7 @@ function scrollToCard(cardElement: HTMLElement): void {
 
   const scrollOptions: ScrollIntoViewOptions = {
     behavior: prefersReducedMotion ? 'auto' : 'smooth',
-    block: 'nearest'
+    block: 'nearest',
   };
 
   cardElement.scrollIntoView(scrollOptions);
@@ -78,9 +86,11 @@ function scrollToCard(cardElement: HTMLElement): void {
 ```
 
 ### Pattern 2: Keyboard Navigation for Cards
+
 **What:** Cards already have `tabindex="0"` - add Enter key activation in event listener
 **When to use:** User navigates with Tab key and presses Enter to select card
 **Example:**
+
 ```typescript
 // Source: Smashing Magazine keyboard accessibility guide (2022)
 function setupKeyboardNavigation(cards: HTMLElement[]): void {
@@ -102,9 +112,11 @@ function setupKeyboardNavigation(cards: HTMLElement[]): void {
 ```
 
 ### Pattern 3: Focus Management After Auto-Scroll
+
 **What:** After scrolling to card, move focus so keyboard users can continue navigating
 **When to use:** After marker click triggers auto-scroll
 **Example:**
+
 ```typescript
 // Source: CSS-Tricks "Smooth Scrolling and Accessibility"
 function highlightAndScrollToCard(markerId: string): void {
@@ -121,7 +133,7 @@ function highlightAndScrollToCard(markerId: string): void {
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       card.scrollIntoView({
         behavior: prefersReducedMotion ? 'auto' : 'smooth',
-        block: 'nearest'
+        block: 'nearest',
       });
 
       // CRITICAL: Set focus for keyboard accessibility
@@ -132,9 +144,11 @@ function highlightAndScrollToCard(markerId: string): void {
 ```
 
 ### Pattern 4: Listening for Motion Preference Changes
+
 **What:** Watch for changes to `prefers-reduced-motion` media query
 **When to use:** User changes system settings while page is open
 **Example:**
+
 ```typescript
 // Source: CSS-Tricks smooth scrolling accessibility
 const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -149,6 +163,7 @@ motionQuery.addEventListener('change', (e) => {
 ```
 
 ### Anti-Patterns to Avoid
+
 - **Auto-scroll without focus management:** Keyboard users can't continue navigating after scroll
 - **Ignoring prefers-reduced-motion:** Causes motion sickness for vestibular disorder users
 - **Using setTimeout for scroll timing:** Use requestAnimationFrame instead (already used in project)
@@ -159,18 +174,19 @@ motionQuery.addEventListener('change', (e) => {
 
 Problems that look simple but have existing solutions:
 
-| Problem | Don't Build | Use Instead | Why |
-|---------|-------------|-------------|-----|
-| Smooth scroll animation | Custom requestAnimationFrame loop | scrollIntoView({behavior: 'smooth'}) | Handles edge cases, respects browser settings |
-| Motion detection | User preference setting storage | window.matchMedia('(prefers-reduced-motion)') | System-level preference, no storage needed |
-| Focus management | Manual focus tracking | Native focus() + tabindex="0" | Built-in browser behavior |
-| Keyboard event handling | Custom keyboard mapping | Standard DOM keyboard events | Consistent with browser patterns |
+| Problem                 | Don't Build                       | Use Instead                                   | Why                                           |
+| ----------------------- | --------------------------------- | --------------------------------------------- | --------------------------------------------- |
+| Smooth scroll animation | Custom requestAnimationFrame loop | scrollIntoView({behavior: 'smooth'})          | Handles edge cases, respects browser settings |
+| Motion detection        | User preference setting storage   | window.matchMedia('(prefers-reduced-motion)') | System-level preference, no storage needed    |
+| Focus management        | Manual focus tracking             | Native focus() + tabindex="0"                 | Built-in browser behavior                     |
+| Keyboard event handling | Custom keyboard mapping           | Standard DOM keyboard events                  | Consistent with browser patterns              |
 
 **Key insight:** Auto-scroll and keyboard navigation are well-solved problems. Use native APIs and focus on accessibility integration (focus management, motion preferences) rather than building custom implementations.
 
 ## Common Pitfalls
 
 ### Pitfall 1: Auto-Scroll Without Focus Management
+
 **What goes wrong:** User clicks marker, page scrolls to card, but keyboard focus remains on marker. Screen reader users are confused - they hear marker announcement but see card. Keyboard users must Tab through entire map to reach card.
 
 **Why it happens:** `scrollIntoView()` only moves the viewport. It doesn't update keyboard focus. Many developers forget focus is separate from scroll position.
@@ -180,6 +196,7 @@ Problems that look simple but have existing solutions:
 **Warning signs:** Clicking marker scrolls viewport but Tab key doesn't move focus to card. Screen reader testing shows focus didn't follow scroll.
 
 ### Pitfall 2: Ignoring prefers-reduced-motion
+
 **What goes wrong:** Users with vestibular disorders experience nausea, dizziness, or migraines from smooth scrolling. They've set OS preference to reduce motion, but website ignores it.
 
 **Why it happens:** Smooth scrolling is often enabled globally without checking user preferences. CSS `scroll-behavior: smooth` applies to all scroll operations indiscriminately.
@@ -189,6 +206,7 @@ Problems that look simple but have existing solutions:
 **Warning signs:** No mention of reduced motion in implementation. Testing with macOS "Reduce motion" or Windows "Animations" settings still shows smooth scroll.
 
 ### Pitfall 3: Using setTimeout for DOM Timing
+
 **What goes wrong:** Auto-scroll fails because card element dimensions aren't computed yet. Or scroll works but focus doesn't because element isn't visible. Intermittent failures that are hard to reproduce.
 
 **Why it happens:** Developers use arbitrary `setTimeout(..., 100)` delays hoping DOM will be ready. This is unreliable - sometimes too fast, sometimes too slow.
@@ -198,6 +216,7 @@ Problems that look simple but have existing solutions:
 **Warning signs:** Arbitrary timeout values in code. Intermittent test failures. Comments like "wait for DOM to update".
 
 ### Pitfall 4: Cards Not Focusable After Selection
+
 **What goes wrong:** User clicks marker, card scrolls into view and gets selected border, but pressing Tab moves focus away from card. Keyboard user can't interact with selected card.
 
 **Why it happens:** Selection styling (CSS class, aria-selected) is separate from focus state. Cards have `tabindex="0"` but focus() is never called after scroll.
@@ -207,6 +226,7 @@ Problems that look simple but have existing solutions:
 **Warning signs:** Visual selection works but Tab key doesn't move focus to selected card. Keyboard-only testing reveals broken workflow.
 
 ### Pitfall 5: Enter Key Doesn't Activate Cards
+
 **What goes wrong:** Keyboard user Tabs to card, presses Enter, nothing happens. Or Space key triggers but Enter doesn't. User doesn't know how to select card with keyboard.
 
 **Why it happens:** Only click event listener is attached. Many keyboard users expect Enter to activate focusable elements (especially buttons, links, and interactive cards).
@@ -216,6 +236,7 @@ Problems that look simple but have existing solutions:
 **Warning signs:** Keyboard users report they can't "click" cards. Testing reveals Tab reaches card but Enter does nothing.
 
 ### Pitfall 6: Escape Key Doesn't Clear Selection
+
 **What goes wrong:** User selects card with mouse, wants to deselect with keyboard (Escape), but nothing happens. Or Escape works for markers but not cards. Inconsistent behavior.
 
 **Why it happens:** Escape key listener is on window (already in main.ts), but card-specific Escape handling might be missing or inconsistent with marker behavior.
@@ -229,6 +250,7 @@ Problems that look simple but have existing solutions:
 Verified patterns from official sources:
 
 ### Auto-Scroll with Reduced Motion Support
+
 ```typescript
 // Source: CSS-Tricks "Smooth Scrolling and Accessibility"
 // https://css-tricks.com/smooth-scrolling-accessibility/
@@ -239,7 +261,7 @@ export function scrollToCard(card: HTMLElement): void {
 
   card.scrollIntoView({
     behavior: shouldReduceMotion ? 'auto' : 'smooth',
-    block: 'nearest'
+    block: 'nearest',
   });
 
   // Always set focus after scroll for accessibility
@@ -248,6 +270,7 @@ export function scrollToCard(card: HTMLElement): void {
 ```
 
 ### Keyboard Event Handler for Cards
+
 ```typescript
 // Source: Smashing Magazine "A Guide To Keyboard Accessibility"
 // https://www.smashingmagazine.com/2022/11/guide-keyboard-accessibility-html-css-part1/
@@ -267,13 +290,12 @@ function setupCardKeyboardNavigation(card: HTMLElement): void {
 ```
 
 ### Complete Selection with Scroll and Focus
+
 ```typescript
 // Pattern combines existing StateManager with new scroll behavior
 // Uses requestAnimationFrame timing already established in project
 
-export function updateCardSelectionWithScroll(
-  selectedId: string | null
-): void {
+export function updateCardSelectionWithScroll(selectedId: string | null): void {
   requestAnimationFrame(() => {
     const container = document.querySelector<HTMLElement>('#card-list');
     if (!container) return;
@@ -289,13 +311,11 @@ export function updateCardSelectionWithScroll(
         card.classList.add('selected');
 
         // Scroll into view respecting motion preferences
-        const prefersReducedMotion = window.matchMedia(
-          '(prefers-reduced-motion: reduce)'
-        ).matches;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         card.scrollIntoView({
           behavior: prefersReducedMotion ? 'auto' : 'smooth',
-          block: 'nearest'
+          block: 'nearest',
         });
 
         // Move focus for keyboard accessibility
@@ -315,6 +335,7 @@ export function updateCardSelectionWithScroll(
 ```
 
 ### Tab Index Management
+
 ```typescript
 // Cards already have tabindex="0" in createCardElement()
 // This is the correct approach - no changes needed
@@ -335,6 +356,7 @@ export function createCardElement(cardData: LocationCard): HTMLElement {
 ```
 
 ### ARIA Attributes Already Present
+
 ```typescript
 // Cards already have proper ARIA attributes - verify completeness
 
@@ -364,14 +386,15 @@ export function createCardElement(cardData: LocationCard): HTMLElement {
 
 ## State of the Art
 
-| Old Approach | Current Approach | When Changed | Impact |
-|--------------|------------------|--------------|--------|
-| setTimeout for DOM timing | requestAnimationFrame | ~2013 | More reliable, syncs with paint cycle |
-| Always smooth scroll | prefers-reduced-motion check | Safari 10.1 (2017) | Accessibility requirement, WCAG 2.2 |
-| Separate scroll/focus | Combined scrollIntoView + focus() | - | Expected behavior for keyboard users |
-| Click-only cards | Click + Enter/Space activation | - | WCAG 2.1.1 Keyboard requirement |
+| Old Approach              | Current Approach                  | When Changed       | Impact                                |
+| ------------------------- | --------------------------------- | ------------------ | ------------------------------------- |
+| setTimeout for DOM timing | requestAnimationFrame             | ~2013              | More reliable, syncs with paint cycle |
+| Always smooth scroll      | prefers-reduced-motion check      | Safari 10.1 (2017) | Accessibility requirement, WCAG 2.2   |
+| Separate scroll/focus     | Combined scrollIntoView + focus() | -                  | Expected behavior for keyboard users  |
+| Click-only cards          | Click + Enter/Space activation    | -                  | WCAG 2.1.1 Keyboard requirement       |
 
 **Deprecated/outdated:**
+
 - **jQuery animate() for scroll:** Native scrollIntoView is simpler and faster
 - **Arbitrary setTimeout delays:** Use requestAnimationFrame for DOM timing
 - **Ignoring reduced motion preference:** Violates WCAG 2.2, excludes users with vestibular disorders
@@ -397,6 +420,7 @@ export function createCardElement(cardData: LocationCard): HTMLElement {
 ## Sources
 
 ### Primary (HIGH confidence)
+
 - [MDN - Element: scrollIntoView()](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView) - Official API documentation (Dec 2025)
 - [MDN - Window.matchMedia()](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) - Media query API for motion preference detection
 - [MDN - MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) - DOM change observation API (June 2025)
@@ -404,12 +428,14 @@ export function createCardElement(cardData: LocationCard): HTMLElement {
 - [WAI-ARIA 1.2 Specification](https://w3c.github.io/aria/) - Updated specification (Jan 2026)
 
 ### Secondary (MEDIUM confidence)
+
 - [CSS-Tricks - Smooth Scrolling and Accessibility](https://css-tricks.com/smooth-scrolling-accessibility/) - Focus management and motion preferences (Apr 2017 - principles still current)
 - [Smashing Magazine - A Guide To Keyboard Accessibility (Part 1)](https://www.smashingmagazine.com/2022/11/guide-keyboard-accessibility-html-css-part1/) - Comprehensive keyboard navigation guide (Nov 2022)
 - [MDN - Keyboard-navigable JavaScript widgets](https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets) - Focus management patterns (June 2025)
 - [WebAIM - Keyboard Navigation Requirements for Web Maps](https://webaim.org/discussion/mail_message?id=50896) - Map-specific keyboard accessibility
 
 ### Tertiary (LOW confidence)
+
 - [Native Smooth Scrolling - Dev Tips](https://umaar.com/dev-tips/235-smooth-scroll-into-view/) - Quick reference for scrollIntoView
 - [Zander's Code Notes - CSS scroll-behavior](https://notes.zander.wtf/notes/css-scroll-behaviour/) - prefers-reduced-motion implementation
 - [UXPin - Keyboard Navigation Patterns for Complex Widgets](https://www.uxpin.com/studio/blog/keyboard-navigation-patterns-complex-widgets/) - General keyboard navigation patterns (Dec 2025)
@@ -417,6 +443,7 @@ export function createCardElement(cardData: LocationCard): HTMLElement {
 ## Metadata
 
 **Confidence breakdown:**
+
 - Standard stack: HIGH - All built-in APIs with excellent browser support
 - Architecture: HIGH - Patterns verified against official documentation and established best practices
 - Pitfalls: HIGH - All pitfalls documented with verified solutions from authoritative sources

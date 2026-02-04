@@ -82,14 +82,9 @@ export function createCardElement(cardData: LocationCard): HTMLElement {
  * @param cards - Array of location cards to render
  * @param containerSelector - CSS selector for the container (default: '#card-list')
  */
-export function renderCards(
-  cards: LocationCard[],
-  containerSelector: string = '#card-list'
-): void {
+export function renderCards(cards: LocationCard[], containerSelector: string = '#card-list'): void {
   // Sort cards alphabetically by location name
-  const sortedCards = [...cards].sort((a, b) =>
-    a.locationName.localeCompare(b.locationName)
-  );
+  const sortedCards = [...cards].sort((a, b) => a.locationName.localeCompare(b.locationName));
 
   // Get or create container element
   let container = document.querySelector<HTMLElement>(containerSelector);
@@ -179,7 +174,11 @@ export function updateCardSelection(selectedId: SelectionState['selectedId']): v
  * filterCards(Array.from(cards), 'fridge', visibleLayers);
  * ```
  */
-export function filterCards(cards: HTMLElement[], searchQuery: string, visibleLayers: Set<string>): void {
+export function filterCards(
+  cards: HTMLElement[],
+  searchQuery: string,
+  visibleLayers: Set<string>
+): void {
   const query = searchQuery.toLocaleLowerCase().trim();
 
   cards.forEach((card) => {

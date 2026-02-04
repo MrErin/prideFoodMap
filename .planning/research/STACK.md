@@ -9,6 +9,7 @@
 ## Executive Summary
 
 This document researches the standard 2025 approach for:
+
 1. Adding a synchronized card list to a Leaflet map (bi-directional highlighting, filtering)
 2. Fixing TypeScript `any` types in Vitest test mocks
 3. Replacing setTimeout DOM timing with event-driven patterns
@@ -58,6 +59,7 @@ function createMarkerWithCard(data: MarkerData, cardElement: HTMLElement): L.Mar
 ```
 
 **Sources:**
+
 - [StackOverflow: Make Leaflet sidebar div active on marker click and vice versa](https://stackoverflow.com/questions/22256520/make-leaflet-sidebar-div-active-on-marker-click-and-vice-versa) - Shows storing references and using event handlers for bi-directional sync
 - [GIS StackExchange: Dynamic map sidebar with info from marker upon click](https://gis.stackexchange.com/questions/340698/dynamic-map-sidebar-with-info-from-marker-upon-click) - Working example using `L.Util.stamp()` for unique IDs
 
@@ -120,6 +122,7 @@ function setupCardListeners(cardElement: HTMLElement, markerLayer: L.LayerGroup)
 ```
 
 **Sources:**
+
 - [GIS StackExchange: Dynamic map sidebar](https://gis.stackexchange.com/questions/340698/dynamic-map-sidebar-with-info-from-marker-upon-click) - Shows using `L.DomEvent.on()` for card event handlers
 
 #### 1.3 Filter Synchronization
@@ -177,12 +180,14 @@ The 2025 Vitest approach uses **type inference from function signatures** rather
 #### 2.1 Proper Mock Typing Without `any`
 
 **Current Anti-Pattern (in existing code):**
+
 ```typescript
 // BAD: Uses 'any'
 (global.fetch as any).mockResolvedValueOnce({ ok: true, text: () => mockCSV });
 ```
 
 **Recommended Pattern:**
+
 ```typescript
 // GOOD: Type-safe mock
 const mockFetch = vi.fn() as ReturnType<typeof vi.fn<Response>>;
@@ -194,7 +199,7 @@ mockFetch.mockResolvedValueOnce({
   headers: new Headers(),
   redirected: false,
   url: '',
-  clone: () => ({} as Response),
+  clone: () => ({}) as Response,
   json: () => Promise.resolve({}),
   blob: () => Promise.resolve(new Blob()),
   formData: () => Promise.resolve(new FormData()),
@@ -205,6 +210,7 @@ mockFetch.mockResolvedValueOnce({
 ```
 
 **Sources:**
+
 - [Vitest Mock Functions API](https://vitest.dev/api/mock) - Official docs on type inference for mocks
 - [GitHub Issue #1781: MockedFunction type](https://github.com/vitest-dev/vitest/issues/1781) - Clarifies to use `Mock`/`MockInstance` types, not `MockedFunction`
 
@@ -220,26 +226,28 @@ describe('loadCSV', () => {
   let fetchSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(
-      async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-        return {
-          ok: true,
-          text: () => Promise.resolve(mockCSV),
-          status: 200,
-          statusText: 'OK',
-          headers: new Headers(),
-          redirected: false,
-          url: typeof input === 'string' ? input : input.toString(),
-          clone: () => ({} as Response),
-          json: () => Promise.resolve({}),
-          blob: () => Promise.resolve(new Blob()),
-          formData: () => Promise.resolve(new FormData()),
-          arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
-          body: null,
-          bodyUsed: false,
-        } as Response;
-      }
-    );
+    fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockImplementation(
+        async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+          return {
+            ok: true,
+            text: () => Promise.resolve(mockCSV),
+            status: 200,
+            statusText: 'OK',
+            headers: new Headers(),
+            redirected: false,
+            url: typeof input === 'string' ? input : input.toString(),
+            clone: () => ({}) as Response,
+            json: () => Promise.resolve({}),
+            blob: () => Promise.resolve(new Blob()),
+            formData: () => Promise.resolve(new FormData()),
+            arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+            body: null,
+            bodyUsed: false,
+          } as Response;
+        }
+      );
   });
 
   afterEach(() => {
@@ -254,6 +262,7 @@ describe('loadCSV', () => {
 ```
 
 **Sources:**
+
 - [GitHub Discussion #4224: vi.spyOn vs vi.mock](https://github.com/vitest-dev/vitest/discussions/4224) - `vi.spyOn` is more explicit and strict with async operations
 - [Laconic Wit Blog: vi.mock is a footgun](https://laconicwit.com/vi-mock-is-a-footgun-why-vi-spyon-should-be-your-default/) (July 2025) - Explains hoisting issues with `vi.mock()`
 
@@ -278,6 +287,7 @@ describe('tests', () => {
 ```
 
 **Sources:**
+
 - [Vitest Mock API](https://vitest.dev/api/mock) - Documents `Mock<T>` type helper
 
 ---
@@ -291,6 +301,7 @@ Replace `setTimeout` with **MutationObserver** for DOM observation and **Leaflet
 #### 3.1 Replacing `setTimeout` for DOM Element Detection
 
 **Current Anti-Pattern:**
+
 ```typescript
 // BAD: Arbitrary timeout
 setTimeout(() => {
@@ -302,6 +313,7 @@ setTimeout(() => {
 ```
 
 **Recommended Pattern - MutationObserver:**
+
 ```typescript
 // GOOD: Event-driven DOM observation
 function waitForElement(selector: string, callback: (element: Element) => void): MutationObserver {
@@ -337,6 +349,7 @@ waitForElement('.leaflet-control-layers', (controlElement) => {
 ```
 
 **Sources:**
+
 - [StackOverflow: How to use MutationObserver instead of setTimeout](https://stackoverflow.com/questions/62298433/how-to-use-mutation-observer-instead-of-settimeout-to-append-a-div) - Shows practical implementation
 - [DEV.to: MutationObserver API instead of setTimeout](https://dev.to/mingyena/how-to-use-mutationobserver-api-instead-of-settimeout-1j1h) - Basic syntax and examples
 - [掘金: 利用MutationObserver实现即时内容更新](https://juejin.cn/post/7368884169755918370) (May 2024) - Recent article covering optimization strategies
@@ -353,7 +366,8 @@ map.whenReady(() => {
 });
 
 // For layer controls
-L.control.layers(undefined, overlays, { collapsed: false })
+L.control
+  .layers(undefined, overlays, { collapsed: false })
   .addTo(map)
   .on('add', () => {
     // Control is added to DOM
@@ -375,6 +389,7 @@ marker.on('add', () => {
 ```
 
 **Sources:**
+
 - [Leaflet Official Reference - Events](https://leafletjs.com/reference.html#marker-event) - Documents built-in marker and map events
 - [StackOverflow: DOMContentLoaded vs setTimeout](https://stackoverflow.com/questions/47491200/domcontentloaded-sometimes-work-and-sometimes-doesnt-while-settimeout-usually-a) - Discusses DOM timing limitations
 
@@ -400,30 +415,33 @@ function smoothScrollToCard(cardId: string): void {
 
 #### 3.4 Comparison: setTimeout vs Event-Driven
 
-| Aspect | setTimeout | Event-Driven (MutationObserver) |
-|--------|-----------|----------------------------------|
-| **Reliability** | Unpredictable, may fire too early/late | Fires exactly when DOM changes |
-| **Performance** | Polling wastes cycles | Async batch processing |
-| **Maintenance** | Magic numbers (100ms, 500ms) | Declarative intent |
-| **Accessibility** | Delayed announcements | Immediate screen reader updates |
-| **Leaflet Integration** | No map awareness | Uses built-in event system |
+| Aspect                  | setTimeout                             | Event-Driven (MutationObserver) |
+| ----------------------- | -------------------------------------- | ------------------------------- |
+| **Reliability**         | Unpredictable, may fire too early/late | Fires exactly when DOM changes  |
+| **Performance**         | Polling wastes cycles                  | Async batch processing          |
+| **Maintenance**         | Magic numbers (100ms, 500ms)           | Declarative intent              |
+| **Accessibility**       | Delayed announcements                  | Immediate screen reader updates |
+| **Leaflet Integration** | No map awareness                       | Uses built-in event system      |
 
 ---
 
 ## Implementation Priority
 
 ### Phase 1: Type Safety (Quick Win)
+
 1. Replace `(global.fetch as any)` with properly typed `vi.spyOn`
 2. Add `Mock<T>` types to test files
 3. Enable `restoreMocks` in vitest.config.ts
 
 ### Phase 2: Card List (Core Feature)
+
 1. Create `CardList` class with marker-card associations
 2. Implement bi-directional event binding
 3. Add filter/search synchronization
 4. Ensure keyboard accessibility
 
 ### Phase 3: DOM Timing (Technical Debt)
+
 1. Replace `setTimeout` in `map.ts` with MutationObserver
 2. Use Leaflet's `whenReady()` event
 3. Use `requestAnimationFrame` for visual updates
@@ -433,12 +451,12 @@ function smoothScrollToCard(cardId: string): void {
 
 ## Confidence Levels
 
-| Recommendation | Confidence | Notes |
-|----------------|------------|-------|
-| Leaflet marker-card sync with `L.Util.stamp()` | 95% | Proven pattern from multiple sources |
-| `vi.spyOn` over `vi.mock` for type safety | 90% | Official Vitest recommendation |
-| MutationObserver vs setTimeout | 85% | Well-established pattern, but requires careful implementation |
-| Leaflet built-in events for timing | 95% | Leaflet's documented event system |
+| Recommendation                                 | Confidence | Notes                                                         |
+| ---------------------------------------------- | ---------- | ------------------------------------------------------------- |
+| Leaflet marker-card sync with `L.Util.stamp()` | 95%        | Proven pattern from multiple sources                          |
+| `vi.spyOn` over `vi.mock` for type safety      | 90%        | Official Vitest recommendation                                |
+| MutationObserver vs setTimeout                 | 85%        | Well-established pattern, but requires careful implementation |
+| Leaflet built-in events for timing             | 95%        | Leaflet's documented event system                             |
 
 ---
 
@@ -454,6 +472,7 @@ function smoothScrollToCard(cardId: string): void {
 ## Sources
 
 ### Leaflet Card List Synchronization
+
 - [StackOverflow: Make Leaflet sidebar div active on marker click and vice versa](https://stackoverflow.com/questions/22256520/make-leaflet-sidebar-div-active-on-marker-click-and-vice-versa)
 - [GIS StackExchange: Dynamic map sidebar with info from marker upon click](https://gis.stackexchange.com/questions/340698/dynamic-map-sidebar-with-info-from-marker-upon-click)
 - [Leaflet.marker.highlight Plugin](https://github.com/brandonxiang/leaflet.marker.highlight)
@@ -461,6 +480,7 @@ function smoothScrollToCard(cardId: string): void {
 - [Dynamically Showing and Hiding Markers in Leaflet](https://www.raymondcamden.com/2024/09/24/dynamically-showing-and-hiding-markers-in-leaflet)
 
 ### Vitest TypeScript Mocking
+
 - [Vitest Mock Functions API](https://vitest.dev/api/mock)
 - [GitHub Issue #1781: MockedFunction type](https://github.com/vitest-dev/vitest/issues/1781)
 - [GitHub Discussion #4224: vi.spyOn vs vi.mock](https://github.com/vitest-dev/vitest/discussions/4224)
@@ -469,6 +489,7 @@ function smoothScrollToCard(cardId: string): void {
 - [Dev.to: Mock vs spyOn in Vitest with TypeScript](https://dev.to/axsh/mock-vs-spyon-in-vitest-with-typescript-a-guide-for-unit-and-integration-tests-2ge6) (January 2025)
 
 ### Event-Driven DOM Timing
+
 - [StackOverflow: MutationObserver instead of setTimeout](https://stackoverflow.com/questions/62298433/how-to-use-mutation-observer-instead-of-settimeout-to-append-a-div)
 - [DEV.to: MutationObserver API instead of setTimeout](https://dev.to/mingyena/how-to-use-mutationobserver-api-instead-of-settimeout-1j1h)
 - [掘金: 利用MutationObserver实现即时内容更新](https://juejin.cn/post/7368884169755918370) (May 2024)

@@ -16,9 +16,9 @@ affects: []
 tech-stack:
   added: []
   patterns:
-    - "Unit tests with real Leaflet instances (no mocking of Leaflet itself)"
-    - "Event-driven testing using requestAnimationFrame for DOM timing"
-    - "Isolated function testing with LayerGroup and Icon fixtures"
+    - 'Unit tests with real Leaflet instances (no mocking of Leaflet itself)'
+    - 'Event-driven testing using requestAnimationFrame for DOM timing'
+    - 'Isolated function testing with LayerGroup and Icon fixtures'
 
 key-files:
   created: []
@@ -27,14 +27,14 @@ key-files:
     - src/test/map.test.ts - Added 15 new unit tests for addMarkersFromCSV and initializeMap
 
 key-decisions:
-  - "Export addMarkersFromCSV function to enable direct unit testing without going through initializeMap"
-  - "Use requestAnimationFrame instead of map.whenReady() for layer control ARIA enhancement because whenReady fires before control is added"
+  - 'Export addMarkersFromCSV function to enable direct unit testing without going through initializeMap'
+  - 'Use requestAnimationFrame instead of map.whenReady() for layer control ARIA enhancement because whenReady fires before control is added'
   - "Test ARIA attributes via event listener verification (listens('add')) rather than DOM element inspection in unit tests"
 
 patterns-established:
-  - "Real Leaflet instance testing: Create L.layerGroup() and L.icon() fixtures instead of mocking"
-  - "Isolated function testing: Test addMarkersFromCSV directly with mocked LayerGroup"
-  - "Integration-style testing: Test initializeMap with mocked fetch but real Leaflet map"
+  - 'Real Leaflet instance testing: Create L.layerGroup() and L.icon() fixtures instead of mocking'
+  - 'Isolated function testing: Test addMarkersFromCSV directly with mocked LayerGroup'
+  - 'Integration-style testing: Test initializeMap with mocked fetch but real Leaflet map'
 
 # Metrics
 duration: 3min
@@ -86,6 +86,7 @@ Each task was committed atomically:
 ### Auto-fixed Issues
 
 **1. [Rule 1 - Bug] Fixed L.control.layers event chaining error**
+
 - **Found during:** Task 3 (initializeMap unit tests)
 - **Issue:** `L.control.layers(...).addTo(map).on('add', callback)` throws "TypeError: .on is not a function" because `L.Control` doesn't extend `Evented`
 - **Fix:** Changed to add control first, then use `requestAnimationFrame()` for DOM-based ARIA enhancement
@@ -114,5 +115,6 @@ None - no external service configuration required.
 - Ready for Phase 2: Card List & Bi-directional Sync
 
 ---
-*Phase: 01-type-safety-test-infrastructure*
-*Completed: 2026-02-04*
+
+_Phase: 01-type-safety-test-infrastructure_
+_Completed: 2026-02-04_

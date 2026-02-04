@@ -52,6 +52,7 @@ People can find food resources in Chattanooga TN quickly.
 ## Context
 
 **Current codebase state:**
+
 - Working map application deployed to GitHub Pages (https://mrerin.github.io/prideFoodMap/)
 - ~32 total markers across 2 CSV files
 - ~1,793 LOC TypeScript/JS/CSS
@@ -60,6 +61,7 @@ People can find food resources in Chattanooga TN quickly.
 - Prettier for code formatting
 
 **v1 milestone shipped:**
+
 - Type-safe test infrastructure with vi.spyOn() patterns
 - Card list UI with CSS Grid responsive layout
 - StateManager with Observer pattern for bi-directional sync
@@ -69,6 +71,7 @@ People can find food resources in Chattanooga TN quickly.
 - Complete keyboard navigation and ARIA coverage
 
 **Next milestone goals:**
+
 - Gather user feedback on v1 features
 - Consider distance-based sorting
 - Consider "search this area" viewport filtering
@@ -85,18 +88,19 @@ People can find food resources in Chattanooga TN quickly.
 
 ## Key Decisions
 
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Border highlight for emphasis | Cleaner than background color, works with existing design | ✓ Good |
-| Alphabetical card ordering | Predictable for users, easy to implement | ✓ Good |
-| All cards visible at once | Current dataset is small (~32 items), scrolling is sufficient | ✓ Good |
-| Search filters cards only | Simpler UX than filtering both cards and map simultaneously | ✓ Good |
-| Reduce map height to 50vh | Make room for card list display below map | ✓ Good |
-| Extend SelectionState via FilterState | Backward compatibility for existing code | ✓ Good |
-| Use scrollIntoView with block: 'nearest' | Minimal viewport disruption when scrolling | ✓ Good |
-| 300ms debounce for search | Prevents excessive DOM updates while feeling responsive | ✓ Good |
-| StateManager Observer pattern | Single source of truth for selection state | ✓ Good |
-| L.Util.stamp() for marker IDs | Unique ID generation without additional libraries | ✓ Good |
+| Decision                                 | Rationale                                                     | Outcome |
+| ---------------------------------------- | ------------------------------------------------------------- | ------- |
+| Border highlight for emphasis            | Cleaner than background color, works with existing design     | ✓ Good  |
+| Alphabetical card ordering               | Predictable for users, easy to implement                      | ✓ Good  |
+| All cards visible at once                | Current dataset is small (~32 items), scrolling is sufficient | ✓ Good  |
+| Search filters cards only                | Simpler UX than filtering both cards and map simultaneously   | ✓ Good  |
+| Reduce map height to 50vh                | Make room for card list display below map                     | ✓ Good  |
+| Extend SelectionState via FilterState    | Backward compatibility for existing code                      | ✓ Good  |
+| Use scrollIntoView with block: 'nearest' | Minimal viewport disruption when scrolling                    | ✓ Good  |
+| 300ms debounce for search                | Prevents excessive DOM updates while feeling responsive       | ✓ Good  |
+| StateManager Observer pattern            | Single source of truth for selection state                    | ✓ Good  |
+| L.Util.stamp() for marker IDs            | Unique ID generation without additional libraries             | ✓ Good  |
 
 ---
-*Last updated: 2026-02-03 after v1 milestone completion*
+
+_Last updated: 2026-02-03 after v1 milestone completion_

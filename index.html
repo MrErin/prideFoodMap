@@ -62,7 +62,7 @@
       }
 
       .loading.hidden {
-          display: none;
+        display: none;
       }
 
       .sr-only {
@@ -88,7 +88,7 @@
       aria-live="polite"
       aria-atomic="true"
     ></div>
-    <!-- <div id="loading" class="loading" role="status" aria-live="polite">Loading map data...</div> -->
+    <div id="loading" class="loading" role="status" aria-live="polite">Loading map data...</div>
     <main>
       <h1 class="sr-only">Chattanooga Food Resource Location Map</h1>
       <div id="map" role="application" aria-label="Interactive food resource map"></div>
@@ -99,23 +99,12 @@
           placeholder="Search locations..."
           aria-label="Search locations"
         />
-        <button
-          id="search-reset"
-          type="button"
-          class="hidden"
-          aria-label="Clear search"
-        >
+        <button id="search-reset" type="button" class="hidden" aria-label="Clear search">
           Clear
         </button>
       </div>
-      <div
-        id="card-list"
-        class="card-list"
-        role="list"
-        aria-label="Food locations list"
-      ></div>
+      <div id="card-list" class="card-list" role="list" aria-label="Food locations list"></div>
       <div id="empty-state" class="hidden" role="status"></div>
-    </main>
     </main>
 
     <script src="/src/main.ts" type="module"></script>

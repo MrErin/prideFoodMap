@@ -67,16 +67,16 @@ Deferred to future release. Tracked but not in current roadmap.
 
 Explicitly excluded. Documented to prevent scope creep.
 
-| Feature | Reason |
-|---------|--------|
-| Backend server or database | Static GitHub Pages deployment only |
-| User accounts or authentication | Public resource, no personalization needed |
-| Real-time data updates | Manual CSV updates are sufficient |
-| Database for location data | CSV files in public/ are adequate for current scale (~32 locations) |
-| Framework migration (React, Vue, etc.) | Vanilla TypeScript stack is working and sufficient |
-| Server-side rendering | Static site hosting only |
-| Offline service worker | Out of scope for v1, requires additional complexity |
-| Pagination or virtual scrolling | Current dataset small enough for all-at-once rendering |
+| Feature                                | Reason                                                              |
+| -------------------------------------- | ------------------------------------------------------------------- |
+| Backend server or database             | Static GitHub Pages deployment only                                 |
+| User accounts or authentication        | Public resource, no personalization needed                          |
+| Real-time data updates                 | Manual CSV updates are sufficient                                   |
+| Database for location data             | CSV files in public/ are adequate for current scale (~32 locations) |
+| Framework migration (React, Vue, etc.) | Vanilla TypeScript stack is working and sufficient                  |
+| Server-side rendering                  | Static site hosting only                                            |
+| Offline service worker                 | Out of scope for v1, requires additional complexity                 |
+| Pagination or virtual scrolling        | Current dataset small enough for all-at-once rendering              |
 
 ## Deployment Constraints
 
@@ -92,31 +92,32 @@ Explicitly excluded. Documented to prevent scope creep.
 
 Which phases cover which requirements. Updated during roadmap creation.
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| DEBT-01 | Phase 1 | Complete |
-| DEBT-02 | Phase 1 | Complete |
-| TEST-01 | Phase 1 | Complete |
-| TEST-02 | Phase 1 | Complete |
-| TEST-03 | Phase 1 | Complete |
-| CARD-01 | Phase 2 | Complete |
-| CARD-02 | Phase 2 | Complete |
-| CARD-03 | Phase 2 | Complete |
-| CARD-04 | Phase 2 | Complete |
-| CARD-05 | Phase 2 | Complete |
-| SYNC-01 | Phase 2 | Complete |
-| SYNC-02 | Phase 2 | Complete |
-| SYNC-03 | Phase 2 | Complete |
-| SYNC-04 | Phase 2 | Complete |
-| SRCH-01 | Phase 3 | Complete |
-| SRCH-02 | Phase 3 | Complete |
-| SRCH-03 | Phase 3 | Complete |
-| SRCH-04 | Phase 3 | Complete |
-| POLI-01 | Phase 4 | Complete |
-| POLI-02 | Phase 4 | Complete |
-| POLI-03 | Phase 4 | Complete |
+| Requirement | Phase   | Status   |
+| ----------- | ------- | -------- |
+| DEBT-01     | Phase 1 | Complete |
+| DEBT-02     | Phase 1 | Complete |
+| TEST-01     | Phase 1 | Complete |
+| TEST-02     | Phase 1 | Complete |
+| TEST-03     | Phase 1 | Complete |
+| CARD-01     | Phase 2 | Complete |
+| CARD-02     | Phase 2 | Complete |
+| CARD-03     | Phase 2 | Complete |
+| CARD-04     | Phase 2 | Complete |
+| CARD-05     | Phase 2 | Complete |
+| SYNC-01     | Phase 2 | Complete |
+| SYNC-02     | Phase 2 | Complete |
+| SYNC-03     | Phase 2 | Complete |
+| SYNC-04     | Phase 2 | Complete |
+| SRCH-01     | Phase 3 | Complete |
+| SRCH-02     | Phase 3 | Complete |
+| SRCH-03     | Phase 3 | Complete |
+| SRCH-04     | Phase 3 | Complete |
+| POLI-01     | Phase 4 | Complete |
+| POLI-02     | Phase 4 | Complete |
+| POLI-03     | Phase 4 | Complete |
 
 **Coverage:**
+
 - v1 requirements: 20 total
 - Mapped to phases: 20
 - Unmapped: 0 ✓
@@ -130,6 +131,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 **Dropped:** 0 requirements
 
 **Outcomes:**
+
 - Type-safe test infrastructure established with vi.spyOn() patterns
 - Card list UI with CSS Grid responsive layout and alphabetical sorting
 - Bi-directional marker-card synchronization via StateManager Observer pattern
@@ -140,6 +142,6 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 
-*Requirements defined: 2026-02-03*
-*Last updated: 2026-02-04 after Phase 3 completion*
-*Archived: 2026-02-03 as part of v1 milestone completion*
+_Requirements defined: 2026-02-03_
+_Last updated: 2026-02-04 after Phase 3 completion_
+_Archived: 2026-02-03 as part of v1 milestone completion_

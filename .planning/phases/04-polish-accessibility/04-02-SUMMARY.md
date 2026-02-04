@@ -22,24 +22,24 @@ affects: []
 tech-stack:
   added: []
   patterns:
-  - ARIA announcement pattern using announce() function from map.ts
-  - Keyboard event delegation with preventDefault() for Space key handling
-  - JSDoc documentation of accessibility attributes
+    - ARIA announcement pattern using announce() function from map.ts
+    - Keyboard event delegation with preventDefault() for Space key handling
+    - JSDoc documentation of accessibility attributes
 
 key-files:
   created: []
   modified:
-  - src/main.ts - Added keyboard handlers and selection announcement
-  - src/cards.ts - Added JSDoc comments documenting ARIA attributes
+    - src/main.ts - Added keyboard handlers and selection announcement
+    - src/cards.ts - Added JSDoc comments documenting ARIA attributes
 
 key-decisions:
-  - "Search input and reset button already have aria-label attributes in index.html (from Phase 3), so no changes needed"
-  - "All ARIA attributes were already present from prior phases - only JSDoc documentation was added"
+  - 'Search input and reset button already have aria-label attributes in index.html (from Phase 3), so no changes needed'
+  - 'All ARIA attributes were already present from prior phases - only JSDoc documentation was added'
 
 patterns-established:
-  - "Pattern 1: Keyboard navigation - add keydown listener alongside click listener with same callback"
-  - "Pattern 2: Screen reader announcements - use announce() function in state manager subscribe callbacks"
-  - "Pattern 3: Prevent Space key scroll - call e.preventDefault() on Space key in keyboard handlers"
+  - 'Pattern 1: Keyboard navigation - add keydown listener alongside click listener with same callback'
+  - 'Pattern 2: Screen reader announcements - use announce() function in state manager subscribe callbacks'
+  - 'Pattern 3: Prevent Space key scroll - call e.preventDefault() on Space key in keyboard handlers'
 
 # Metrics
 duration: 5min
@@ -83,15 +83,15 @@ Each task was committed atomically:
 
 All ARIA attributes verified present:
 
-| Element | ARIA Attributes | Location | Status |
-|---------|----------------|----------|--------|
-| Cards | role="listitem", aria-selected, tabindex="0" | src/cards.ts lines 40-42 | VERIFIED |
-| Markers | role="button", aria-label, tabindex="0" | src/map.ts lines 97-99 | VERIFIED |
-| Card List Container | role="list", aria-label="Food locations list" | index.html lines 114-115 | VERIFIED |
-| Layer Control | role="group", aria-label="Map Layer Controls" | src/map.ts lines 280-281 | VERIFIED |
-| Search Input | aria-label="Search locations" | index.html line 100 | VERIFIED |
-| Reset Button | aria-label="Clear search" | index.html line 106 | VERIFIED |
-| Empty State | role="status", aria-live="polite" | index.html line 117, src/emptyState.ts line 77 | VERIFIED |
+| Element             | ARIA Attributes                               | Location                                       | Status   |
+| ------------------- | --------------------------------------------- | ---------------------------------------------- | -------- |
+| Cards               | role="listitem", aria-selected, tabindex="0"  | src/cards.ts lines 40-42                       | VERIFIED |
+| Markers             | role="button", aria-label, tabindex="0"       | src/map.ts lines 97-99                         | VERIFIED |
+| Card List Container | role="list", aria-label="Food locations list" | index.html lines 114-115                       | VERIFIED |
+| Layer Control       | role="group", aria-label="Map Layer Controls" | src/map.ts lines 280-281                       | VERIFIED |
+| Search Input        | aria-label="Search locations"                 | index.html line 100                            | VERIFIED |
+| Reset Button        | aria-label="Clear search"                     | index.html line 106                            | VERIFIED |
+| Empty State         | role="status", aria-live="polite"             | index.html line 117, src/emptyState.ts line 77 | VERIFIED |
 
 ## Decisions Made
 
@@ -124,6 +124,7 @@ The test failures do not affect the functionality of the keyboard navigation and
 - Ready for final verification and deployment
 
 ---
-*Phase: 04-polish-accessibility*
-*Plan: 02*
-*Completed: 2026-02-03*
+
+_Phase: 04-polish-accessibility_
+_Plan: 02_
+_Completed: 2026-02-03_

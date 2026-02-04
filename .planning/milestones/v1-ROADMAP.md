@@ -23,6 +23,7 @@ The enhancement journey progresses from technical foundation through core featur
 **Requirements**: DEBT-01, DEBT-02, TEST-01, TEST-02, TEST-03
 
 **Success Criteria** (what must be TRUE):
+
 1. All test mocks use `vi.spyOn()` with proper types instead of `as any` assertions
 2. `setTimeout` DOM timing patterns are replaced with event-driven patterns (MutationObserver, Leaflet events)
 3. Unit tests verify marker creation, coordinate validation, and CSV parsing for `addMarkersFromCSV`
@@ -32,11 +33,13 @@ The enhancement journey progresses from technical foundation through core featur
 **Plans**: 3 plans
 
 Plans:
+
 - [x] 01-01: Replace `as any` type assertions with properly typed Vitest mocks using `vi.spyOn()`
 - [x] 01-02: Replace `setTimeout` DOM timing with event-driven patterns (MutationObserver, Leaflet `whenReady`)
 - [x] 01-03: Add unit tests for `addMarkersFromCSV`, `initializeMap`, and `announce` functions
 
 **Details**:
+
 - Created type-safe fetch API mocking pattern using vi.spyOn(global, 'fetch')
 - Established createMockResponse helper function for proper Response type mocking
 - Replaced all setTimeout calls with requestAnimationFrame and Leaflet event listeners
@@ -55,6 +58,7 @@ Plans:
 **Requirements**: CARD-01, CARD-02, CARD-03, CARD-04, CARD-05, SYNC-01, SYNC-02, SYNC-03, SYNC-04
 
 **Success Criteria** (what must be TRUE):
+
 1. Location cards display below the map in a scrollable list showing name, address, and category badges
 2. Cards are sorted alphabetically by location name and display in a mobile-responsive layout
 3. Clicking a card highlights the corresponding map marker with a visible border
@@ -64,11 +68,13 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
+
 - [x] 02-01: Create `cards.ts` module with card rendering, alphabetical sorting, and mobile-responsive layout
 - [x] 02-02: Implement `StateManager` class for bi-directional marker-card synchronization using `L.Util.stamp()` IDs (TDD)
 - [x] 02-03: Wire up click handlers for card-to-marker and marker-to-card highlighting with single-selection state
 
 **Details**:
+
 - Created cards.ts module with createCardElement and renderCards functions
 - Implemented CSS Grid responsive layout with auto-fit columns (minmax 300px)
 - Added card list container to HTML with proper ARIA attributes (role='list', aria-label)
@@ -89,6 +95,7 @@ Plans:
 **Requirements**: SRCH-01, SRCH-02, SRCH-03, SRCH-04
 
 **Success Criteria** (what must be TRUE):
+
 1. Text search box filters cards by location name in real-time as the user types
 2. When map layer control toggles marker visibility, corresponding cards are hidden or shown
 3. Empty state message displays when search or layer filtering returns no results
@@ -97,11 +104,13 @@ Plans:
 **Plans**: 3 plans in 2 waves
 
 Plans:
+
 - [x] 03-01: Extend StateManager with FilterState foundation (searchQuery field and setSearchQuery method)
 - [x] 03-02: Implement real-time text search with empty state messaging and clear/reset button
 - [x] 03-03: Connect layer control changes to card visibility with proper event listener cleanup
 
 **Details**:
+
 - Created FilterState interface extending SelectionState with searchQuery and visibleLayers
 - Added setSearchQuery method with change-detection notification pattern
 - Implemented 300ms debounced search input handler
@@ -121,6 +130,7 @@ Plans:
 **Requirements**: POLI-01, POLI-02, POLI-03
 
 **Success Criteria** (what must be TRUE):
+
 1. Clicking a marker auto-scrolls the card list to show the corresponding card
 2. Users can navigate cards with keyboard (Tab to navigate, Enter to select, Escape to deselect)
 3. All interactive elements have proper ARIA attributes (aria-selected, aria-live for announcements)
@@ -128,10 +138,12 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
+
 - [x] 04-01: Implement auto-scroll to card on marker click with smooth scroll behavior
 - [x] 04-02: Add keyboard navigation and complete ARIA attribute coverage for all interactive elements
 
 **Details**:
+
 - Implemented scrollToCard helper with prefers-reduced-motion detection
 - Added scrollIntoView with behavior (smooth/auto) and block: 'nearest'
 - Integrated auto-scroll into updateCardSelection for marker click behavior
@@ -149,18 +161,19 @@ None
 
 **Key Decisions:**
 
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Border highlight for emphasis | Cleaner than background color, works with existing design | ✓ Good |
-| Alphabetical card ordering | Predictable for users, easy to implement | ✓ Good |
-| All cards visible at once | Current dataset is small (~32 items), scrolling is sufficient | ✓ Good |
-| Search filters cards only | Simpler UX than filtering both cards and map simultaneously | ✓ Good |
-| Reduce map height to 50vh | Make room for card list display below map | ✓ Good |
-| Extend SelectionState via FilterState | Backward compatibility for existing code | ✓ Good |
-| Use scrollIntoView with block: 'nearest' | Minimal viewport disruption when scrolling | ✓ Good |
-| 300ms debounce for search | Prevents excessive DOM updates while feeling responsive | ✓ Good |
+| Decision                                 | Rationale                                                     | Outcome |
+| ---------------------------------------- | ------------------------------------------------------------- | ------- |
+| Border highlight for emphasis            | Cleaner than background color, works with existing design     | ✓ Good  |
+| Alphabetical card ordering               | Predictable for users, easy to implement                      | ✓ Good  |
+| All cards visible at once                | Current dataset is small (~32 items), scrolling is sufficient | ✓ Good  |
+| Search filters cards only                | Simpler UX than filtering both cards and map simultaneously   | ✓ Good  |
+| Reduce map height to 50vh                | Make room for card list display below map                     | ✓ Good  |
+| Extend SelectionState via FilterState    | Backward compatibility for existing code                      | ✓ Good  |
+| Use scrollIntoView with block: 'nearest' | Minimal viewport disruption when scrolling                    | ✓ Good  |
+| 300ms debounce for search                | Prevents excessive DOM updates while feeling responsive       | ✓ Good  |
 
 **Issues Resolved:**
+
 - TypeScript `any` types in test mocks eliminated
 - DOM timing race conditions from setTimeout replaced with event-driven patterns
 - Missing test coverage for core functions added
@@ -181,12 +194,12 @@ None. All code follows established patterns with no shortcuts.
 **Execution Order:**
 Phases execute in numeric order: 1 → 2 → 3 → 4
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Type Safety & Test Infrastructure | 3/3 | Complete | 2026-02-04 |
-| 2. Card List & Bi-directional Sync | 3/3 | Complete | 2026-02-03 |
-| 3. Search & Filter Integration | 3/3 | Complete | 2026-02-04 |
-| 4. Polish & Accessibility Enhancement | 2/2 | Complete | 2026-02-04 |
+| Phase                                 | Plans Complete | Status   | Completed  |
+| ------------------------------------- | -------------- | -------- | ---------- |
+| 1. Type Safety & Test Infrastructure  | 3/3            | Complete | 2026-02-04 |
+| 2. Card List & Bi-directional Sync    | 3/3            | Complete | 2026-02-03 |
+| 3. Search & Filter Integration        | 3/3            | Complete | 2026-02-04 |
+| 4. Polish & Accessibility Enhancement | 2/2            | Complete | 2026-02-04 |
 
 **Overall Progress:** 11/11 plans complete (100%)
 

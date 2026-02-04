@@ -74,12 +74,9 @@ export function setupSearchInput(
   };
 
   // Create debounced search handler (300ms delay)
-  const debouncedSearch = debounce(
-    (query: string) => {
-      stateManager.setSearchQuery(query);
-    },
-    300
-  );
+  const debouncedSearch = debounce((query: string) => {
+    stateManager.setSearchQuery(query);
+  }, 300);
 
   // Input event listener - updates reset button and debounced search
   inputElement.addEventListener('input', () => {

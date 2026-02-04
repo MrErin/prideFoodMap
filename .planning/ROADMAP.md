@@ -29,15 +29,15 @@ No phases planned yet. Run `/gsd:new-milestone` to define v2 goals and requireme
 
 ## Progress
 
-| Phase | Milestone | Plans Complete | Status | Completed |
-|-------|-----------|----------------|--------|-----------|
-| 1. Type Safety & Test Infrastructure | v1 | 3/3 | Complete | 2026-02-04 |
-| 2. Card List & Bi-directional Sync | v1 | 3/3 | Complete | 2026-02-03 |
-| 3. Search & Filter Integration | v1 | 3/3 | Complete | 2026-02-04 |
-| 4. Polish & Accessibility Enhancement | v1 | 2/2 | Complete | 2026-02-04 |
+| Phase                                 | Milestone | Plans Complete | Status   | Completed  |
+| ------------------------------------- | --------- | -------------- | -------- | ---------- |
+| 1. Type Safety & Test Infrastructure  | v1        | 3/3            | Complete | 2026-02-04 |
+| 2. Card List & Bi-directional Sync    | v1        | 3/3            | Complete | 2026-02-03 |
+| 3. Search & Filter Integration        | v1        | 3/3            | Complete | 2026-02-04 |
+| 4. Polish & Accessibility Enhancement | v1        | 2/2            | Complete | 2026-02-04 |
 
 **Overall Progress:** 11/11 plans complete (100%)
 
 ---
 
-*Last updated: 2026-02-03 after v1 milestone completion*
+_Last updated: 2026-02-03 after v1 milestone completion_

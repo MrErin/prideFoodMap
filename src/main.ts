@@ -1,5 +1,11 @@
 import 'leaflet/dist/leaflet.css';
-import { initializeMap, setupMarkerClickHandlers, highlightMarker, setupLayerEventListeners, announce } from './map.ts';
+import {
+  initializeMap,
+  setupMarkerClickHandlers,
+  highlightMarker,
+  setupLayerEventListeners,
+  announce,
+} from './map.ts';
 import { renderCards, updateCardSelection, filterCards } from './cards.ts';
 import { StateManager } from './stateManager.ts';
 import { setupSearchInput } from './search.ts';
@@ -18,7 +24,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loadingEl = document.getElementById('loading');
 
   try {
-    const { map, fridgeData, donationData, fridgeMarkerIds, donationMarkerIds } = await initializeMap();
+    const { map, fridgeData, donationData, fridgeMarkerIds, donationMarkerIds } =
+      await initializeMap();
 
     // Create location cards with category and markerId
     // markerId is now populated from addMarkersFromCSV return value using L.Util.stamp()
@@ -96,7 +103,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Announce selection to screen readers
       if (state.selectedId) {
-        const selectedCard = document.querySelector<HTMLElement>(`[data-marker-id="${state.selectedId}"]`);
+        const selectedCard = document.querySelector<HTMLElement>(
+          `[data-marker-id="${state.selectedId}"]`
+        );
         const cardName = selectedCard?.querySelector('.card-name')?.textContent ?? '';
         if (cardName) {
           announce(`Selected ${cardName}`);

@@ -9,6 +9,7 @@
 This phase focuses on three interconnected technical debt items: (1) eliminating `any` type assertions in Vitest mocks, (2) replacing `setTimeout` DOM timing with event-driven patterns, and (3) adding comprehensive unit tests for core functions. Research confirms that the current stack (Vitest 4.0.13, TypeScript 5.9.3, Leaflet 1.9.4) provides all necessary capabilities without requiring additional dependencies.
 
 **Key findings:**
+
 - Vitest 4.0 provides `vi.spyOn()` with full TypeScript type inference - no `any` needed
 - MutationObserver and Leaflet's built-in events are production-ready replacements for `setTimeout`
 - Testing Leaflet requires proper DOM setup via jsdom (already configured)
@@ -18,28 +19,32 @@ This phase focuses on three interconnected technical debt items: (1) eliminating
 ## Standard Stack
 
 ### Core
-| Library | Version | Purpose | Why Standard |
-|---------|---------|---------|--------------|
-| **Vitest** | 4.0.13 | Test runner + mocking | Native TypeScript support, built on Vite, fastest test runner |
-| **TypeScript** | 5.9.3 | Type system | Strict mode enabled, modern ES2022 target |
-| **jsdom** | 27.2.0 | DOM environment | Already configured in vitest.config.ts |
-| **Leaflet** | 1.9.4 | Map library | Current stable release, well-documented event system |
+
+| Library        | Version | Purpose               | Why Standard                                                  |
+| -------------- | ------- | --------------------- | ------------------------------------------------------------- |
+| **Vitest**     | 4.0.13  | Test runner + mocking | Native TypeScript support, built on Vite, fastest test runner |
+| **TypeScript** | 5.9.3   | Type system           | Strict mode enabled, modern ES2022 target                     |
+| **jsdom**      | 27.2.0  | DOM environment       | Already configured in vitest.config.ts                        |
+| **Leaflet**    | 1.9.4   | Map library           | Current stable release, well-documented event system          |
 
 ### Supporting
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| **@vitest/coverage-v8** | 4.0.13 | Code coverage | Verify test completeness |
-| **@testing-library/dom** | 10.4.1 | DOM queries | Not needed for this phase (unit tests only) |
-| **PapaParse** | 5.5.3 | CSV parsing | Already used, needs testing |
+
+| Library                  | Version | Purpose       | When to Use                                 |
+| ------------------------ | ------- | ------------- | ------------------------------------------- |
+| **@vitest/coverage-v8**  | 4.0.13  | Code coverage | Verify test completeness                    |
+| **@testing-library/dom** | 10.4.1  | DOM queries   | Not needed for this phase (unit tests only) |
+| **PapaParse**            | 5.5.3   | CSV parsing   | Already used, needs testing                 |
 
 ### Alternatives Considered
-| Instead of | Could Use | Tradeoff |
-|------------|-----------|----------|
-| `vi.spyOn()` | `vi.mock()` | `vi.mock()` is hoisted, harder to type properly; `vi.spyOn()` is explicit and safer |
-| MutationObserver | `waitFor()` from Testing Library | Additional dependency; MutationObserver is native |
-| Leaflet events | Custom promises | Reinventing the wheel; Leaflet's event system is battle-tested |
+
+| Instead of       | Could Use                        | Tradeoff                                                                            |
+| ---------------- | -------------------------------- | ----------------------------------------------------------------------------------- |
+| `vi.spyOn()`     | `vi.mock()`                      | `vi.mock()` is hoisted, harder to type properly; `vi.spyOn()` is explicit and safer |
+| MutationObserver | `waitFor()` from Testing Library | Additional dependency; MutationObserver is native                                   |
+| Leaflet events   | Custom promises                  | Reinventing the wheel; Leaflet's event system is battle-tested                      |
 
 **Installation:**
+
 ```bash
 # No additional packages needed - all dependencies already installed
 npm install
@@ -48,6 +53,7 @@ npm install
 ## Architecture Patterns
 
 ### Test File Organization
+
 ```
 src/
 ├── map.ts              # Production code
@@ -62,6 +68,7 @@ src/
 **When to use:** Any test that mocks network requests
 
 **Example:**
+
 ```typescript
 // Source: https://vitest.dev/api/mock.html
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -70,26 +77,28 @@ describe('loadCSV', () => {
   let fetchSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(
-      async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-        return {
-          ok: true,
-          text: () => Promise.resolve(mockCSV),
-          status: 200,
-          statusText: 'OK',
-          headers: new Headers(),
-          redirected: false,
-          url: typeof input === 'string' ? input : input.toString(),
-          clone: () => ({} as Response),
-          json: () => Promise.resolve({}),
-          blob: () => Promise.resolve(new Blob()),
-          formData: () => Promise.resolve(new FormData()),
-          arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
-          body: null,
-          bodyUsed: false,
-        } as Response;
-      }
-    );
+    fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockImplementation(
+        async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+          return {
+            ok: true,
+            text: () => Promise.resolve(mockCSV),
+            status: 200,
+            statusText: 'OK',
+            headers: new Headers(),
+            redirected: false,
+            url: typeof input === 'string' ? input : input.toString(),
+            clone: () => ({}) as Response,
+            json: () => Promise.resolve({}),
+            blob: () => Promise.resolve(new Blob()),
+            formData: () => Promise.resolve(new FormData()),
+            arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+            body: null,
+            bodyUsed: false,
+          } as Response;
+        }
+      );
   });
 
   afterEach(() => {
@@ -110,6 +119,7 @@ describe('loadCSV', () => {
 **When to use:** Code that waits for Leaflet controls or markers to be added to DOM
 
 **Example:**
+
 ```typescript
 // Replacement for setTimeout in src/map.ts line 153-167
 function waitForElement(selector: string, callback: (element: Element) => void): MutationObserver {
@@ -130,7 +140,8 @@ function waitForElement(selector: string, callback: (element: Element) => void):
 }
 
 // Usage in initializeMap:
-const layersControl = L.control.layers(undefined, overlays, { collapsed: false })
+const layersControl = L.control
+  .layers(undefined, overlays, { collapsed: false })
   .addTo(map)
   .on('add', () => {
     // Control is added to DOM - enhance accessibility
@@ -150,6 +161,7 @@ const layersControl = L.control.layers(undefined, overlays, { collapsed: false }
 **When to use:** Map initialization, tile loading confirmation
 
 **Example:**
+
 ```typescript
 // Source: https://leafletjs.com/reference.html#map-event
 export const initializeMap = async (): Promise<void> => {
@@ -162,7 +174,8 @@ export const initializeMap = async (): Promise<void> => {
 
   // Tile loading events
   const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    attribution:
+      '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19,
   });
 
@@ -184,12 +197,12 @@ export const initializeMap = async (): Promise<void> => {
 
 ## Don't Hand-Roll
 
-| Problem | Don't Build | Use Instead | Why |
-|---------|-------------|-------------|-----|
-| Type-safe mocks | Custom mock factories | `vi.spyOn()` with proper typing | Vitest provides type inference, custom code adds maintenance burden |
-| DOM waiting | Custom polling/timeout loops | MutationObserver, Leaflet events | Native APIs are more efficient and reliable |
-| Test timers | Custom timer mocks | `vi.useFakeTimers()` | Built-in Vitest feature, handles all timer edge cases |
-| Response typing | Manual Response objects | TypeScript `Response` type from global scope | Standard Web API type |
+| Problem         | Don't Build                  | Use Instead                                  | Why                                                                 |
+| --------------- | ---------------------------- | -------------------------------------------- | ------------------------------------------------------------------- |
+| Type-safe mocks | Custom mock factories        | `vi.spyOn()` with proper typing              | Vitest provides type inference, custom code adds maintenance burden |
+| DOM waiting     | Custom polling/timeout loops | MutationObserver, Leaflet events             | Native APIs are more efficient and reliable                         |
+| Test timers     | Custom timer mocks           | `vi.useFakeTimers()`                         | Built-in Vitest feature, handles all timer edge cases               |
+| Response typing | Manual Response objects      | TypeScript `Response` type from global scope | Standard Web API type                                               |
 
 **Key insight:** The phase's problems all have standard solutions in the existing stack. No custom utilities or patterns are needed.
 
@@ -202,6 +215,7 @@ export const initializeMap = async (): Promise<void> => {
 **Why it happens:** `vi.restoreAllMocks()` restores all mocks, but manual `mockRestore()` is specific to each spy
 
 **How to avoid:**
+
 ```typescript
 // GOOD: Explicit spy restoration
 let fetchSpy: ReturnType<typeof vi.spyOn>;
@@ -212,7 +226,7 @@ beforeEach(() => {
 
 afterEach(() => {
   fetchSpy.mockRestore(); // Explicit restoration
-  vi.restoreAllMocks();   // Cleanup for any other mocks
+  vi.restoreAllMocks(); // Cleanup for any other mocks
 });
 ```
 
@@ -225,6 +239,7 @@ afterEach(() => {
 **Why it happens:** `observer.disconnect()` must be called explicitly
 
 **How to avoid:**
+
 ```typescript
 // GOOD: Always disconnect observers
 const observer = new MutationObserver(callback);
@@ -245,6 +260,7 @@ afterEach(() => {
 **Why it happens:** Leaflet adds elements asynchronously; `map.whenReady()` may not wait for all elements
 
 **How to avoid:**
+
 ```typescript
 // GOOD: Use Leaflet's specific events
 marker.on('add', () => {
@@ -268,6 +284,7 @@ await vi.waitFor(() => {
 **Why it happens:** Leaflet uses setTimeout internally for animations and tile loading
 
 **How to avoid:**
+
 ```typescript
 // AVOID: Fake timers with Leaflet
 vi.useFakeTimers(); // Breaks Leaflet
@@ -296,7 +313,7 @@ const createMockResponse = (text: string, ok = true): Partial<Response> => ({
   headers: new Headers(),
   redirected: false,
   url: '',
-  clone: () => ({} as Response),
+  clone: () => ({}) as Response,
   json: () => Promise.resolve({}),
   blob: () => Promise.resolve(new Blob()),
   formData: () => Promise.resolve(new FormData()),
@@ -307,9 +324,7 @@ const createMockResponse = (text: string, ok = true): Partial<Response> => ({
 
 // Usage in test
 beforeEach(() => {
-  vi.spyOn(global, 'fetch').mockResolvedValueOnce(
-    createMockResponse(mockCSV) as Response
-  );
+  vi.spyOn(global, 'fetch').mockResolvedValueOnce(createMockResponse(mockCSV) as Response);
 });
 ```
 
@@ -417,10 +432,13 @@ describe('initializeMap', () => {
 
   it('should initialize map with tile layer', async () => {
     // Mock loadCSV to avoid network requests
-    vi.spyOn(global, 'fetch').mockImplementation(async () => ({
-      ok: true,
-      text: () => Promise.resolve(''),
-    } as Response));
+    vi.spyOn(global, 'fetch').mockImplementation(
+      async () =>
+        ({
+          ok: true,
+          text: () => Promise.resolve(''),
+        }) as Response
+    );
 
     await expect(initializeMap()).resolves.not.toThrow();
 
@@ -433,13 +451,14 @@ describe('initializeMap', () => {
 
 ## State of the Art
 
-| Old Approach | Current Approach | When Changed | Impact |
-|--------------|------------------|--------------|--------|
-| `vi.mock()` with manual types | `vi.spyOn()` with type inference | Vitest 3.0+ | Simplified mock setup, better type safety |
-| `setTimeout` for DOM timing | MutationObserver, built-in events | ES2015+, modern testing | More reliable tests, no arbitrary delays |
-| `as any` for mocks | Proper mock implementations | TypeScript strict mode adoption | Caught bugs at compile time |
+| Old Approach                  | Current Approach                  | When Changed                    | Impact                                    |
+| ----------------------------- | --------------------------------- | ------------------------------- | ----------------------------------------- |
+| `vi.mock()` with manual types | `vi.spyOn()` with type inference  | Vitest 3.0+                     | Simplified mock setup, better type safety |
+| `setTimeout` for DOM timing   | MutationObserver, built-in events | ES2015+, modern testing         | More reliable tests, no arbitrary delays  |
+| `as any` for mocks            | Proper mock implementations       | TypeScript strict mode adoption | Caught bugs at compile time               |
 
 **Deprecated/outdated:**
+
 - `vi.mock()` for simple function mocking: Use `vi.spyOn()` instead - more explicit and easier to type
 - Manual `sleep()` functions in tests: Use `vi.waitFor()` or event-driven patterns
 - Testing Timer Mocks with Leaflet: Use real timers - Leaflet's internal timing is complex
@@ -459,6 +478,7 @@ describe('initializeMap', () => {
 ## Sources
 
 ### Primary (HIGH confidence)
+
 - [Vitest Mock Functions API](https://vitest.dev/api/mock) - Official docs on `vi.spyOn`, mock typing
 - [Vitest Mocking Guide](https://vitest.dev/guide/mocking.html) - Comprehensive mocking patterns
 - [Leaflet 1.9.4 Reference](https://leafletjs.com/reference.html) - Event system, map lifecycle
@@ -466,18 +486,21 @@ describe('initializeMap', () => {
 - [Project: src/test/map.test.ts](/home/erinmeaker/Documents/source/prideFoodMap/src/test/map.test.ts) - Current test patterns
 
 ### Secondary (MEDIUM confidence)
+
 - [Mock vs. SpyOn in Vitest with TypeScript](https://dev.to/axsh/mock-vs-spyon-in-vitest-with-typescript-a-guide-for-unit-and-integration-tests-2ge6) (January 2025) - Practical comparison of mocking approaches
 - [vi.mock Is a Footgun](https://laconicwit.com/vi-mock-is-a-footgun-why-vi-spyon-should-be-your-default/) (July 2025) - Arguments for preferring `vi.spyOn`
 - [Project: .planning/research/STACK.md](/home/erinmeaker/Documents/source/prideFoodMap/.planning/research/STACK.md) - Existing research on card list sync and mocking
 - [Project: .planning/codebase/TESTING.md](/home/erinmeaker/Documents/source/prideFoodMap/.planning/codebase/TESTING.md) - Current test patterns
 
 ### Tertiary (LOW confidence)
+
 - [MutationObserver in testing](https://stackoverflow.com/questions/61036156/react-typescript-testing-typeerror-mutationobserver-is-not-a-constructor) - Addresses common jsdom issues
 - [Vitest Browser Mode Guide](https://howtotestfrontend.com/resources/vitest-browser-mode-guide-and-setup-info) - Not needed for this phase (jsdom is sufficient)
 
 ## Metadata
 
 **Confidence breakdown:**
+
 - Standard stack: HIGH - All libraries verified via official docs and project config
 - Architecture: HIGH - Patterns verified via Vitest and Leaflet official documentation
 - Pitfalls: MEDIUM - Based on common testing issues, some specific to Leaflet/jsdom interaction need validation
@@ -490,9 +513,11 @@ describe('initializeMap', () => {
 ### Current Technical Debt Locations
 
 **File: src/test/map.test.ts**
+
 - Lines 17, 31, 39, 50, 62: `(global.fetch as any)` type assertions
 
 **File: src/map.ts**
+
 - Line 55: `setTimeout` for announcement timing
 - Lines 153-167: `setTimeout` for layer control DOM detection
 - Functions needing tests:
@@ -503,6 +528,7 @@ describe('initializeMap', () => {
 ### Test Coverage Gaps
 
 Based on current code analysis:
+
 1. **addMarkersFromCSV**: No unit tests
 2. **initializeMap**: No unit tests (only E2E tests)
 3. **announce**: Tests exist but use fake timers (need to verify real behavior)

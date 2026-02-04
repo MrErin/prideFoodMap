@@ -25,13 +25,13 @@ key-files:
   modified: [src/cards.ts, src/map.ts, src/main.ts, src/cards.css]
 
 key-decisions:
-  - "Use array index mapping to link marker IDs from addMarkersFromCSV to cards - simple and reliable"
+  - 'Use array index mapping to link marker IDs from addMarkersFromCSV to cards - simple and reliable'
   - "CSS class 'marker-selected' for markers, aria-selected attribute for cards - distinct approaches for different element types"
 
 patterns-established:
-  - "Pattern: StateManager.subscribe() for bi-directional state synchronization"
-  - "Pattern: requestAnimationFrame for smooth visual updates and DOM timing"
-  - "Pattern: L.Util.stamp() for unique marker IDs linking markers to cards"
+  - 'Pattern: StateManager.subscribe() for bi-directional state synchronization'
+  - 'Pattern: requestAnimationFrame for smooth visual updates and DOM timing'
+  - 'Pattern: L.Util.stamp() for unique marker IDs linking markers to cards'
 
 # Metrics
 duration: 4min
@@ -85,6 +85,7 @@ Each task was committed atomically:
 ### Auto-fixed Issues
 
 **1. [Rule 3 - Blocking] Fixed TypeScript unused import error**
+
 - **Found during:** Task 1 (updateCardSelection function)
 - **Issue:** SelectionState type import was unused, causing TS6133 error
 - **Fix:** Changed function signature to use SelectionState['selectedId'] type instead of inline string | null
@@ -114,5 +115,6 @@ None - no external service configuration required.
 - No blockers - ready to proceed to next phase
 
 ---
-*Phase: 02-card-list-bi-directional-sync*
-*Completed: 2026-02-03*
+
+_Phase: 02-card-list-bi-directional-sync_
+_Completed: 2026-02-03_

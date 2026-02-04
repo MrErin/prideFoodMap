@@ -88,7 +88,10 @@
 
 /* Marker highlight styles (for plan 02-03) */
 .leaflet-marker-icon {
-  transition: filter 0.2s ease, transform 0.2s ease, outline 0.2s ease;
+  transition:
+    filter 0.2s ease,
+    transform 0.2s ease,
+    outline 0.2s ease;
 }
 
 .leaflet-marker-icon.marker-selected {
@@ -154,4 +157,3 @@
 .card.hidden {
   display: none;
 }
-

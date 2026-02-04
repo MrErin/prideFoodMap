@@ -17,8 +17,8 @@ tech-stack:
   added: []
   patterns:
     - "Leaflet 'add' event for DOM detection instead of setTimeout"
-    - "requestAnimationFrame for announcement timing instead of setTimeout"
-    - "vi.waitFor() for testing requestAnimationFrame instead of fake timers"
+    - 'requestAnimationFrame for announcement timing instead of setTimeout'
+    - 'vi.waitFor() for testing requestAnimationFrame instead of fake timers'
 
 key-files:
   created: []
@@ -28,13 +28,13 @@ key-files:
 
 key-decisions:
   - "Use Leaflet's built-in 'add' event instead of setTimeout for layer control DOM detection"
-  - "Use requestAnimationFrame instead of setTimeout for ARIA announcement timing"
-  - "Use vi.waitFor() instead of vi.advanceTimersByTime() for testing async DOM updates"
+  - 'Use requestAnimationFrame instead of setTimeout for ARIA announcement timing'
+  - 'Use vi.waitFor() instead of vi.advanceTimersByTime() for testing async DOM updates'
 
 patterns-established:
   - "Event-driven DOM detection: Listen for Leaflet 'add' event instead of polling with setTimeout"
-  - "Native browser timing: Use requestAnimationFrame for frame-synchronized DOM updates"
-  - "Real timer testing: Use vi.waitFor() for async behavior instead of fake timers"
+  - 'Native browser timing: Use requestAnimationFrame for frame-synchronized DOM updates'
+  - 'Real timer testing: Use vi.waitFor() for async behavior instead of fake timers'
 
 # Metrics
 duration: 1min
@@ -100,5 +100,6 @@ None - no external service configuration required.
 - Ready for next phase: Type-safe mocking with vi.spyOn() (Plan 01-03)
 
 ---
-*Phase: 01-type-safety-test-infrastructure*
-*Completed: 2026-02-04*
+
+_Phase: 01-type-safety-test-infrastructure_
+_Completed: 2026-02-04_

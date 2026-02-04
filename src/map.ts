@@ -199,7 +199,7 @@ export function setupLayerEventListeners(map: L.Map, stateManager: StateManager)
   // Map layer control overlay names to card category badges
   const layerNameMapping: Record<string, string> = {
     'Community Fridge and Pantry Locations': 'Community Fridge',
-    'Food Donation Sites': 'Food Donation'
+    'Food Donation Sites': 'Food Donation',
   };
 
   const overlayAddHandler = (e: L.LayersControlEvent) => {
@@ -224,7 +224,7 @@ export function setupLayerEventListeners(map: L.Map, stateManager: StateManager)
   cleanupFunctions.push(() => map.off('overlayremove', overlayRemoveHandler));
 
   // Return combined cleanup function
-  return () => cleanupFunctions.forEach(fn => fn());
+  return () => cleanupFunctions.forEach((fn) => fn());
 }
 
 export interface InitializeMapResult {
@@ -253,8 +253,18 @@ export const initializeMap = async (): Promise<InitializeMapResult> => {
       loadCSV(`${baseURL}data/donationPins.csv`),
     ]);
 
-    const fridgeMarkerIds = addMarkersFromCSV(fridgeData, fridgeLayer, fridgeIcon, 'Community Fridge');
-    const donationMarkerIds = addMarkersFromCSV(donationData, donationLayer, donationIcon, 'Food Donation');
+    const fridgeMarkerIds = addMarkersFromCSV(
+      fridgeData,
+      fridgeLayer,
+      fridgeIcon,
+      'Community Fridge'
+    );
+    const donationMarkerIds = addMarkersFromCSV(
+      donationData,
+      donationLayer,
+      donationIcon,
+      'Food Donation'
+    );
 
     const allMarkers: L.Layer[] = [...fridgeLayer.getLayers(), ...donationLayer.getLayers()];
     if (allMarkers.length > 0) {

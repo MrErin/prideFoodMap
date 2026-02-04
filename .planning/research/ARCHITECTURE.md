@@ -7,6 +7,7 @@
 Create `/home/erinmeaker/Documents/source/prideFoodMap/src/cards.ts` alongside `map.ts`.
 
 **Rationale:**
+
 - Single Responsibility: `map.ts` handles Leaflet logic, `cards.ts` handles DOM rendering
 - `cards.ts` imports from `map.ts` (not vice versa) - cleaner dependency direction
 - Easier to test card logic in isolation
@@ -42,7 +43,7 @@ class StateManager {
     this.state = {
       activeId: null,
       hoveredId: null,
-      visibleLayer: 'both'
+      visibleLayer: 'both',
     };
   }
 
@@ -67,16 +68,19 @@ class StateManager {
   }
 
   private notify(event: string) {
-    this.listeners.get(event)?.forEach(cb => cb(this.state));
+    this.listeners.get(event)?.forEach((cb) => cb(this.state));
   }
 
-  get() { return this.state; }
+  get() {
+    return this.state;
+  }
 }
 
 export const stateManager = new StateManager();
 ```
 
 **Usage:**
+
 - `cards.ts` subscribes to state changes to update highlighting
 - `map.ts` subscribes to state changes to open popups/highlight markers
 - Both can trigger state changes (card click, marker click, layer toggle)
@@ -110,6 +114,7 @@ export const stateManager = new StateManager();
 ### Implementation Details
 
 **Card → Marker (card click):**
+
 ```typescript
 // cards.ts
 cardElement.addEventListener('click', () => {
@@ -127,6 +132,7 @@ stateManager.on('active', (state) => {
 ```
 
 **Marker → Card (marker click):**
+
 ```typescript
 // map.ts
 marker.on('click', () => {
@@ -135,13 +141,14 @@ marker.on('click', () => {
 
 // cards.ts
 stateManager.on('active', (state) => {
-  document.querySelectorAll('.card').forEach(card => {
+  document.querySelectorAll('.card').forEach((card) => {
     card.classList.toggle('active', card.dataset.id === state.activeId);
   });
 });
 ```
 
 **Layer Control → Cards (filter sync):**
+
 ```typescript
 // map.ts
 layerControl.on('change', (visibleLayers) => {
@@ -150,7 +157,7 @@ layerControl.on('change', (visibleLayers) => {
 
 // cards.ts
 stateManager.on('filter', (state) => {
-  document.querySelectorAll('.card').forEach(card => {
+  document.querySelectorAll('.card').forEach((card) => {
     const cardLayer = card.dataset.layer;
     card.hidden = !isLayerVisible(cardLayer, state.visibleLayer);
   });
@@ -160,6 +167,7 @@ stateManager.on('filter', (state) => {
 ## Component Boundaries
 
 ### `map.ts` Responsibilities
+
 - Leaflet map initialization
 - Marker creation from CSV data
 - Layer control management
@@ -171,6 +179,7 @@ stateManager.on('filter', (state) => {
 - **Imports:** None (Leaflet imported, no internal deps)
 
 ### `cards.ts` Responsibilities
+
 - Card HTML rendering from `MarkerData`
 - Card list filtering based on layer visibility
 - Card highlighting on state changes
@@ -182,6 +191,7 @@ stateManager.on('filter', (state) => {
   - `stateManager` from local state
 
 ### `main.ts` Responsibilities
+
 - Initialization orchestration
 - CSS imports
 - Error handling

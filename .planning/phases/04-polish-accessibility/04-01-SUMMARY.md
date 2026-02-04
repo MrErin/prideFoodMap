@@ -30,13 +30,13 @@ key-files:
 
 key-decisions:
   - "Use scrollIntoView with block: 'nearest' for minimal viewport disruption"
-  - "Check prefers-reduced-motion media query for accessibility"
-  - "Move keyboard focus to card after scroll for continued keyboard navigation"
-  - "Focus styling distinct from selection styling for clarity"
+  - 'Check prefers-reduced-motion media query for accessibility'
+  - 'Move keyboard focus to card after scroll for continued keyboard navigation'
+  - 'Focus styling distinct from selection styling for clarity'
 
 patterns-established:
   - "Pattern 1: Auto-Scroll with Accessibility - Use window.matchMedia('(prefers-reduced-motion: reduce)') to detect motion preference and adjust scroll behavior accordingly"
-  - "Pattern 2: Focus Management - Always move keyboard focus when programmatically scrolling to elements, enabling keyboard users to continue navigation"
+  - 'Pattern 2: Focus Management - Always move keyboard focus when programmatically scrolling to elements, enabling keyboard users to continue navigation'
 
 # Metrics
 duration: 3min
@@ -56,6 +56,7 @@ completed: 2026-02-04
 - **Files modified:** 2
 
 ## Accomplishments
+
 - Implemented scrollToCard helper function with prefers-reduced-motion detection
 - Integrated auto-scroll into updateCardSelection for marker click behavior
 - Added CSS focus styling for keyboard accessibility
@@ -69,6 +70,7 @@ Each task was committed atomically:
 3. **Task 3: Add CSS focus styling for cards** - `b2f6e8c` (feat)
 
 ## Files Created/Modified
+
 - `src/cards.ts` - Added scrollToCard() helper function, integrated into updateCardSelection()
 - `src/cards.css` - Added .card:focus rule with visible outline
 
@@ -89,5 +91,6 @@ None - no external service configuration required.
 Auto-scroll functionality complete. Ready to proceed with Plan 04-02 (Focus Trap Enhancement for Layer Control).
 
 ---
-*Phase: 04-polish-accessibility*
-*Completed: 2026-02-04*
+
+_Phase: 04-polish-accessibility_
+_Completed: 2026-02-04_
