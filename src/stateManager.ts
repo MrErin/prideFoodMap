@@ -13,6 +13,13 @@ export interface SelectionState {
 }
 
 /**
+ * Filter state extending SelectionState with search query
+ */
+export interface FilterState extends SelectionState {
+  searchQuery: string;
+}
+
+/**
  * Listener type for state changes
  */
 export type StateListener = (state: SelectionState) => void;
@@ -31,14 +38,17 @@ export type StateListener = (state: SelectionState) => void;
  * ```
  */
 export class StateManager {
-  private state: SelectionState = { selectedId: null };
+  private state: FilterState = {
+    selectedId: null,
+    searchQuery: ''
+  };
   private listeners: StateListener[] = [];
 
   /**
    * Get current state as immutable snapshot
    * @returns Copy of current state
    */
-  getState(): SelectionState {
+  getState(): FilterState {
     // Return new object to prevent external mutation
     return { ...this.state };
   }
@@ -62,6 +72,18 @@ export class StateManager {
   clearSelection(): void {
     if (this.state.selectedId !== null) {
       this.state.selectedId = null;
+      this.notify();
+    }
+  }
+
+  /**
+   * Set the search query
+   * Notifies listeners only if query actually changes
+   * @param query - The new search query string
+   */
+  setSearchQuery(query: string): void {
+    if (this.state.searchQuery !== query) {
+      this.state.searchQuery = query;
       this.notify();
     }
   }
