@@ -65,9 +65,9 @@ export const addMarkersFromCSV = (
   icon: L.Icon,
   layerName: string,
   stateManager: StateManager
-): string[] => {
+): (string | null)[] => {
   let markersAdded = 0;
-  const markerIds: string[] = [];
+  const markerIds: (string | null)[] = [];
 
   data.forEach((row: MarkerData, index: number) => {
     const lat: number = row.latitude;
@@ -106,6 +106,7 @@ export const addMarkersFromCSV = (
       markersAdded++;
     } else {
       console.warn(`Invalid coordinates at row ${index + 1}:`, { lat, lng, row });
+      markerIds.push(null);
     }
   });
   announce(`${markersAdded} ${layerName} locations loaded`);
@@ -218,8 +219,8 @@ export interface InitializeMapResult {
   map: L.Map;
   fridgeData: MarkerData[];
   donationData: MarkerData[];
-  fridgeMarkerIds: string[];
-  donationMarkerIds: string[];
+  fridgeMarkerIds: (string | null)[];
+  donationMarkerIds: (string | null)[];
 }
 
 export const initializeMap = async (
