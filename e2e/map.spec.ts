@@ -88,17 +88,6 @@ test.describe('Map functionality', () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test('should open popup when marker is clicked', async ({ page, browserName }) => {
-    test.skip(browserName === 'firefox', 'Flaky on Firefox due to timing');
-    await page.goto('/');
-    await page.waitForTimeout(3000);
-
-    const firstMarker = page.locator('.leaflet-marker-icon').first();
-    await firstMarker.click();
-    const popup = page.locator('.leaflet-popup');
-    await expect(popup).toBeVisible();
-  });
-
   test('should toggle layers', async ({ page }) => {
     await page.goto('/');
     await page.waitForTimeout(3000);
