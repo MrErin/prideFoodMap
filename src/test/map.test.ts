@@ -98,33 +98,31 @@ describe('announce', () => {
     announcerElement = document.createElement('div');
     announcerElement.setAttribute('id', 'announcements');
     document.body.appendChild(announcerElement);
-    vi.useFakeTimers();
   });
 
   afterEach(() => {
     document.body.removeChild(announcerElement);
-    vi.restoreAllMocks();
-    vi.useRealTimers();
   });
 
-  it('should set text content on announcements element', () => {
+  it('should set text content on announcements element', async () => {
     announce('Test message');
 
-    vi.advanceTimersByTime(100);
-
-    expect(announcerElement.textContent).toBe('Test message');
+    await vi.waitFor(() => {
+      expect(announcerElement.textContent).toBe('Test message');
+    });
   });
 
-  it('should clear content before setting new text', () => {
+  it('should clear content before setting new text', async () => {
     announcerElement.textContent = 'Old message';
 
     announce('New message');
 
-    //before time has advanced
+    // Before next frame
     expect(announcerElement.textContent).toBe('');
 
-    vi.advanceTimersByTime(100);
-    expect(announcerElement.textContent).toBe('New message');
+    await vi.waitFor(() => {
+      expect(announcerElement.textContent).toBe('New message');
+    });
   });
 
   it('should handle missing announcements element gracefully', () => {
@@ -133,7 +131,6 @@ describe('announce', () => {
     }
 
     expect(() => announce('Test')).not.toThrow();
-    vi.advanceTimersByTime(100);
 
     document.body.appendChild(announcerElement);
   });
