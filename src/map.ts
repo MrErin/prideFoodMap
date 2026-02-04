@@ -113,7 +113,12 @@ export const addMarkersFromCSV = (
   announce(`${markersAdded} ${layerName} locations loaded`);
 };
 
-export const initializeMap = async (): Promise<void> => {
+export interface InitializeMapResult {
+  fridgeData: MarkerData[];
+  donationData: MarkerData[];
+}
+
+export const initializeMap = async (): Promise<InitializeMapResult> => {
   const map: L.Map = L.map('map').setView([37.8, -96], 4); // Default center USA
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -171,6 +176,8 @@ export const initializeMap = async (): Promise<void> => {
     announce(
       'Map loaded. Use Tab to navigate between markers, Enter to open details, arrow keys to pan, plus and minus to zoom.'
     );
+
+    return { fridgeData, donationData };
   } catch (error) {
     console.error('Error loading CSV files:', error);
     announce('Error loading map data. Please try again later.');
