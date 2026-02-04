@@ -10,30 +10,30 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 2 of 4 (Card List & Bi-directional Sync)
-Plan: 1 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-04T02:11:24Z - Completed 02-01-EXECUTE (Card List UI)
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-02-04T02:18:00Z - Completed 02-03-PLAN.md (Bi-directional Sync)
 
-Progress: [███████████░░░░] 40%
+Progress: [██████████████] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 7
 - Average duration: 2 min
-- Total execution time: 0.11 hours
+- Total execution time: 0.20 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 | 3 | 3 | 2 min |
-| 2 | 1 | 3 | 4 min |
+| 2 | 3 | 3 | 3 min |
 | 3 | 0 | 2 | - |
 | 4 | 0 | 2 | - |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (1 min), 01-02 (1 min), 01-03 (3 min), 02-01 (4 min)
+- Last 5 plans: 01-02 (1 min), 01-03 (3 min), 02-01 (4 min), 02-02 (1 min), 02-03 (4 min)
 - Trend: Consistent fast execution
 
 *Updated after each plan completion*
@@ -68,6 +68,19 @@ Recent decisions affecting current work:
 - markerId uses empty string placeholder (will be populated in plan 02-03 with L.Util.stamp())
 - TypeScript type-only imports required when verbatimModuleSyntax is enabled
 
+**02-02 (StateManager for single-selection state):**
+- Observer pattern with subscribe/notify for decoupled state management
+- StateManager class with getState, setSelected, clearSelection, subscribe methods
+- Immutable state snapshots returned via {...this.state} spread
+- Only notifies listeners when selectedId actually changes
+
+**02-03 (Bi-directional Marker-Card Sync):**
+- Use array index mapping to link marker IDs from addMarkersFromCSV to cards
+- CSS class 'marker-selected' for markers, aria-selected attribute for cards
+- StateManager.subscribe() for bi-directional state synchronization
+- requestAnimationFrame for smooth visual updates and DOM timing
+- L.Util.stamp() for unique marker IDs linking markers to cards
+
 ### Pending Todos
 
 None yet.
@@ -79,7 +92,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 02-01-EXECUTE (Card List UI)
+Stopped at: Completed 02-03-PLAN.md (Bi-directional Marker-Card Sync)
 Resume file: None
 
 Config:
