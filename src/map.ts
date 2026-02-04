@@ -182,6 +182,51 @@ export function setupMarkerClickHandlers(stateManager: StateManager): () => void
   };
 }
 
+/**
+ * Sets up Leaflet overlay add/remove event listeners for layer visibility tracking.
+ *
+ * Listens for Leaflet's overlayadd and overlayremove events from the layer control,
+ * maps the layer names to card categories, and updates the StateManager accordingly.
+ * Returns a cleanup function to properly remove event listeners on teardown.
+ *
+ * @param map - The Leaflet map instance
+ * @param stateManager - The StateManager instance to notify of layer changes
+ * @returns Cleanup function that removes all event listeners
+ */
+export function setupLayerEventListeners(map: L.Map, stateManager: StateManager): () => void {
+  const cleanupFunctions: Array<() => void> = [];
+
+  // Map layer control overlay names to card category badges
+  const layerNameMapping: Record<string, string> = {
+    'Community Fridge and Pantry Locations': 'Community Fridge',
+    'Food Donation Sites': 'Food Donation'
+  };
+
+  const overlayAddHandler = (e: L.LayersControlEvent) => {
+    const category = layerNameMapping[e.name];
+    if (category) {
+      stateManager.toggleLayer(category, true);
+    }
+  };
+
+  const overlayRemoveHandler = (e: L.LayersControlEvent) => {
+    const category = layerNameMapping[e.name];
+    if (category) {
+      stateManager.toggleLayer(category, false);
+    }
+  };
+
+  map.on('overlayadd', overlayAddHandler);
+  map.on('overlayremove', overlayRemoveHandler);
+
+  // Store cleanup functions for both listeners
+  cleanupFunctions.push(() => map.off('overlayadd', overlayAddHandler));
+  cleanupFunctions.push(() => map.off('overlayremove', overlayRemoveHandler));
+
+  // Return combined cleanup function
+  return () => cleanupFunctions.forEach(fn => fn());
+}
+
 export interface InitializeMapResult {
   fridgeData: MarkerData[];
   donationData: MarkerData[];
