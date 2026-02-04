@@ -1,5 +1,6 @@
 import type { MarkerData } from './map.ts';
 import type { SelectionState } from './stateManager.ts';
+import { updateEmptyState } from './emptyState.ts';
 
 interface LocationCard extends MarkerData {
   markerId: string;
@@ -105,4 +106,39 @@ export function updateCardSelection(selectedId: SelectionState['selectedId']): v
       }
     });
   });
+}
+
+/**
+ * Filters cards based on search query.
+ * Uses CSS class toggling (.hidden) instead of DOM removal
+ * to maintain event listeners and state.
+ *
+ * @param cards - Array of card HTMLElements to filter
+ * @param searchQuery - The search query string to match against
+ *
+ * @example
+ * ```typescript
+ * const cards = document.querySelectorAll<HTMLElement>('.card');
+ * filterCards(Array.from(cards), 'fridge');
+ * ```
+ */
+export function filterCards(cards: HTMLElement[], searchQuery: string): void {
+  const query = searchQuery.toLocaleLowerCase().trim();
+
+  cards.forEach((card) => {
+    const name = card.querySelector('.card-name')?.textContent ?? '';
+    const matches = name.toLocaleLowerCase().includes(query);
+
+    if (matches) {
+      card.classList.remove('hidden');
+      card.setAttribute('aria-hidden', 'false');
+    } else {
+      card.classList.add('hidden');
+      card.setAttribute('aria-hidden', 'true');
+    }
+  });
+
+  // Update empty state based on visible card count
+  const visibleCount = cards.filter((c) => !c.classList.contains('hidden')).length;
+  updateEmptyState(visibleCount === 0, searchQuery);
 }
