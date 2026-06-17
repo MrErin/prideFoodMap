@@ -26,10 +26,10 @@ import type { StateManager } from './stateManager.ts';
  * debouncedSearch('fridge x'); // Resets timer, will call after 300ms
  * ```
  */
-export function debounce<T extends (...args: any[]) => void>(
+export const debounce = <T extends (...args: any[]) => void>(
   fn: T,
   delay: number
-): (...args: Parameters<T>) => void {
+): ((...args: Parameters<T>) => void) => {
   let timer: ReturnType<typeof setTimeout> | undefined;
 
   return function (this: any, ...args: Parameters<T>) {
@@ -38,7 +38,7 @@ export function debounce<T extends (...args: any[]) => void>(
       fn.apply(this, args);
     }, delay);
   };
-}
+};
 
 /**
  * Sets up search input event listeners with debounced state updates.
@@ -59,11 +59,11 @@ export function debounce<T extends (...args: any[]) => void>(
  * setupSearchInput(input, reset, stateManager);
  * ```
  */
-export function setupSearchInput(
+export const setupSearchInput = (
   inputElement: HTMLInputElement,
   resetButton: HTMLElement,
   stateManager: StateManager
-): void {
+): void => {
   // Update reset button visibility based on input value
   const updateResetButton = () => {
     if (inputElement.value.trim()) {
@@ -91,4 +91,4 @@ export function setupSearchInput(
     stateManager.setSearchQuery('');
     inputElement.focus();
   });
-}
+};

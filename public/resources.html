@@ -27,6 +27,17 @@
         margin: 0 auto;
       }
 
+      .header-section {
+        position: sticky;
+        top: 0;
+        background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+        z-index: 100;
+        padding: 2rem 0;
+        margin: -2rem -1rem 0 -1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
       h1 {
         text-align: center;
         margin-bottom: 0.5rem;
@@ -38,7 +49,7 @@
       .subtitle {
         text-align: center;
         color: #000;
-        margin-bottom: 2rem;
+        margin-bottom: 0;
         font-size: 24px;
       }
 
@@ -73,6 +84,12 @@
       .resource-type-section {
         margin-left: 1.5rem;
         margin-bottom: 1.5rem;
+      }
+
+      .resource-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
       }
 
       .resource-type-heading {
@@ -110,6 +127,24 @@
         font-size: 22px;
       }
 
+      .resource-link {
+        color: #0060df;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+
+      .resource-link:hover {
+        color: #003d99;
+        text-decoration: underline;
+      }
+
+      .resource-link:focus {
+        outline: 2px solid #0060df;
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+
       .zip-code {
         color: #666;
         font-size: 20px;
@@ -136,14 +171,20 @@
   </head>
   <body>
     <div class="container">
-      <h1>Additional Resources</h1>
-      <p class="subtitle">
-        Find additional food resources in areas outside Chattanooga
-      </p>
-      <div id="content" class="loading">Loading resources...</div>
+      <div class="header-section">
+        <h1>Additional Resources</h1>
+      </div>
+      <div id="content" class="loading" role="status" aria-live="polite">
+        Loading resources...
+      </div>
     </div>
 
     <script>
+      /**
+       * Loads CSV resources data, groups by city and resource type, and renders to DOM.
+       * Cities are sorted with 'Nationwide' first, then alphabetically.
+       * Resource types are sorted alphabetically within each city.
+       */
       async function loadAndDisplayResources() {
         const contentEl = document.getElementById('content');
 
@@ -192,10 +233,14 @@
           // Render the grouped data
           let html = '';
 
-          // Sort cities alphabetically
-          Object.keys(grouped)
-            .sort()
-            .forEach((city) => {
+          // Sort cities: Nationwide first, then alphabetically
+          const cityKeys = Object.keys(grouped).sort((a, b) => {
+            if (a === 'Nationwide') return -1;
+            if (b === 'Nationwide') return 1;
+            return a.localeCompare(b);
+          });
+
+          cityKeys.forEach((city) => {
               html += `<div class="city-section">
               <h2 class="city-heading">${escapeHtml(city)}</h2>`;
 
@@ -204,17 +249,22 @@
                 .sort()
                 .forEach((resourceType) => {
                   html += `<div class="resource-type-section">
-                <h3 class="resource-type-heading">${escapeHtml(resourceType)}</h3>`;
+                <h3 class="resource-type-heading">${escapeHtml(resourceType)}</h3>
+                <div class="resource-grid">`;
 
                   grouped[city][resourceType].forEach((resource) => {
+                    const addressHtml = isUrl(resource.address)
+                      ? `<a href="${escapeHtml(resource.address)}" target="_blank" rel="noopener noreferrer" class="resource-link" aria-label="Visit ${escapeHtml(resource.name)} website">${escapeHtml(resource.address)}</a>`
+                      : escapeHtml(resource.address);
+
                     html += `<div class="resource-item">
                   <div class="resource-name">${escapeHtml(resource.name)}</div>
-                  <div class="resource-address">${escapeHtml(resource.address)}</div>
+                  <div class="resource-address">${addressHtml}</div>
                   <div class="zip-code">${escapeHtml(resource.zip)}</div>
                 </div>`;
                   });
 
-                  html += '</div>';
+                  html += '</div></div>';
                 });
 
               html += '</div>';
@@ -222,13 +272,18 @@
 
           contentEl.innerHTML = html;
         } catch (error) {
-          contentEl.innerHTML = `<div class="error">
+          contentEl.innerHTML = `<div class="error" role="alert" aria-live="assertive">
             Error loading resources: ${error.message}. Please try again later.
           </div>`;
           console.error('Error:', error);
         }
       }
 
+      /**
+       * Escapes HTML special characters to prevent XSS attacks.
+       * @param {string} text - Text to escape
+       * @returns {string} Escaped HTML-safe text
+       */
       function escapeHtml(text) {
         const map = {
           '&': '&amp;',
@@ -238,6 +293,16 @@
           "'": '&#039;',
         };
         return text.replace(/[&<>"']/g, (m) => map[m]);
+      }
+
+      /**
+       * Checks if a string is a valid HTTP/HTTPS URL.
+       * @param {string} text - Text to check
+       * @returns {boolean} True if text starts with http:// or https://
+       */
+      function isUrl(text) {
+        if (typeof text !== 'string') return false;
+        return text.startsWith('http://') || text.startsWith('https://');
       }
 
       // Load and display when DOM is ready

@@ -7,11 +7,6 @@
  */
 
 /**
- * Empty state element reference
- */
-let emptyStateElement: HTMLElement | null = null;
-
-/**
  * Creates an empty state element with ARIA live region.
  * The element is initially hidden and only shown when needed.
  *
@@ -24,7 +19,7 @@ let emptyStateElement: HTMLElement | null = null;
  * document.querySelector('#card-list')?.appendChild(emptyState);
  * ```
  */
-export function createEmptyState(containerSelector: string): HTMLElement {
+export const createEmptyState = (containerSelector: string): HTMLElement => {
   const container = document.querySelector<HTMLElement>(containerSelector);
   if (!container) {
     throw new Error(`Container not found: ${containerSelector}`);
@@ -36,10 +31,9 @@ export function createEmptyState(containerSelector: string): HTMLElement {
   emptyState.setAttribute('role', 'status');
 
   container.appendChild(emptyState);
-  emptyStateElement = emptyState;
 
   return emptyState;
-}
+};
 
 /**
  * Updates the empty state visibility and content.
@@ -54,7 +48,7 @@ export function createEmptyState(containerSelector: string): HTMLElement {
  * - Removes aria-live attribute to prevent stale announcements
  *
  * @param isEmpty - Whether the state should be visible (no results)
- * @param query - The search query that resulted in empty state (optional)
+ * @param _query - The search query that resulted in empty state (optional)
  *
  * @example
  * ```typescript
@@ -62,11 +56,8 @@ export function createEmptyState(containerSelector: string): HTMLElement {
  * updateEmptyState(false); // Hides empty state
  * ```
  */
-export function updateEmptyState(isEmpty: boolean, _query: string = ''): void {
-  if (!emptyStateElement) {
-    // Try to find existing element if not cached
-    emptyStateElement = document.getElementById('empty-state');
-  }
+export const updateEmptyState = (isEmpty: boolean, _query: string = ''): void => {
+  const emptyStateElement = document.getElementById('empty-state');
 
   if (!emptyStateElement) {
     return; // Silent fail if element doesn't exist yet
@@ -81,4 +72,4 @@ export function updateEmptyState(isEmpty: boolean, _query: string = ''): void {
     emptyStateElement.removeAttribute('aria-live');
     emptyStateElement.textContent = '';
   }
-}
+};

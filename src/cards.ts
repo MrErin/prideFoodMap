@@ -14,7 +14,7 @@ interface LocationCard extends MarkerData {
  *
  * @param card - The card HTMLElement to scroll into view
  */
-export function scrollToCard(card: HTMLElement): void {
+export const scrollToCard = (card: HTMLElement): void => {
   // Check user's motion preference
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -26,7 +26,7 @@ export function scrollToCard(card: HTMLElement): void {
 
   // Move keyboard focus to the card (critical for accessibility)
   card.focus();
-}
+};
 
 /**
  * Creates a card element for a location with full ARIA attribute coverage.
@@ -39,7 +39,7 @@ export function scrollToCard(card: HTMLElement): void {
  * @param cardData - The location data including marker ID and category
  * @returns HTMLElement representing the location card
  */
-export function createCardElement(cardData: LocationCard): HTMLElement {
+export const createCardElement = (cardData: LocationCard): HTMLElement => {
   const card = document.createElement('div');
   card.className = 'card';
   card.dataset.markerId = cardData.markerId;
@@ -70,7 +70,7 @@ export function createCardElement(cardData: LocationCard): HTMLElement {
   card.appendChild(badges);
 
   return card;
-}
+};
 
 /**
  * Renders location cards to a container with ARIA labeling.
@@ -81,7 +81,10 @@ export function createCardElement(cardData: LocationCard): HTMLElement {
  * @param cards - Array of location cards to render
  * @param containerSelector - CSS selector for the container (default: '#card-list')
  */
-export function renderCards(cards: LocationCard[], containerSelector: string = '#card-list'): void {
+export const renderCards = (
+  cards: LocationCard[],
+  containerSelector: string = '#card-list'
+): void => {
   // Sort cards alphabetically by location name
   const sortedCards = [...cards].sort((a, b) => a.locationName.localeCompare(b.locationName));
 
@@ -107,7 +110,7 @@ export function renderCards(cards: LocationCard[], containerSelector: string = '
   if (container.getAttribute('role') === 'list') {
     container.setAttribute('aria-label', 'Food locations list');
   }
-}
+};
 
 /**
  * Updates card selection styling based on the selected marker ID.
@@ -120,7 +123,7 @@ export function renderCards(cards: LocationCard[], containerSelector: string = '
  *
  * @param selectedId - The ID of the selected marker, or null to clear all selections
  */
-export function updateCardSelection(selectedId: SelectionState['selectedId']): void {
+export const updateCardSelection = (selectedId: SelectionState['selectedId']): void => {
   requestAnimationFrame(() => {
     const container = document.querySelector<HTMLElement>('#card-list');
     if (!container) return;
@@ -147,7 +150,7 @@ export function updateCardSelection(selectedId: SelectionState['selectedId']): v
       }
     }
   });
-}
+};
 
 /**
  * Filters cards based on search query and visible layer set.
@@ -173,11 +176,11 @@ export function updateCardSelection(selectedId: SelectionState['selectedId']): v
  * filterCards(Array.from(cards), 'fridge', visibleLayers);
  * ```
  */
-export function filterCards(
+export const filterCards = (
   cards: HTMLElement[],
   searchQuery: string,
   visibleLayers: Set<string>
-): void {
+): void => {
   const query = searchQuery.toLocaleLowerCase().trim();
 
   cards.forEach((card) => {
@@ -200,4 +203,4 @@ export function filterCards(
   // Update empty state based on visible card count
   const visibleCount = cards.filter((c) => !c.classList.contains('hidden')).length;
   updateEmptyState(visibleCount === 0, searchQuery);
-}
+};

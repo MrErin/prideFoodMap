@@ -1,3 +1,11 @@
+/**
+ * main - Application entry point
+ *
+ * Orchestrates the initialization of map, cards, state management,
+ * and event handlers. Manages bi-directional sync between map markers
+ * and card list through the StateManager observer pattern.
+ */
+
 import 'leaflet/dist/leaflet.css';
 import {
   initializeMap,
@@ -24,11 +32,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loadingEl = document.getElementById('loading');
 
   try {
-    const { map, fridgeData, donationData, fridgeMarkerIds, donationMarkerIds } =
-      await initializeMap(stateManager);
+    const {
+      map,
+      fridgeData,
+      donationData,
+      fridgeMarkers,
+      donationMarkers,
+      fridgeMarkerIds,
+      donationMarkerIds,
+    } = await initializeMap(stateManager);
+
+    // Combine all markers for event handler setup
+    const allMarkers = new Map([...fridgeMarkers, ...donationMarkers]);
 
     // Create location cards with category and markerId
-    // markerId is now populated from addMarkersFromCSV return value using L.Util.stamp()
     const fridgeCards: LocationCard[] = fridgeData.map(
       (data: MarkerData, index: number): LocationCard => ({
         ...data,
@@ -76,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Setup marker click handlers
-    setupMarkerClickHandlers(stateManager);
+    setupMarkerClickHandlers(allMarkers, stateManager);
 
     // Setup layer event listeners for visibility tracking
     setupLayerEventListeners(map, stateManager);
@@ -99,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Subscribe to state changes for bi-directional sync
     stateManager.subscribe((state) => {
       updateCardSelection(state.selectedId);
-      highlightMarker(state.selectedId);
+      highlightMarker(allMarkers, state.selectedId);
 
       // Announce selection to screen readers
       if (state.selectedId) {
