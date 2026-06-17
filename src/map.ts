@@ -1,3 +1,11 @@
+/**
+ * map - Map initialization and marker management
+ *
+ * Handles Leaflet map setup, CSV data loading, marker creation,
+ * and event handling for marker interactions. Provides accessibility
+ * features including keyboard navigation and screen reader support.
+ */
+
 import * as L from 'leaflet';
 import Papa from 'papaparse';
 import type GeoJSON from 'geojson';
@@ -15,9 +23,6 @@ export interface MarkerData {
 }
 
 const baseURL = import.meta.env.BASE_URL;
-
-// Module-level map for marker-card linking using L.Util.stamp() IDs
-const markerCardMap: Map<string, L.Marker> = new Map();
 
 const fridgeIcon: L.Icon = L.icon({
   iconUrl: `${baseURL}icons/fridge.png`,
@@ -74,15 +79,21 @@ export const loadGeoJSON = async (url: string): Promise<GeoJSON.FeatureCollectio
   return response.json();
 };
 
+export interface MarkerMap {
+  ids: (string | null)[];
+  markers: Map<string, L.Marker>;
+}
+
 export const addMarkersFromCSV = (
   data: MarkerData[],
   layerGroup: L.LayerGroup,
   icon: L.Icon,
   layerName: string,
   stateManager: StateManager
-): (string | null)[] => {
+): MarkerMap => {
   let markersAdded = 0;
   const markerIds: (string | null)[] = [];
+  const markers: Map<string, L.Marker> = new Map();
 
   data.forEach((row: MarkerData, index: number) => {
     const lat: number = row.latitude;
@@ -114,7 +125,7 @@ export const addMarkersFromCSV = (
 
       // Generate unique marker ID using L.Util.stamp() and store for linking
       const markerId = L.Util.stamp(marker).toString();
-      markerCardMap.set(markerId, marker);
+      markers.set(markerId, marker);
       markerIds.push(markerId);
 
       marker.addTo(layerGroup);
@@ -125,18 +136,22 @@ export const addMarkersFromCSV = (
     }
   });
   announce(`${markersAdded} ${layerName} locations loaded`);
-  return markerIds;
+  return { ids: markerIds, markers };
 };
 
 /**
  * Highlights a marker by adding the 'marker-selected' CSS class.
  * Clears all other marker highlights when a new marker is selected.
+ * @param markerMap - Map of marker IDs to marker objects
  * @param markerId - The ID of the marker to highlight, or null to clear all highlights
  */
-export function highlightMarker(markerId: string | null): void {
+export const highlightMarker = (
+  markerMap: Map<string, L.Marker>,
+  markerId: string | null
+): void => {
   requestAnimationFrame(() => {
     // Clear all marker highlights first
-    markerCardMap.forEach((marker) => {
+    markerMap.forEach((marker) => {
       const element = marker.getElement();
       if (element) {
         element.classList.remove('marker-selected');
@@ -145,7 +160,7 @@ export function highlightMarker(markerId: string | null): void {
 
     // Highlight the selected marker
     if (markerId !== null) {
-      const marker = markerCardMap.get(markerId);
+      const marker = markerMap.get(markerId);
       if (marker) {
         const element = marker.getElement();
         if (element) {
@@ -154,17 +169,21 @@ export function highlightMarker(markerId: string | null): void {
       }
     }
   });
-}
+};
 
 /**
  * Sets up click handlers on all markers to update selection state via StateManager.
+ * @param markerMap - Map of marker IDs to marker objects
  * @param stateManager - The StateManager instance to notify of selection changes
  * @returns Cleanup function that removes all click handlers
  */
-export function setupMarkerClickHandlers(stateManager: StateManager): () => void {
+export const setupMarkerClickHandlers = (
+  markerMap: Map<string, L.Marker>,
+  stateManager: StateManager
+): (() => void) => {
   const cleanupFunctions: Array<() => void> = [];
 
-  markerCardMap.forEach((marker) => {
+  markerMap.forEach((marker) => {
     const markerId = L.Util.stamp(marker).toString();
 
     const clickHandler = () => {
@@ -183,7 +202,7 @@ export function setupMarkerClickHandlers(stateManager: StateManager): () => void
   return () => {
     cleanupFunctions.forEach((cleanup) => cleanup());
   };
-}
+};
 
 /**
  * Sets up Leaflet overlay add/remove event listeners for layer visibility tracking.
@@ -196,7 +215,7 @@ export function setupMarkerClickHandlers(stateManager: StateManager): () => void
  * @param stateManager - The StateManager instance to notify of layer changes
  * @returns Cleanup function that removes all event listeners
  */
-export function setupLayerEventListeners(map: L.Map, stateManager: StateManager): () => void {
+export const setupLayerEventListeners = (map: L.Map, stateManager: StateManager): (() => void) => {
   const cleanupFunctions: Array<() => void> = [];
 
   // Map layer control overlay names to card category badges
@@ -229,12 +248,14 @@ export function setupLayerEventListeners(map: L.Map, stateManager: StateManager)
 
   // Return combined cleanup function
   return () => cleanupFunctions.forEach((fn) => fn());
-}
+};
 
 export interface InitializeMapResult {
   map: L.Map;
   fridgeData: MarkerData[];
   donationData: MarkerData[];
+  fridgeMarkers: Map<string, L.Marker>;
+  donationMarkers: Map<string, L.Marker>;
   fridgeMarkerIds: (string | null)[];
   donationMarkerIds: (string | null)[];
 }
@@ -261,14 +282,14 @@ export const initializeMap = async (stateManager: StateManager): Promise<Initial
       }),
     ]);
 
-    const fridgeMarkerIds = addMarkersFromCSV(
+    const fridgeMarkerMap = addMarkersFromCSV(
       fridgeData,
       fridgeLayer,
       fridgeIcon,
       'Community Fridge',
       stateManager
     );
-    const donationMarkerIds = addMarkersFromCSV(
+    const donationMarkerMap = addMarkersFromCSV(
       donationData,
       donationLayer,
       donationIcon,
@@ -331,7 +352,15 @@ export const initializeMap = async (stateManager: StateManager): Promise<Initial
       'Map loaded. Use Tab to navigate between markers, Enter to open details, arrow keys to pan, plus and minus to zoom.'
     );
 
-    return { map, fridgeData, donationData, fridgeMarkerIds, donationMarkerIds };
+    return {
+      map,
+      fridgeData,
+      donationData,
+      fridgeMarkers: fridgeMarkerMap.markers,
+      donationMarkers: donationMarkerMap.markers,
+      fridgeMarkerIds: fridgeMarkerMap.ids,
+      donationMarkerIds: donationMarkerMap.ids,
+    };
   } catch (error) {
     console.error('Error loading CSV files:', error);
     announce('Error loading map data. Please try again later.');

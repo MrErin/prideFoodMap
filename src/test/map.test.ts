@@ -172,9 +172,11 @@ describe('addMarkersFromCSV', () => {
       },
     ];
 
-    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
+    const result = addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
 
     expect(layerGroup.getLayers()).toHaveLength(1);
+    expect(result.ids).toHaveLength(1);
+    expect(result.markers.size).toBe(1);
     const marker = layerGroup.getLayers()[0] as L.Marker;
     expect(marker.getLatLng()).toEqual({ lat: 40.7128, lng: -74.006 });
   });
@@ -246,9 +248,10 @@ describe('addMarkersFromCSV', () => {
       },
     ];
 
-    addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
+    const result = addMarkersFromCSV(data, layerGroup, icon, 'Test Layer', stateManager);
 
     expect(layerGroup.getLayers()).toHaveLength(3);
+    expect(result.markers.size).toBe(3);
   });
 
   it('should handle markers with missing optional description', () => {
@@ -389,7 +392,12 @@ describe('initializeMap', () => {
   });
 
   it('should initialize map with tile layer', async () => {
-    await expect(initializeMap(stateManager)).resolves.not.toThrow();
+    const result = await initializeMap(stateManager);
+    expect(result).toBeDefined();
+    expect(result.fridgeMarkers).toBeInstanceOf(Map);
+    expect(result.donationMarkers).toBeInstanceOf(Map);
+    expect(Array.isArray(result.fridgeMarkerIds)).toBe(true);
+    expect(Array.isArray(result.donationMarkerIds)).toBe(true);
 
     const mapContainer = document.getElementById('map');
     expect(mapContainer?.querySelector('.leaflet-map-pane')).toBeTruthy();
