@@ -177,10 +177,17 @@
           Find additional food resources in areas outside Chattanooga
         </p>
       </div>
-      <div id="content" class="loading">Loading resources...</div>
+      <div id="content" class="loading" role="status" aria-live="polite">
+        Loading resources...
+      </div>
     </div>
 
     <script>
+      /**
+       * Loads CSV resources data, groups by city and resource type, and renders to DOM.
+       * Cities are sorted with 'Nationwide' first, then alphabetically.
+       * Resource types are sorted alphabetically within each city.
+       */
       async function loadAndDisplayResources() {
         const contentEl = document.getElementById('content');
 
@@ -250,7 +257,7 @@
 
                   grouped[city][resourceType].forEach((resource) => {
                     const addressHtml = isUrl(resource.address)
-                      ? `<a href="${escapeHtml(resource.address)}" target="_blank" rel="noopener noreferrer" class="resource-link">${escapeHtml(resource.address)}</a>`
+                      ? `<a href="${escapeHtml(resource.address)}" target="_blank" rel="noopener noreferrer" class="resource-link" aria-label="Visit ${escapeHtml(resource.name)} website">${escapeHtml(resource.address)}</a>`
                       : escapeHtml(resource.address);
 
                     html += `<div class="resource-item">
@@ -268,13 +275,18 @@
 
           contentEl.innerHTML = html;
         } catch (error) {
-          contentEl.innerHTML = `<div class="error">
+          contentEl.innerHTML = `<div class="error" role="alert" aria-live="assertive">
             Error loading resources: ${error.message}. Please try again later.
           </div>`;
           console.error('Error:', error);
         }
       }
 
+      /**
+       * Escapes HTML special characters to prevent XSS attacks.
+       * @param {string} text - Text to escape
+       * @returns {string} Escaped HTML-safe text
+       */
       function escapeHtml(text) {
         const map = {
           '&': '&amp;',
@@ -286,7 +298,13 @@
         return text.replace(/[&<>"']/g, (m) => map[m]);
       }
 
+      /**
+       * Checks if a string is a valid HTTP/HTTPS URL.
+       * @param {string} text - Text to check
+       * @returns {boolean} True if text starts with http:// or https://
+       */
       function isUrl(text) {
+        if (typeof text !== 'string') return false;
         return text.startsWith('http://') || text.startsWith('https://');
       }
 
