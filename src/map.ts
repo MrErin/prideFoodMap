@@ -1,5 +1,6 @@
 import * as L from 'leaflet';
 import Papa from 'papaparse';
+import type GeoJSON from 'geojson';
 import type { StateManager } from './stateManager.js';
 
 export interface MarkerData {
@@ -57,6 +58,20 @@ export const announce = (message: string): void => {
       announcer.textContent = message;
     });
   }
+};
+
+/**
+ * Loads a GeoJSON file from the given URL.
+ * @param url - The URL path to the GeoJSON file
+ * @returns Promise resolving to a GeoJSON FeatureCollection
+ * @throws Error if the file fails to load or is invalid
+ */
+export const loadGeoJSON = async (url: string): Promise<GeoJSON.FeatureCollection> => {
+  const response: Response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to load ${url}: ${response.statusText}`);
+  }
+  return response.json();
 };
 
 export const addMarkersFromCSV = (
@@ -188,6 +203,7 @@ export function setupLayerEventListeners(map: L.Map, stateManager: StateManager)
   const layerNameMapping: Record<string, string> = {
     'Community Fridge and Pantry Locations': 'Community Fridge',
     'Food Donation Sites': 'Food Donation',
+    'Service Area': 'Service Area',
   };
 
   const overlayAddHandler = (e: L.LayersControlEvent) => {
@@ -223,9 +239,7 @@ export interface InitializeMapResult {
   donationMarkerIds: (string | null)[];
 }
 
-export const initializeMap = async (
-  stateManager: StateManager
-): Promise<InitializeMapResult> => {
+export const initializeMap = async (stateManager: StateManager): Promise<InitializeMapResult> => {
   const map: L.Map = L.map('map').setView([37.8, -96], 4); // Default center USA
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -238,9 +252,13 @@ export const initializeMap = async (
   const donationLayer: L.LayerGroup = L.layerGroup().addTo(map);
 
   try {
-    const [fridgeData, donationData] = await Promise.all([
+    const [fridgeData, donationData, serviceAreaGeoJSON] = await Promise.all([
       loadCSV(`${baseURL}data/fridgePins.csv`),
       loadCSV(`${baseURL}data/donationPins.csv`),
+      loadGeoJSON(`${baseURL}data/serviceArea.json`).catch((error) => {
+        console.warn('Service area boundary failed to load:', error);
+        return null;
+      }),
     ]);
 
     const fridgeMarkerIds = addMarkersFromCSV(
@@ -266,10 +284,26 @@ export const initializeMap = async (
       console.warn('No markers were added to the map');
     }
 
-    const overlays: { [key: string]: L.LayerGroup } = {
+    const overlays: { [key: string]: L.Layer } = {
       'Community Fridge and Pantry Locations': fridgeLayer,
       'Food Donation Sites': donationLayer,
     };
+
+    // Add service area boundary if available
+    if (serviceAreaGeoJSON) {
+      const serviceAreaLayer = L.geoJSON(serviceAreaGeoJSON, {
+        style: {
+          color: '#0060df',
+          weight: 2,
+          opacity: 0.8,
+          dashArray: '5,5',
+          fill: true,
+          fillColor: '#0060df',
+          fillOpacity: 0.05,
+        },
+      }).addTo(map);
+      overlays['Service Area'] = serviceAreaLayer;
+    }
 
     // Add control first, then enhance with ARIA attributes
     L.control.layers(undefined, overlays, { collapsed: false }).addTo(map);
@@ -283,11 +317,12 @@ export const initializeMap = async (
         controlElement.setAttribute('aria-label', 'Map Layer Controls');
 
         const inputs = controlElement.querySelectorAll('input[type="checkbox"]');
+        const overlayLabels = Object.keys(overlays);
         inputs.forEach((input, idx) => {
-          input.setAttribute(
-            'aria-label',
-            idx === 0 ? 'Show Community Fridge and Pantry Locations' : 'Show Food Donation Sites'
-          );
+          const layerName = overlayLabels[idx];
+          if (layerName) {
+            input.setAttribute('aria-label', `Toggle ${layerName}`);
+          }
         });
       }
     });
