@@ -1,5 +1,6 @@
 import * as L from 'leaflet';
 import Papa from 'papaparse';
+import type GeoJSON from 'geojson';
 import type { StateManager } from './stateManager.js';
 
 export interface MarkerData {
@@ -59,6 +60,12 @@ export const announce = (message: string): void => {
   }
 };
 
+/**
+ * Loads a GeoJSON file from the given URL.
+ * @param url - The URL path to the GeoJSON file
+ * @returns Promise resolving to a GeoJSON FeatureCollection
+ * @throws Error if the file fails to load or is invalid
+ */
 export const loadGeoJSON = async (url: string): Promise<GeoJSON.FeatureCollection> => {
   const response: Response = await fetch(url);
   if (!response.ok) {
@@ -248,7 +255,10 @@ export const initializeMap = async (stateManager: StateManager): Promise<Initial
     const [fridgeData, donationData, serviceAreaGeoJSON] = await Promise.all([
       loadCSV(`${baseURL}data/fridgePins.csv`),
       loadCSV(`${baseURL}data/donationPins.csv`),
-      loadGeoJSON(`${baseURL}data/serviceArea.json`).catch(() => null),
+      loadGeoJSON(`${baseURL}data/serviceArea.json`).catch((error) => {
+        console.warn('Service area boundary failed to load:', error);
+        return null;
+      }),
     ]);
 
     const fridgeMarkerIds = addMarkersFromCSV(
