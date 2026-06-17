@@ -314,13 +314,13 @@ export const initializeMap = async (stateManager: StateManager): Promise<Initial
     if (serviceAreaGeoJSON) {
       const serviceAreaLayer = L.geoJSON(serviceAreaGeoJSON, {
         style: {
-          color: '#0060df',
+          color: '#003d99',
           weight: 2,
           opacity: 0.8,
           dashArray: '5,5',
           fill: true,
-          fillColor: '#0060df',
-          fillOpacity: 0.05,
+          fillColor: '#003d99',
+          fillOpacity: 0.1,
         },
       }).addTo(map);
       overlays['Service Area'] = serviceAreaLayer;
