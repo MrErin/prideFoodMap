@@ -6,4 +6,4 @@ View the resource list here: https://mrerin.github.io/prideFoodMap/resources.htm
 
 View the project here: https://www.chattanoogapride.com/foodcoalition
 
-_Address data last verified 06/17/2026_
+_Address data last verified 08/24/2026_
